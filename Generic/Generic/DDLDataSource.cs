@@ -1,0 +1,23 @@
+﻿
+
+namespace Adam.Generic.Generic
+{
+    public class DDLDataSource
+    {
+        public string Label { get; set; }
+        public int Value { get; set; }
+        public object Attributes { get; set; }
+        public bool Disabled { get; set; }
+
+        public DDLDataSource()
+        {
+
+        }
+
+        public DDLDataSource(string label, int value)
+        {
+            this.Label = label;
+            this.Value = value;
+        }
+    }
+}
