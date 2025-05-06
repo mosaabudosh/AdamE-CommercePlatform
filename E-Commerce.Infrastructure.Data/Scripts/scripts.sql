@@ -1,0 +1,41 @@
+﻿
+SET IDENTITY_INSERT [dbo].[Screens] ON 
+
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (1, N'Users', N'المستخدمين', 1, 1, N'users', N'pi pi-users', 1, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (2, N'Roles', N'الأدوار', 2, 1, N'roles', N'pi pi-briefcase', 1, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (3, N'Actions', N'الإجراءات', 2, 1, N'actions', N'pi pi-sitemap', 1, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (4, N'Cities', N'المدن', 2, 1, N'cities', N'pi pi-map-marker', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (5, N'Countries', N'البلدان', 2, 1, N'countries', N'pi pi-map', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (6, N'Items', N'العناصر', 2, 1, N'items', N'pi pi-list', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (7, N'Shops', N'المحلات التجارية', 2, 1, N'shops', N'pi pi-building', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (8, N'Taxs', N'الضرائب', 2, 1, N'taxs', N'pi pi-asterisk', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (9, N'Categories', N'التصنيفات', 2, 1, N'categories', N'pi pi-list', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (10, N'Carts', N'العربات', 2, 1, N'carts', N'pi pi-shopping-cart', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (11, N'Cart Statuses', N'حالات عربة التسوق', 2, 1, N'cart-statuses', N'pi pi-list', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (12, N'Orders', N'طلبات', 2, 1, N'orders', N'pi pi-briefcase', 2, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (13, N'Reports', N'التقارير', 2, 1, N'reports', N'pi pi-file', 4, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[Screens] ([ScreenId], [Name], [NameAr], [Order], [IsInMenue], [Url], [Icon], [ModuleId], [CreationUserId],[CreationDate],[IsActive]) VALUES (14, N'Notifications', N'الإشعارات', 2, 1, N'notifications', N'pi pi-bell', 3, N'26435193-38f2-43b2-8841-3ab288e19f9e',CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+
+SET IDENTITY_INSERT [dbo].[Screens] OFF
+GO
+
+
+SET IDENTITY_INSERT [dbo].[RoleScreens] ON 
+
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (1, 1, 1, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (2, 1, 2, N'26435193-38f2-43b2-8841-3ab288e19f9e', NULL, CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2), 1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (3, 1, 3, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (4, 1, 4, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (5, 1, 5, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (6, 1, 6, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (7, 1, 7, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (8, 1, 8, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (9, 1, 9, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (10, 1, 10, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (11, 1, 11, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (12, 1, 12, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (13, 1, 13, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+INSERT [dbo].[RoleScreens] ([RoleScreenId], [RoleId], [ScreenId], [CreationUserId], [CreationDate], [IsActive]) VALUES (14, 1, 14, N'26435193-38f2-43b2-8841-3ab288e19f9e', CAST(N'2025-01-01T00:00:00.0000000' AS DateTime2),1)
+
+SET IDENTITY_INSERT [dbo].[RoleScreens] OFF
+GO
