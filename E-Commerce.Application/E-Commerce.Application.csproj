@@ -31,8 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Gender\Commands\" />
-    <Folder Include="Services\Language\Commands\" />
     <Folder Include="Services\Shop\Commands\" />
     <Folder Include="Services\UserType\Commands\" />
   </ItemGroup>

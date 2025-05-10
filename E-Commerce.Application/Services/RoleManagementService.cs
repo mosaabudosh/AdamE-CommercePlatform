@@ -55,6 +55,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(AddRole), _userAccessor.GetCurrentUserId(), roleModel);
                 return new BaseResponse<Role>(false, ex.Message);
             }
@@ -84,6 +88,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(UpdateRole), _userAccessor.GetCurrentUserId(), roleModel);
                 return new BaseResponse(false, ex.Message);
             }
@@ -105,6 +113,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(DeleteRole), _userAccessor.GetCurrentUserId(), roleId);
                 return new BaseResponse(false, ex.Message);
             }
@@ -114,7 +126,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                List<RoleModel> roles = _unitOfWork.GetRepository<Role>().GetByExpression().Select(s => new RoleModel()
+                List<RoleModel> roles = _unitOfWork.GetRepository<Role>().GetByExpressionAsNoTracking().Select(s => new RoleModel()
                 {
                     RoleId = s.RoleId,
                     Name = s.Name,
@@ -125,7 +137,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
-
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetRoles), _userAccessor.GetCurrentUserId());
                 return new BaseResponse<List<RoleModel>>(false, ex.Message);
             }
@@ -140,6 +155,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetRolesCount), _userAccessor.GetCurrentUserId());
                 return new BaseResponse<int>(false, ex.Message);
             }
@@ -149,7 +168,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                RoleModel role = _unitOfWork.GetRepository<Role>().GetByExpression(p => p.RoleId == roleId).Select(s => new RoleModel()
+                RoleModel role = _unitOfWork.GetRepository<Role>().GetByExpressionAsNoTracking(p => p.RoleId == roleId).Select(s => new RoleModel()
                 {
                     RoleId = roleId,
                     Name = s.Name,
@@ -160,6 +179,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetRoleById), _userAccessor.GetCurrentUserId(), roleId);
                 return new BaseResponse<RoleModel>(false, ex.Message);
             }
@@ -171,13 +194,18 @@ namespace E_Commerce.Application.Services
             {
                 Role existingRole = _unitOfWork.GetRepository<Role>().GetByExpression(x => x.Name == role.Name && (isUpdate ? (x.RoleId != role.RoleId) : true)).FirstOrDefault();
 
-                if (existingRole != null)
+                if (existingRole is not null)
+                {
                     return new BaseResponse(false, string.Empty, ErrorCodes.Exsist);
-
+                }
                 return new BaseResponse(true);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 _exceptionService.LogErrorAsync(ex, nameof(ValidateRole), _userAccessor.GetCurrentUserId(), role, isUpdate);
                 return new BaseResponse<Role>(false, ex.Message);
             }
@@ -188,7 +216,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                bool haveUserRoles = _unitOfWork.GetRepository<Role>().GetByExpression(i => i.RoleId == roleId && i.UserRoles.Any()).Any();
+                bool haveUserRoles = _unitOfWork.GetRepository<Role>().GetByExpressionAsNoTracking(i => i.RoleId == roleId && i.UserRoles.Any()).Any();
                 if (haveUserRoles)
                 {
                     return new BaseResponse(false, string.Empty, ErrorCodes.RelatedData);
@@ -198,6 +226,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 _exceptionService.LogErrorAsync(ex, nameof(ValidateDeletion), _userAccessor.GetCurrentUserId(), roleId);
                 return new BaseResponse(false, ex.Message);
             }

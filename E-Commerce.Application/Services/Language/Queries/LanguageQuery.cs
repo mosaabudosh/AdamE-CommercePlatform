@@ -29,6 +29,10 @@ namespace E_Commerce.Application.Services.Language.Queries
                 }
                 catch (Exception ex)
                 {
+                    while (ex.InnerException is not null)
+                    {
+                        ex = ex.InnerException;
+                    }
                     await _exceptionService.LogErrorAsync(ex, "LanguageQuery", _userAccessor.GetCurrentUserId());
                     return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
                 }

@@ -14,8 +14,8 @@ namespace E_Commerce.Application.Interfaces
         Task<BaseResponse<UserModel>> CheckRefreshAccessToken(string refreshToken);
         Task<BaseResponse> ChangePassword(Guid userId, string oldPassword, string newPassword);
         Task<UserLogin> GetUserLoginByUserId(Guid userId);
-        Task<BaseResponse<List<UserModel>>> GetUsers(int pageNumber, int pageSize);
-        Task<BaseResponse<int>> GetUsersCount();
+        Task<BaseResponse<List<UserModel>>> GetUsers(int pageNumber, int pageSize, string? searchText, int? cityId, int? shopId, int? languageId);
+        Task<BaseResponse<int>> GetUsersCount(string? searchText, int? cityId, int? shopId, int? languageId);
         Task<BaseResponse<UserModel>> GetUserById(Guid userId);
         Task<BaseResponse> UpdateUser(UserModel userModel);
         Task<BaseResponse> DeleteUser(string userId);

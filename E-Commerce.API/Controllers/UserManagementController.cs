@@ -109,30 +109,30 @@ namespace E_Commerce.API.Controllers
 
         [Route("users")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<UserModel>>>> GetUsers(int pageNumber, int pageSize)
+        public async Task<ActionResult<BaseResponse<List<UserModel>>>> GetUsers(int pageNumber, int pageSize, string? searchText, int? cityId, int? shopId, int? languageId)
         {
             try
             {
-                return await _userManagementService.GetUsers(pageNumber, pageSize);
+                return await _userManagementService.GetUsers(pageNumber, pageSize, searchText, cityId, shopId, languageId);
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetUsers), UserAccessor.GetCurrentUserId(), pageNumber, pageSize);
+                await ExceptionService.LogErrorAsync(ex, nameof(GetUsers), UserAccessor.GetCurrentUserId(), pageNumber, pageSize,searchText,cityId,shopId,languageId);
                 return new BaseResponse<List<UserModel>>(false, ex.Message);
             }
         }
 
         [Route("users-count")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<int>>> GetUsersCount()
+        public async Task<ActionResult<BaseResponse<int>>> GetUsersCount(string? searchText, int? cityId, int? shopId, int? languageId)
         {
             try
             {
-                return await _userManagementService.GetUsersCount();
+                return await _userManagementService.GetUsersCount(searchText, cityId, shopId, languageId);
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetUsersCount), UserAccessor.GetCurrentUserId());
+                await ExceptionService.LogErrorAsync(ex, nameof(GetUsersCount), UserAccessor.GetCurrentUserId(), searchText, cityId, shopId, languageId);
                 return new BaseResponse<int>(false, ex.Message);
             }
         }

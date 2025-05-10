@@ -30,6 +30,10 @@ namespace E_Commerce.Application.Services.Shop.Queries
                 }
                 catch (Exception ex)
                 {
+                    while (ex.InnerException is not null)
+                    {
+                        ex = ex.InnerException;
+                    }
                     await _exceptionService.LogErrorAsync(ex, "ShopQuery", _userAccessor.GetCurrentUserId());
                     return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
                 }

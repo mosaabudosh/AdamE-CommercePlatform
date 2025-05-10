@@ -27,7 +27,7 @@ namespace E_Commerce.Application.Services.Users.Commands
                 {
                     try
                     {
-                        User user = _unitOfWork.GetRepository<User>().GetByExpression(p => p.UserId == request.userId).FirstOrDefault();
+                        User user = _unitOfWork.GetRepository<User>().GetByExpressionAsNoTracking(p => p.UserId == request.userId).FirstOrDefault();
                         user.IsBlock = request.isLock;
 
                         await _unitOfWork.CommitChanges();
@@ -36,6 +36,10 @@ namespace E_Commerce.Application.Services.Users.Commands
                     }
                     catch (Exception ex)
                     {
+                        while (ex.InnerException is not null)
+                        {
+                            ex = ex.InnerException;
+                        }
                         await _exceptionService.LogErrorAsync(ex, "UserLockUnlockCommand", _userAccessor.GetCurrentUserId());
                         return new BaseResponse(false, ex.Message);
                     }
