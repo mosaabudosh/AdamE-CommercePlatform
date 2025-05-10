@@ -25,11 +25,16 @@ namespace E_Commerce.Application.Services.Country.Queries
                     {
                         Value = p.CountryId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Attributes = p.Banner
                     }).ToList();
                     return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, countries);
                 }
                 catch (Exception ex)
                 {
+                    while (ex.InnerException is not null)
+                    {
+                        ex = ex.InnerException;
+                    }
                     await _exceptionService.LogErrorAsync(ex, "CountryQuery", _userAccessor.GetCurrentUserId());
                     return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
                 }

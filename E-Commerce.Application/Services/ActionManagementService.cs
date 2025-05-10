@@ -48,6 +48,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(AddAction), _userAccessor.GetCurrentUserId(), actionModel);
                 return new BaseResponse<Action>(false, ex.Message);
             }
@@ -77,6 +81,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(UpdateAction), _userAccessor.GetCurrentUserId(), actionModel);
                 return new BaseResponse(false, ex.Message);
             }
@@ -98,6 +106,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(DeleteAction), _userAccessor.GetCurrentUserId(), actionId);
                 return new BaseResponse(false, ex.Message);
             }
@@ -107,7 +119,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                List<ActionModel> actions = _unitOfWork.GetRepository<Action>().GetByExpression().Select(s => new ActionModel()
+                List<ActionModel> actions = _unitOfWork.GetRepository<Action>().GetByExpressionAsNoTracking().Select(s => new ActionModel()
                 {
                     ActionId = s.ActionId,
                     Name = s.Name,
@@ -118,7 +130,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
-
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetActions), _userAccessor.GetCurrentUserId());
                 return new BaseResponse<List<ActionModel>>(false, ex.Message);
             }
@@ -133,6 +148,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetActionsCount), _userAccessor.GetCurrentUserId());
                 return new BaseResponse<int>(false, ex.Message);
             }
@@ -142,7 +161,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                ActionModel action = _unitOfWork.GetRepository<Action>().GetByExpression(p => p.ActionId == actionId).Select(s => new ActionModel()
+                ActionModel action = _unitOfWork.GetRepository<Action>().GetByExpressionAsNoTracking(p => p.ActionId == actionId).Select(s => new ActionModel()
                 {
                     ActionId = actionId,
                     Name = s.Name,
@@ -153,6 +172,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetActionById), _userAccessor.GetCurrentUserId(), actionId);
                 return new BaseResponse<ActionModel>(false, ex.Message);
             }
@@ -162,15 +185,20 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                Action existingAction = _unitOfWork.GetRepository<Action>().GetByExpression(x => x.Name == action.Name && (isUpdate ? (x.ActionId != action.ActionId) : true)).FirstOrDefault();
+                Action existingAction = _unitOfWork.GetRepository<Action>().GetByExpressionAsNoTracking(x => x.Name == action.Name && (isUpdate ? (x.ActionId != action.ActionId) : true)).FirstOrDefault();
 
-                if (existingAction != null)
+                if (existingAction is not null)
+                {
                     return new BaseResponse(false, string.Empty, ErrorCodes.Exsist);
-
+                }
                 return new BaseResponse(true);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 _exceptionService.LogErrorAsync(ex, nameof(ValidateAction), _userAccessor.GetCurrentUserId(), action, isUpdate);
                 return new BaseResponse<Action>(false, ex.Message);
             }
@@ -181,7 +209,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                bool haveUserActions = _unitOfWork.GetRepository<Action>().GetByExpression(i => i.ActionId == actionId && i.RoleScreenActions.Any()).Any();
+                bool haveUserActions = _unitOfWork.GetRepository<Action>().GetByExpressionAsNoTracking(i => i.ActionId == actionId && i.RoleScreenActions.Any()).Any();
                 if (haveUserActions)
                 {
                     return new BaseResponse(false, string.Empty, ErrorCodes.RelatedData);
@@ -191,6 +219,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 _exceptionService.LogErrorAsync(ex, nameof(ValidateDeletion), _userAccessor.GetCurrentUserId(), actionId);
                 return new BaseResponse(false, ex.Message);
             }

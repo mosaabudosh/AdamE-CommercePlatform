@@ -12,6 +12,7 @@ namespace E_Commerce.Application.Interfaces.DMS
     {
         Task<BaseResponse<List<FileType>>> GetAllFileTypes();
         Task<BaseResponse<FileType>> GetFileTypeById(int fileTypeId);
+        Task<BaseResponse<List<FileType>>> GetFileTypeByIds(List<int> fileTypeIds);
         Task<BaseResponse> CreateFileType(FileType fileType);
         Task<BaseResponse> UpdateFileType(FileType fileType);
         Task<BaseResponse> DeleteFileType(int fileTypeId);

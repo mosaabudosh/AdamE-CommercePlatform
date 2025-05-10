@@ -4,7 +4,9 @@ using E_Commerce.Application.Authentication.Interfaces;
 using E_Commerce.Application.Authentication.Security;
 using E_Commerce.Application.Authentication.Services;
 using E_Commerce.Application.Interfaces;
+using E_Commerce.Application.Interfaces.DMS;
 using E_Commerce.Application.Services;
+using E_Commerce.Application.Services.DMS;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -22,6 +24,10 @@ namespace E_Commerce.Application.ServicesRegistration
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IRoleManagementService, RoleManagementService>();
             services.AddScoped<IActionManagementService, ActionManagementService>();
+
+            services.AddScoped<IFolderConfigurationService, FolderConfigurationService>();
+            services.AddScoped<IFolderService, FolderService>();
+            services.AddScoped<IFileTypeService, FileTypeService>();
 
             return services;
         }

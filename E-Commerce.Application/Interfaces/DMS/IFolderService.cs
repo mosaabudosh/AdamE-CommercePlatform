@@ -1,4 +1,4 @@
-﻿using E_Commerce.Application.Model.DMS;
+﻿using Adam.Generic.Generic;
 using E_Commerce.Domain.Domains.DMS;
 using Generic.Response;
 using System;
@@ -21,14 +21,13 @@ namespace E_Commerce.Application.Interfaces.DMS
         Task<BaseResponse> CreateFolderAndFiles(Folder folde, List<FileCreationModel> fileCreationModels);
         Task<BaseResponse> CreateFolderAndFilesPhysically(Folder folder, FileCreationModel fileCreationModel);
         Task<BaseResponse<Folder>> GetFolderById(int folderId);
-        Task<BaseResponse<List<FileCreationModel>>> GetImagesByFolderPath(string folderPath);
+        Task<BaseResponse<List<FileCreationModel>>> GetFilesByFolderPath(string folderPath);
         Task<BaseResponse<List<FileCreationModel>>> GetFolderByPathAndName(string folderPath, string folderName);
         Task<BaseResponse<List<FileCreationModel>>> GetImagesByFilePath(string filePath);
-        Task<BaseResponse> CreateFolderAndOneFile(Folder folder, List<FileCreationModel> fileCreationModels);
-        Task<BaseResponse<List<FileCreationModel>>> GetImagesByFilePath(List<string> filePaths);
+        Task<BaseResponse> CreateFolderAndOneFile(FolderAndFileCreationModel folderAndFileCreationModel);
+        Task<BaseResponse<List<FileCreationModel>>> GetFilesByFilePath(List<string> filePaths);
         Task<BaseResponse> CreateFolderAndFilesWithoutDelete(Folder folder, List<FileCreationModel> fileCreationModels);
         Task<BaseResponse<FileCreationModel>> GetImagesByFileName(string fileName);
-        Task<BaseResponse<List<int>>> GetAllChildFolderIdByFolderId(int folderId);
         Task<BaseResponse> DeleteFilesByFolderId(int folderId);
         Task<BaseResponse> UpdatFolderName(string path, string find, string replace);
         Task<BaseResponse<List<FileCreationModel>>> GetFilesByRootFolderPath(string rootFolderPath);

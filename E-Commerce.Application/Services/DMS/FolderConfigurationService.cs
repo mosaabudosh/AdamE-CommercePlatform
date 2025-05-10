@@ -43,12 +43,16 @@ namespace E_Commerce.Application.Services.DMS
 
                 await _unitOfWork.CommitChanges();
                
-                return new BaseResponse(true, "The folder configuration was created.");
+                return new BaseResponse(true);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(CreateFolderConfiguration), _userAccessor.GetCurrentUserId(), folderConfiguration);
-                return new BaseResponse(false, "The folder configuration was not created.");
+                return new BaseResponse(false,ex.Message);
             }
         }
 
@@ -65,12 +69,16 @@ namespace E_Commerce.Application.Services.DMS
 
                 await _unitOfWork.CommitChanges();
                 
-                return new BaseResponse(true, "The folder configuration was deleted.");
+                return new BaseResponse(true);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(DeleteFolderConfiguration), _userAccessor.GetCurrentUserId(), folderConfigurationId);
-                return new BaseResponse(false, "The folder configuration was not deleted.");
+                return new BaseResponse(false,ex.Message);
             }
         }
 
@@ -86,8 +94,12 @@ namespace E_Commerce.Application.Services.DMS
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetAllFolderConfigurations), _userAccessor.GetCurrentUserId());
-                return new BaseResponse<List<FolderConfiguration>>(false, "The folder configuration was not deleted.");
+                return new BaseResponse<List<FolderConfiguration>>(false,ex.Message);
             }
         }
 
@@ -100,8 +112,12 @@ namespace E_Commerce.Application.Services.DMS
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetFolderConfigurationById), _userAccessor.GetCurrentUserId(), folderConfigurationId);
-                return new BaseResponse<FolderConfiguration>(false, "The folder configuration was not deleted.");
+                return new BaseResponse<FolderConfiguration>(false,ex.Message);
             }
         }
 
@@ -112,10 +128,14 @@ namespace E_Commerce.Application.Services.DMS
                 _unitOfWork.GetRepository<FolderConfiguration>().Update(folderConfiguration);
            
                 await _unitOfWork.CommitChanges();
-                return new BaseResponse(true, "The folder configuration was updated.");
+                return new BaseResponse(true);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(UpdateFolderConfiguration), _userAccessor.GetCurrentUserId(), folderConfiguration);
                 return new BaseResponse(false, ex.Message);
             }
@@ -125,11 +145,15 @@ namespace E_Commerce.Application.Services.DMS
         {
             try
             {
-                FolderConfiguration folderConfiguration = _unitOfWork.GetRepository<FolderConfiguration>().GetByExpression().FirstOrDefault();
+                FolderConfiguration folderConfiguration = _unitOfWork.GetRepository<FolderConfiguration>().GetByExpressionAsNoTracking().FirstOrDefault();
                 return new BaseResponse<FolderConfiguration>(true, string.Empty, folderConfiguration);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetFolderConfiguration), _userAccessor.GetCurrentUserId());
                 return new BaseResponse<FolderConfiguration>(false, ex.Message);
             }
@@ -140,11 +164,14 @@ namespace E_Commerce.Application.Services.DMS
             try
             {
                 FolderConfiguration folderConfiguration = _unitOfWork.GetRepository<FolderConfiguration>().GetByExpression(x => x.IsActive == isActive).FirstOrDefault();
-
                 return new BaseResponse<FolderConfiguration>(true, string.Empty, folderConfiguration);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetAllFolderConfiguration), _userAccessor.GetCurrentUserId(), isActive);
                 return new BaseResponse<FolderConfiguration>(false, ex.Message);
             }

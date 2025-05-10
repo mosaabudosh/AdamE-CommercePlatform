@@ -5,8 +5,11 @@ using Adam.Logging.Interfaces;
 using Adam.Logging.Services.MSSQLServer;
 using E_Commerce.Application.Authentication.Interfaces;
 using E_Commerce.Application.Interfaces;
+using E_Commerce.Application.Interfaces.DMS;
 using E_Commerce.Application.Model;
+using E_Commerce.Domain.Domains;
 using E_Commerce.Domain.Domains.Authorisation;
+using E_Commerce.Domain.Domains.DMS;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -23,14 +26,17 @@ namespace E_Commerce.Application.Services
         private readonly IExceptionService _exceptionService;
         private readonly IUserAccessor _userAccessor;
         private readonly ITokenHandler _tokenHandler;
+        private readonly IFolderService _folderService;
+        string userPathDMS = "Users";
 
-        public UserManagementService(IUnitOfWork unitOfWork, IAuthenticationService authenticationService, IExceptionService exceptionService, IUserAccessor userAccessor, ITokenHandler tokenHandler)
+        public UserManagementService(IUnitOfWork unitOfWork, IAuthenticationService authenticationService, IExceptionService exceptionService, IUserAccessor userAccessor, ITokenHandler tokenHandler, IFolderService folderService)
         {
             _unitOfWork = unitOfWork;
             _authenticationService = authenticationService;
             _exceptionService = exceptionService;
             _userAccessor = userAccessor;
             _tokenHandler = tokenHandler;
+            _folderService = folderService;
         }
 
         public async Task<BaseResponse> Registration(UserModel userModel)
@@ -42,7 +48,6 @@ namespace E_Commerce.Application.Services
                 {
                     return new BaseResponse(false, string.Empty, ErrorCode.AlreadyExsist);
                 }
-
                 User user = new User()
                 {
                     UserName = userModel.UserName,
@@ -61,7 +66,9 @@ namespace E_Commerce.Application.Services
                     DateOfBirth = userModel.DateOfBirth,
                     IsBlock = userModel.IsBlock.HasValue ? userModel.IsBlock.Value : false,
                     UserTypeId = userModel.UserTypeId,
+                    ProfileImage = !string.IsNullOrEmpty(userModel.ProfileImage) ? userModel.ProfileImage.Trim() : null,
                     UserRoles = new List<UserRole>(),
+                    CreationUserId = _userAccessor.GetCurrentUserId(),
                     CreationDate = DateTime.UtcNow,
                     IsActive = true
                 };
@@ -69,19 +76,40 @@ namespace E_Commerce.Application.Services
                 _authenticationService.HashPassword(userModel.Password, out passwordHash, out passwordSalt);
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
-
                 user.UserRoles.Add(new UserRole
                 {
                     RoleId = (int)Roles.User,
+                    CreationUserId = _userAccessor.GetCurrentUserId(),
                     CreationDate = DateTime.UtcNow,
                     IsActive = true
                 });
                 _unitOfWork.GetRepository<User>().Insert(user);
                 await _unitOfWork.CommitChanges();
+
+                if (userModel.FileCreationModels is not null && userModel.FileCreationModels.Any())
+                {
+                    FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
+                    {
+                        FolderName = $"{user.UserId}",
+                        FolderPath = $"{userPathDMS}",
+                        FileCreationModels = userModel.FileCreationModels,
+                    };
+                  
+                    BaseResponse createFolderAndOneFileResponse = await _folderService.CreateFolderAndOneFile(folderAndFileCreationModel);
+                    if(!createFolderAndOneFileResponse.IsSuccess)
+                    {
+                        return createFolderAndOneFileResponse;
+                    }
+                }
+
                 return new BaseResponse(true, string.Empty);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(Registration), _userAccessor.GetCurrentUserId(), userModel);
                 return new BaseResponse(false, ex.Message);
             }
@@ -97,7 +125,7 @@ namespace E_Commerce.Application.Services
                     z => z.UserRoles
                 });
                 User user = users.FirstOrDefault();
-                if (user == null)
+                if (user is null)
                 {
                     return new BaseResponse<UserModel>(false, string.Empty, ErrorCode.InvalidUserNameOrPassword);
                 }
@@ -113,7 +141,6 @@ namespace E_Commerce.Application.Services
                     }
                 }
                 user.UserLogins = new List<UserLogin>();
-
                 UserLogin userLogin = new UserLogin()
                 {
                     UserId = user.UserId,
@@ -149,10 +176,27 @@ namespace E_Commerce.Application.Services
                     RoleIds = roleIds,
                     UserMenus = userMenus
                 };
+                if (!string.IsNullOrEmpty(userModel.ProfileImage))
+                {
+                    string folderPath = $"{userPathDMS}\\{userModel.UserId}";
+                    BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _folderService.GetFilesByFolderPath(folderPath);
+                    if (!responseGetFileCreationModels.IsSuccess)
+                    {
+                        return new BaseResponse<UserModel>(false, responseGetFileCreationModels.Message);
+                    }
+                    if (responseGetFileCreationModels.DataObject.Any())
+                    {
+                        userModel.FileCreationModels = new List<FileCreationModel>(responseGetFileCreationModels.DataObject);
+                    }
+                }
                 return new BaseResponse<UserModel>(true, string.Empty, string.Empty, userModel);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(Login), _userAccessor.GetCurrentUserId(), userName, password);
                 return new BaseResponse<UserModel>(false, ex.Message);
             }
@@ -163,7 +207,7 @@ namespace E_Commerce.Application.Services
             List<UserMenu> userMenus = new List<UserMenu>();
             try
             {
-                userMenus = _unitOfWork.GetRepository<RoleScreen>().GetByExpression(p => roleIds.Contains(p.RoleId)).GroupBy(g => g.Screen.ModuleId).Select(s => new UserMenu
+                userMenus = _unitOfWork.GetRepository<RoleScreen>().GetByExpressionAsNoTracking(p => roleIds.Contains(p.RoleId)).GroupBy(g => g.Screen.ModuleId).Select(s => new UserMenu
                 {
                     Id = s.Key,
                     Label = s.FirstOrDefault().Screen.Module.Name,
@@ -187,6 +231,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex) 
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 _exceptionService.LogErrorAsync(ex, nameof(GetUserMenu), _userAccessor.GetCurrentUserId(), roleIds);
                 return userMenus;
             }
@@ -196,9 +244,9 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                IQueryable<UserLogin> userLogins = _unitOfWork.GetRepository<UserLogin>().GetByExpression(x => x.RefreshToken == refreshToken);
-                UserLogin userLogin = userLogins.FirstOrDefault();
-                if (userLogin == null)
+                IQueryable<UserLogin> userLogins = _unitOfWork.GetRepository<UserLogin>().GetByExpressionAsNoTracking(x => x.RefreshToken == refreshToken);
+                UserLogin userLogin = await _unitOfWork.GetRepository<UserLogin>().FirstOrDefaultAsync(userLogins);
+                if (userLogin is null)
                 {
                     return new BaseResponse<string>(false, string.Empty, ErrorCode.InvalidRefreshToken, string.Empty);
                 }
@@ -211,6 +259,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(LogOut), _userAccessor.GetCurrentUserId(), refreshToken);
                 return new BaseResponse(false, ex.Message);
             }
@@ -225,8 +277,8 @@ namespace E_Commerce.Application.Services
                     z => z.User,
                     z => z.User.UserRoles
                 });
-                UserLogin userLogin = userLogins.FirstOrDefault();
-                if (userLogin == null)
+                UserLogin userLogin = await _unitOfWork.GetRepository<UserLogin>().FirstOrDefaultAsync(userLogins);
+                if (userLogin is null)
                 {
                     return new BaseResponse<UserModel>(false, string.Empty, ErrorCode.InvalidRefreshToken);
                 }
@@ -256,6 +308,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(CheckRefreshAccessToken), _userAccessor.GetCurrentUserId(), refreshToken);
                 return new BaseResponse<UserModel>(false, ex.Message);
             }
@@ -278,6 +334,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(KillRefreshAccessToken), _userAccessor.GetCurrentUserId(), userLogin, isCommit);
                 return new BaseResponse(false, ex.Message);
             }
@@ -287,8 +347,8 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                User user = _unitOfWork.GetRepository<User>().GetByExpression(x => x.UserId == userId, includedEntities: new List<System.Linq.Expressions.Expression<Func<User, object>>> { z => z.UserLogins.Where(p => !p.LogOutDate.HasValue) }).SingleOrDefault();
-                if (user == null)
+                User user = _unitOfWork.GetRepository<User>().GetByExpressionAsNoTracking(x => x.UserId == userId, includedEntities: new List<System.Linq.Expressions.Expression<Func<User, object>>> { z => z.UserLogins.Where(p => !p.LogOutDate.HasValue) }).SingleOrDefault();
+                if (user is null)
                 {
                     return new BaseResponse(false, string.Empty, ErrorCode.InvalidUser);
                 }
@@ -314,6 +374,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(ChangePassword), _userAccessor.GetCurrentUserId(), userId, oldPassword, newPassword);
                 return new BaseResponse(false, ex.Message);
             }
@@ -323,27 +387,32 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                return _unitOfWork.GetRepository<UserLogin>().GetByExpression(x => x.UserId == userId && !string.IsNullOrEmpty(x.AccessToken)).FirstOrDefault();
+                return _unitOfWork.GetRepository<UserLogin>().GetByExpressionAsNoTracking(x => x.UserId == userId && !string.IsNullOrEmpty(x.AccessToken)).FirstOrDefault();
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetUserLoginByUserId), _userAccessor.GetCurrentUserId(), userId);
                 return null;
             }
         }
 
-        public async Task<BaseResponse<List<UserModel>>> GetUsers(int pageNumber, int pageSize)
+        public async Task<BaseResponse<List<UserModel>>> GetUsers(int pageNumber, int pageSize,string? searchText,int? cityId,int? shopId,int? languageId)
         {
             try
             {
-                List<UserModel> users = _unitOfWork.GetRepository<User>().GetByExpression().Select(s => new UserModel
+                List<UserModel> users = _unitOfWork.GetRepository<User>().GetByExpressionAsNoTracking(p => 
+                (string.IsNullOrEmpty(searchText) || p.FirstName.Contains(searchText))
+                && (!cityId.HasValue || p.CityId == cityId.Value)
+                && (!shopId.HasValue || p.ShopId == shopId.Value)
+                && (!languageId.HasValue || p.LanguageId == languageId.Value)).Select(s => new UserModel
                 {
-                    FirstName = s.FirstName,
-                    SecondName = s.SecondName,
-                    LastName = s.LastName,
-                    FirstNameAr = s.FirstNameAr,
-                    SecondNameAr = s.SecondNameAr,
-                    LastNameAr = s.LastNameAr,
+                    FirstName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.FirstName : s.FirstNameAr,
+                    SecondName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.SecondName : s.SecondNameAr,
+                    LastName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.LastName : s.LastNameAr,
                     Email = s.Email,
                     LanguageId = s.LanguageId,
                     MobileNumber = s.MobileNumber,
@@ -351,26 +420,57 @@ namespace E_Commerce.Application.Services
                     GenderId = s.GenderId,
                     IsBlock = s.IsBlock,
                     IsActive = s.IsActive,
+                    ProfileImage = s.ProfileImage,
+                    Gender = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Gender.Name : s.Gender.NameAr
                 }).Skip(pageNumber * pageSize).Take(pageSize).ToList();
+
+                if (users.Any(p => !string.IsNullOrEmpty(p.ProfileImage)))
+                {
+                    List<string> filePaths = users.Where(p => !string.IsNullOrEmpty(p.ProfileImage)).Select(s => { return $"{userPathDMS}\\{s.UserId}"; }).ToList();
+                    BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _folderService.GetFilesByFilePath(filePaths);
+                    if (!responseGetFileCreationModels.IsSuccess)
+                    {
+                        return new BaseResponse<List<UserModel>>(false, responseGetFileCreationModels.Message);
+                    }
+                    if (responseGetFileCreationModels.DataObject.Any())
+                    {
+                        foreach (UserModel user in users.Where(p => !string.IsNullOrEmpty(p.ProfileImage)))
+                        {
+                            user.ProfileImage = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == user.ProfileImage).FileContent;
+                        }
+                    }
+                }
                 return new BaseResponse<List<UserModel>>(true, string.Empty, string.Empty, users);
             }
             catch (Exception ex)
             {
-                await _exceptionService.LogErrorAsync(ex, nameof(GetUsers), _userAccessor.GetCurrentUserId());
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
+                await _exceptionService.LogErrorAsync(ex, nameof(GetUsers), _userAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText, cityId, shopId, languageId);
                 return new BaseResponse<List<UserModel>>(false, ex.Message);
             }
         }
 
-        public async Task<BaseResponse<int>> GetUsersCount()
+        public async Task<BaseResponse<int>> GetUsersCount(string? searchText, int? cityId, int? shopId, int? languageId)
         {
             try
             {
-                int usersCount = _unitOfWork.GetRepository<User>().GetByExpression().Count();
+                int usersCount = _unitOfWork.GetRepository<User>().GetByExpressionAsNoTracking(p =>
+                (string.IsNullOrEmpty(searchText) || p.FirstName.Contains(searchText))
+                && (!cityId.HasValue || p.CityId == cityId.Value)
+                && (!shopId.HasValue || p.ShopId == shopId.Value)
+                && (!languageId.HasValue || p.LanguageId == languageId.Value)).Count();
                 return new BaseResponse<int>(true, string.Empty, string.Empty, usersCount);
             }
             catch (Exception ex)
             {
-                await _exceptionService.LogErrorAsync(ex, nameof(GetUsersCount), _userAccessor.GetCurrentUserId());
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
+                await _exceptionService.LogErrorAsync(ex, nameof(GetUsersCount), _userAccessor.GetCurrentUserId(), searchText, cityId, shopId, languageId);
                 return new BaseResponse<int>(false, ex.Message);
             }
         }
@@ -396,12 +496,32 @@ namespace E_Commerce.Application.Services
                     DateOfBirth = s.DateOfBirth,
                     Adresse = s.Adresse,
                     CityId =s.CityId,
-                    UserTypeId = s.UserTypeId
+                    UserTypeId = s.UserTypeId,
+                    ProfileImage = s.ProfileImage
                 }).SingleOrDefault();
+
+                if (!string.IsNullOrEmpty(user.ProfileImage))
+                {
+                    string folderPath = $"{userPathDMS}\\{userId}";
+                    BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _folderService.GetFilesByFolderPath(folderPath);
+                    if (!responseGetFileCreationModels.IsSuccess)
+                    {
+                        return new BaseResponse<UserModel>(false, responseGetFileCreationModels.Message);
+                    }
+                    if (responseGetFileCreationModels.DataObject.Any())
+                    {
+                        user.FileCreationModels = new List<FileCreationModel>(responseGetFileCreationModels.DataObject);
+                    }
+                }
+
                 return new BaseResponse<UserModel>(true, string.Empty, string.Empty, user);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetUserById), _userAccessor.GetCurrentUserId(),userId);
                 return new BaseResponse<UserModel>(false, ex.Message);
             }
@@ -412,8 +532,7 @@ namespace E_Commerce.Application.Services
             try
             {
                 Guid userId = new Guid(userModel.UserId);
-
-                User user = _unitOfWork.GetRepository<User>().GetByExpression(x => x.UserId == userId).SingleOrDefault();
+                User user = _unitOfWork.GetRepository<User>().GetByExpressionAsNoTracking(x => x.UserId == userId).SingleOrDefault();
                 user.FirstName = userModel.FirstName;
                 user.FirstNameAr = userModel.FirstNameAr;
                 user.SecondName = userModel.SecondName;
@@ -425,13 +544,34 @@ namespace E_Commerce.Application.Services
                 user.CityId = userModel.CityId;
                 user.LanguageId = userModel.LanguageId;
                 user.GenderId = userModel.GenderId;
+                user.ProfileImage = !string.IsNullOrEmpty(userModel.ProfileImage) ? userModel.ProfileImage.Trim() : null;
                 user.LastUpdatedDate = DateTime.UtcNow;
+                user.LastUpdateUserId = _userAccessor.GetCurrentUserId();
 
                 await _unitOfWork.CommitChanges();
+
+                if (userModel.FileCreationModels is not null && userModel.FileCreationModels.Any())
+                {
+                    FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
+                    {
+                        FolderName = $"{user.UserId}",
+                        FolderPath = $"{userPathDMS}",
+                        FileCreationModels = userModel.FileCreationModels,
+                    };
+                    BaseResponse createFolderAndOneFileResponse = await _folderService.CreateFolderAndOneFile(folderAndFileCreationModel);
+                    if (!createFolderAndOneFileResponse.IsSuccess)
+                    {
+                        return createFolderAndOneFileResponse;
+                    }
+                }
                 return new BaseResponse(true, string.Empty);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(UpdateUser), _userAccessor.GetCurrentUserId(), userModel);
                 return new BaseResponse(false, ex.Message);
             }
@@ -448,6 +588,10 @@ namespace E_Commerce.Application.Services
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(DeleteUser), _userAccessor.GetCurrentUserId(), userId);
                 return new BaseResponse(false, ex.Message);
             }

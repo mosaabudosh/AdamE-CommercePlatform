@@ -1,5 +1,7 @@
 ﻿
 
+using Adam.Generic.Generic;
+
 namespace E_Commerce.Application.Model
 {
     public class UserModel
@@ -24,12 +26,13 @@ namespace E_Commerce.Application.Model
         public int UserTypeId { get; set; }
         public int LanguageId { get; set; }
         public int GenderId { get; set; }
+        public string? Gender { get; set; }
         public int CityId { get; set; }
         public int? ShopId { get; set; }
         public bool? IsActive { get; set; }
         public List<int>? RoleIds { get; set; }
         public List<UserMenu>? UserMenus { get; set; }
-
+        public List<FileCreationModel>? FileCreationModels { get; set; }
     }
 
     public class UserMenu

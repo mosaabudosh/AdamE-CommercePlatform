@@ -40,10 +40,14 @@ namespace E_Commerce.Application.Services.DMS
                 _unitOfWork.GetRepository<FileType>().Insert(fileType);         
 
                 await _unitOfWork.CommitChanges();
-                return new BaseResponse(true, "The File Type was created.");
+                return new BaseResponse(true);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(CreateFileType), _userAccessor.GetCurrentUserId(), fileType);
                 return new BaseResponse(false, ex.Message);
             }
@@ -64,6 +68,10 @@ namespace E_Commerce.Application.Services.DMS
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(DeleteFileType), _userAccessor.GetCurrentUserId(), fileTypeId);
                 return new BaseResponse(false, ex.Message);
             }
@@ -73,12 +81,16 @@ namespace E_Commerce.Application.Services.DMS
         {
             try
             {
-                IQueryable<FileType> fileTypesQuery = _unitOfWork.GetRepository<FileType>().GetByExpression();
+                IQueryable<FileType> fileTypesQuery = _unitOfWork.GetRepository<FileType>().GetByExpressionAsNoTracking();
                 List<FileType> fileTypes = await _unitOfWork.GetRepository<FileType>().ToListAsync(fileTypesQuery);
                 return new BaseResponse<List<FileType>>(true, string.Empty, fileTypes);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetAllFileTypes), _userAccessor.GetCurrentUserId());
                 return new BaseResponse<List<FileType>>(false, ex.Message);
             }
@@ -88,7 +100,7 @@ namespace E_Commerce.Application.Services.DMS
         {
             try
             {
-                IQueryable<FileType> fileTypesQuery = _unitOfWork.GetRepository<FileType>().GetByExpression(z => z.Extension == extention);
+                IQueryable<FileType> fileTypesQuery = _unitOfWork.GetRepository<FileType>().GetByExpressionAsNoTracking(z => z.Extension == extention);
 
                 List<FileType> fileTypes = await _unitOfWork.GetRepository<FileType>().ToListAsync(fileTypesQuery);
 
@@ -96,6 +108,10 @@ namespace E_Commerce.Application.Services.DMS
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetFileTypeByExtention), _userAccessor.GetCurrentUserId(), extention);
                 return new BaseResponse<List<FileType>>(false, ex.Message);
             }
@@ -110,8 +126,30 @@ namespace E_Commerce.Application.Services.DMS
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetFileTypeById), _userAccessor.GetCurrentUserId(), fileTypeId);
                 return new BaseResponse<FileType>(false, ex.Message);
+            }
+        }
+
+        public async Task<BaseResponse<List<FileType>>> GetFileTypeByIds(List<int> fileTypeIds)
+        {
+            try
+            {
+                List<FileType> fileTypes = _unitOfWork.GetRepository<FileType>().GetByExpression(p =>  fileTypeIds.Contains(p.FileTypeId)).ToList();
+                return new BaseResponse<List<FileType>>(true, string.Empty, fileTypes);
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
+                await _exceptionService.LogErrorAsync(ex, nameof(GetFileTypeById), _userAccessor.GetCurrentUserId(), fileTypeIds);
+                return new BaseResponse<List<FileType>>(false, ex.Message);
             }
         }
 
@@ -123,10 +161,14 @@ namespace E_Commerce.Application.Services.DMS
                
                 await _unitOfWork.CommitChanges();
                 
-                return new BaseResponse(true, "The file type was updated.");
+                return new BaseResponse(true);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(UpdateFileType), _userAccessor.GetCurrentUserId(), fileType);
                 return new BaseResponse(false, ex.Message);
             }
@@ -136,11 +178,15 @@ namespace E_Commerce.Application.Services.DMS
         {
             try
             {
-                FileType fileType = _unitOfWork.GetRepository<FileType>().GetByExpression(x => fileExtension.Trim().ToLower() == x.Extension).FirstOrDefault();
+                FileType fileType = _unitOfWork.GetRepository<FileType>().GetByExpressionAsNoTracking(x => fileExtension.Trim().ToLower() == x.Extension).FirstOrDefault();
                 return new BaseResponse<FileType>(true, string.Empty, fileType);
             }
             catch (Exception ex)
             {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
                 await _exceptionService.LogErrorAsync(ex, nameof(GetFileTypeByFileExtension), _userAccessor.GetCurrentUserId(), fileExtension);
                 return new BaseResponse<FileType>(false, ex.Message);
             }
