@@ -400,7 +400,7 @@ namespace E_Commerce.Application.Services
             }
         }
 
-        public async Task<BaseResponse<List<UserModel>>> GetUsers(int pageNumber, int pageSize,string? searchText,int? cityId,int? shopId,int? languageId)
+        public async Task<BaseResponse<List<UserModel>>> GetUsers(int pageNumber, int pageSize,string? searchText,int? cityId,int? shopId,int? languageId,bool? readProfileImage = true)
         {
             try
             {
@@ -424,9 +424,9 @@ namespace E_Commerce.Application.Services
                     Gender = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Gender.Name : s.Gender.NameAr
                 }).Skip(pageNumber * pageSize).Take(pageSize).ToList();
 
-                if (users.Any(p => !string.IsNullOrEmpty(p.ProfileImage)))
+                if (users.Any(p => !string.IsNullOrEmpty(p.ProfileImage)) && (!readProfileImage.HasValue || readProfileImage.Value))
                 {
-                    List<string> filePaths = users.Where(p => !string.IsNullOrEmpty(p.ProfileImage)).Select(s => { return $"{userPathDMS}\\{s.UserId}"; }).ToList();
+                    List<string> filePaths = users.Where(p => !string.IsNullOrEmpty(p.ProfileImage)).Select(s => { return $"{userPathDMS}\\{s.UserId.ToLower()}"; }).ToList();
                     BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _folderService.GetFilesByFilePath(filePaths);
                     if (!responseGetFileCreationModels.IsSuccess)
                     {

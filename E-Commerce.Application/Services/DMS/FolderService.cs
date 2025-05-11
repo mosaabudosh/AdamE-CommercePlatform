@@ -702,10 +702,11 @@ namespace E_Commerce.Application.Services.DMS
                 {
                     return new BaseResponse<List<FileCreationModel>>(false,folderConfigurationPath.Message,folderConfigurationPath.ErrorCode);
                 }
+                filePaths = filePaths.Select(s => { return $"{folderConfigurationPath.DataObject.RootFolderPath}{s}"; }).ToList();
                 IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpressionAsNoTracking(x => filePaths.Contains(x.Path),
                 includedEntities: new List<System.Linq.Expressions.Expression<Func<File, object>>>() 
                 { 
-                    z => z.Folder ,
+                    z => z.Folder,
                     z => z.FileType
                 });
                 List<File> files = await _unitOfWork.GetRepository<File>().ToListAsync(filesQuery);

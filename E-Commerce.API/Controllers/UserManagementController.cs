@@ -1,12 +1,18 @@
-﻿using E_Commerce.API.Model;
+﻿using Adam.Generic.Enum;
+using Adam.Generic.Generic;
+using E_Commerce.API.Model;
 using E_Commerce.Application.Interfaces;
 using E_Commerce.Application.Model;
 using E_Commerce.Application.Services.Users.Commands;
 using E_Commerce.Application.Services.UserType.Queries;
+using E_Commerce.Domain.Domains;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using System.Collections.Generic;
+using System.Drawing.Printing;
 
 namespace E_Commerce.API.Controllers
 {
@@ -27,7 +33,6 @@ namespace E_Commerce.API.Controllers
         }
         #endregion
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("registration")]
         public async Task<ActionResult<BaseResponse>> Registration([FromBody] UserModel userModel)
@@ -91,7 +96,6 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [AllowAnonymous]
         [Route("change-password")]
         [HttpPost]
         public async Task<ActionResult<BaseResponse>> ChangePassword([FromBody] ChangePasswordModel changePasswordModel)
@@ -196,5 +200,41 @@ namespace E_Commerce.API.Controllers
                 return new BaseResponse(false, ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("users-printing")]
+        public async Task<IActionResult> UsersPrinting(string? searchText, int? cityId, int? shopId, int? languageId)
+        {
+            try
+            {
+                BaseResponse<List<UserModel>> usersResponse = await _userManagementService.GetUsers(0, int.MaxValue, searchText, cityId, shopId, languageId,false);
+                if (!usersResponse.IsSuccess)
+                {
+                    throw new Exception(usersResponse.Message);
+                }
+
+                Dictionary<string, object> dataSources = new Dictionary<string, object>();
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                var userModels = usersResponse.DataObject.Select(x => new
+                {
+                    UserFullName = x.FirstName,
+                    MobileNumber = x.MobileNumber,
+                    Gender = x.Gender
+                }).ToList();
+                dataSources.Add("UserModel", userModels);
+                parameters.Add("PrintedBy", "Admin");
+                return ToPDF("\\Reports\\Users.rdlc", dataSources, parameters);
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
+                await ExceptionService.LogErrorAsync(ex, nameof(UsersPrinting), UserAccessor.GetCurrentUserId(),searchText, cityId, shopId, languageId);
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

@@ -6,4 +6,10 @@ namespace Adam.Generic.Enum
         arJO = 1,
         enUS = 2
     }
+    public enum ReportType
+    {
+        Excel = 1,
+        Word = 2,
+        Pdf = 3,
+    }
 }
