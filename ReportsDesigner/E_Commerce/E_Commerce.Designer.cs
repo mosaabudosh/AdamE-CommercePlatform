@@ -24,7 +24,7 @@ namespace ReportsDesigner.E_Commerce {
     [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.DataSet")]
     public partial class E_Commerce : global::System.Data.DataSet {
         
-        private CityModelDataTable tableCityModel;
+        private UserModelDataTable tableUserModel;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
@@ -56,8 +56,8 @@ namespace ReportsDesigner.E_Commerce {
             if ((this.DetermineSchemaSerializationMode(info, context) == global::System.Data.SchemaSerializationMode.IncludeSchema)) {
                 global::System.Data.DataSet ds = new global::System.Data.DataSet();
                 ds.ReadXmlSchema(new global::System.Xml.XmlTextReader(new global::System.IO.StringReader(strSchema)));
-                if ((ds.Tables["CityModel"] != null)) {
-                    base.Tables.Add(new CityModelDataTable(ds.Tables["CityModel"]));
+                if ((ds.Tables["UserModel"] != null)) {
+                    base.Tables.Add(new UserModelDataTable(ds.Tables["UserModel"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -81,9 +81,9 @@ namespace ReportsDesigner.E_Commerce {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Browsable(false)]
         [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public CityModelDataTable CityModel {
+        public UserModelDataTable UserModel {
             get {
-                return this.tableCityModel;
+                return this.tableUserModel;
             }
         }
         
@@ -154,8 +154,8 @@ namespace ReportsDesigner.E_Commerce {
                 this.Reset();
                 global::System.Data.DataSet ds = new global::System.Data.DataSet();
                 ds.ReadXml(reader);
-                if ((ds.Tables["CityModel"] != null)) {
-                    base.Tables.Add(new CityModelDataTable(ds.Tables["CityModel"]));
+                if ((ds.Tables["UserModel"] != null)) {
+                    base.Tables.Add(new UserModelDataTable(ds.Tables["UserModel"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -190,10 +190,10 @@ namespace ReportsDesigner.E_Commerce {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         internal void InitVars(bool initTable) {
-            this.tableCityModel = ((CityModelDataTable)(base.Tables["CityModel"]));
+            this.tableUserModel = ((UserModelDataTable)(base.Tables["UserModel"]));
             if ((initTable == true)) {
-                if ((this.tableCityModel != null)) {
-                    this.tableCityModel.InitVars();
+                if ((this.tableUserModel != null)) {
+                    this.tableUserModel.InitVars();
                 }
             }
         }
@@ -206,13 +206,13 @@ namespace ReportsDesigner.E_Commerce {
             this.Namespace = "http://tempuri.org/E_Commerce.xsd";
             this.EnforceConstraints = true;
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
-            this.tableCityModel = new CityModelDataTable();
-            base.Tables.Add(this.tableCityModel);
+            this.tableUserModel = new UserModelDataTable();
+            base.Tables.Add(this.tableUserModel);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-        private bool ShouldSerializeCityModel() {
+        private bool ShouldSerializeUserModel() {
             return false;
         }
         
@@ -272,21 +272,27 @@ namespace ReportsDesigner.E_Commerce {
         }
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-        public delegate void CityModelRowChangeEventHandler(object sender, CityModelRowChangeEvent e);
+        public delegate void UserModelRowChangeEventHandler(object sender, UserModelRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
         ///</summary>
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class CityModelDataTable : global::System.Data.TypedTableBase<CityModelRow> {
+        public partial class UserModelDataTable : global::System.Data.TypedTableBase<UserModelRow> {
             
-            private global::System.Data.DataColumn columnName;
+            private global::System.Data.DataColumn columnUserId;
+            
+            private global::System.Data.DataColumn columnUserFullName;
+            
+            private global::System.Data.DataColumn columnMobileNumber;
+            
+            private global::System.Data.DataColumn columnGender;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public CityModelDataTable() {
-                this.TableName = "CityModel";
+            public UserModelDataTable() {
+                this.TableName = "UserModel";
                 this.BeginInit();
                 this.InitClass();
                 this.EndInit();
@@ -294,7 +300,7 @@ namespace ReportsDesigner.E_Commerce {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            internal CityModelDataTable(global::System.Data.DataTable table) {
+            internal UserModelDataTable(global::System.Data.DataTable table) {
                 this.TableName = table.TableName;
                 if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
                     this.CaseSensitive = table.CaseSensitive;
@@ -313,16 +319,40 @@ namespace ReportsDesigner.E_Commerce {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [System.ObsoleteAttribute("This API supports obsolete formatter-based serialization. It should not be called" +
                 " or extended by application code.", DiagnosticId="SYSLIB0051")]
-            protected CityModelDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+            protected UserModelDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                     base(info, context) {
                 this.InitVars();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public global::System.Data.DataColumn NameColumn {
+            public global::System.Data.DataColumn UserIdColumn {
                 get {
-                    return this.columnName;
+                    return this.columnUserId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn UserFullNameColumn {
+                get {
+                    return this.columnUserFullName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn MobileNumberColumn {
+                get {
+                    return this.columnMobileNumber;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn GenderColumn {
+                get {
+                    return this.columnGender;
                 }
             }
             
@@ -337,45 +367,48 @@ namespace ReportsDesigner.E_Commerce {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public CityModelRow this[int index] {
+            public UserModelRow this[int index] {
                 get {
-                    return ((CityModelRow)(this.Rows[index]));
+                    return ((UserModelRow)(this.Rows[index]));
                 }
             }
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public event CityModelRowChangeEventHandler CityModelRowChanging;
+            public event UserModelRowChangeEventHandler UserModelRowChanging;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public event CityModelRowChangeEventHandler CityModelRowChanged;
+            public event UserModelRowChangeEventHandler UserModelRowChanged;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public event CityModelRowChangeEventHandler CityModelRowDeleting;
+            public event UserModelRowChangeEventHandler UserModelRowDeleting;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public event CityModelRowChangeEventHandler CityModelRowDeleted;
+            public event UserModelRowChangeEventHandler UserModelRowDeleted;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void AddCityModelRow(CityModelRow row) {
+            public void AddUserModelRow(UserModelRow row) {
                 this.Rows.Add(row);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public CityModelRow AddCityModelRow(string Name) {
-                CityModelRow rowCityModelRow = ((CityModelRow)(this.NewRow()));
+            public UserModelRow AddUserModelRow(string UserId, string UserFullName, string MobileNumber, string Gender) {
+                UserModelRow rowUserModelRow = ((UserModelRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        Name};
-                rowCityModelRow.ItemArray = columnValuesArray;
-                this.Rows.Add(rowCityModelRow);
-                return rowCityModelRow;
+                        UserId,
+                        UserFullName,
+                        MobileNumber,
+                        Gender};
+                rowUserModelRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowUserModelRow);
+                return rowUserModelRow;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public override global::System.Data.DataTable Clone() {
-                CityModelDataTable cln = ((CityModelDataTable)(base.Clone()));
+                UserModelDataTable cln = ((UserModelDataTable)(base.Clone()));
                 cln.InitVars();
                 return cln;
             }
@@ -383,46 +416,55 @@ namespace ReportsDesigner.E_Commerce {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override global::System.Data.DataTable CreateInstance() {
-                return new CityModelDataTable();
+                return new UserModelDataTable();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             internal void InitVars() {
-                this.columnName = base.Columns["Name"];
+                this.columnUserId = base.Columns["UserId"];
+                this.columnUserFullName = base.Columns["UserFullName"];
+                this.columnMobileNumber = base.Columns["MobileNumber"];
+                this.columnGender = base.Columns["Gender"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             private void InitClass() {
-                this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnName);
+                this.columnUserId = new global::System.Data.DataColumn("UserId", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUserId);
+                this.columnUserFullName = new global::System.Data.DataColumn("UserFullName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUserFullName);
+                this.columnMobileNumber = new global::System.Data.DataColumn("MobileNumber", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMobileNumber);
+                this.columnGender = new global::System.Data.DataColumn("Gender", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnGender);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public CityModelRow NewCityModelRow() {
-                return ((CityModelRow)(this.NewRow()));
+            public UserModelRow NewUserModelRow() {
+                return ((UserModelRow)(this.NewRow()));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
-                return new CityModelRow(builder);
+                return new UserModelRow(builder);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override global::System.Type GetRowType() {
-                return typeof(CityModelRow);
+                return typeof(UserModelRow);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanged(e);
-                if ((this.CityModelRowChanged != null)) {
-                    this.CityModelRowChanged(this, new CityModelRowChangeEvent(((CityModelRow)(e.Row)), e.Action));
+                if ((this.UserModelRowChanged != null)) {
+                    this.UserModelRowChanged(this, new UserModelRowChangeEvent(((UserModelRow)(e.Row)), e.Action));
                 }
             }
             
@@ -430,8 +472,8 @@ namespace ReportsDesigner.E_Commerce {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanging(e);
-                if ((this.CityModelRowChanging != null)) {
-                    this.CityModelRowChanging(this, new CityModelRowChangeEvent(((CityModelRow)(e.Row)), e.Action));
+                if ((this.UserModelRowChanging != null)) {
+                    this.UserModelRowChanging(this, new UserModelRowChangeEvent(((UserModelRow)(e.Row)), e.Action));
                 }
             }
             
@@ -439,8 +481,8 @@ namespace ReportsDesigner.E_Commerce {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleted(e);
-                if ((this.CityModelRowDeleted != null)) {
-                    this.CityModelRowDeleted(this, new CityModelRowChangeEvent(((CityModelRow)(e.Row)), e.Action));
+                if ((this.UserModelRowDeleted != null)) {
+                    this.UserModelRowDeleted(this, new UserModelRowChangeEvent(((UserModelRow)(e.Row)), e.Action));
                 }
             }
             
@@ -448,14 +490,14 @@ namespace ReportsDesigner.E_Commerce {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleting(e);
-                if ((this.CityModelRowDeleting != null)) {
-                    this.CityModelRowDeleting(this, new CityModelRowChangeEvent(((CityModelRow)(e.Row)), e.Action));
+                if ((this.UserModelRowDeleting != null)) {
+                    this.UserModelRowDeleting(this, new UserModelRowChangeEvent(((UserModelRow)(e.Row)), e.Action));
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void RemoveCityModelRow(CityModelRow row) {
+            public void RemoveUserModelRow(UserModelRow row) {
                 this.Rows.Remove(row);
             }
             
@@ -482,7 +524,7 @@ namespace ReportsDesigner.E_Commerce {
                 type.Attributes.Add(attribute1);
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
-                attribute2.FixedValue = "CityModelDataTable";
+                attribute2.FixedValue = "UserModelDataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -526,43 +568,127 @@ namespace ReportsDesigner.E_Commerce {
         /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
-        public partial class CityModelRow : global::System.Data.DataRow {
+        public partial class UserModelRow : global::System.Data.DataRow {
             
-            private CityModelDataTable tableCityModel;
+            private UserModelDataTable tableUserModel;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            internal CityModelRow(global::System.Data.DataRowBuilder rb) : 
+            internal UserModelRow(global::System.Data.DataRowBuilder rb) : 
                     base(rb) {
-                this.tableCityModel = ((CityModelDataTable)(this.Table));
+                this.tableUserModel = ((UserModelDataTable)(this.Table));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public string Name {
+            public string UserId {
                 get {
                     try {
-                        return ((string)(this[this.tableCityModel.NameColumn]));
+                        return ((string)(this[this.tableUserModel.UserIdColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Name\' in table \'CityModel\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'UserId\' in table \'UserModel\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableCityModel.NameColumn] = value;
+                    this[this.tableUserModel.UserIdColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public bool IsNameNull() {
-                return this.IsNull(this.tableCityModel.NameColumn);
+            public string UserFullName {
+                get {
+                    try {
+                        return ((string)(this[this.tableUserModel.UserFullNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'UserFullName\' in table \'UserModel\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableUserModel.UserFullNameColumn] = value;
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void SetNameNull() {
-                this[this.tableCityModel.NameColumn] = global::System.Convert.DBNull;
+            public string MobileNumber {
+                get {
+                    try {
+                        return ((string)(this[this.tableUserModel.MobileNumberColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'MobileNumber\' in table \'UserModel\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableUserModel.MobileNumberColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string Gender {
+                get {
+                    try {
+                        return ((string)(this[this.tableUserModel.GenderColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Gender\' in table \'UserModel\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableUserModel.GenderColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsUserIdNull() {
+                return this.IsNull(this.tableUserModel.UserIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetUserIdNull() {
+                this[this.tableUserModel.UserIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsUserFullNameNull() {
+                return this.IsNull(this.tableUserModel.UserFullNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetUserFullNameNull() {
+                this[this.tableUserModel.UserFullNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsMobileNumberNull() {
+                return this.IsNull(this.tableUserModel.MobileNumberColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetMobileNumberNull() {
+                this[this.tableUserModel.MobileNumberColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsGenderNull() {
+                return this.IsNull(this.tableUserModel.GenderColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetGenderNull() {
+                this[this.tableUserModel.GenderColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -570,22 +696,22 @@ namespace ReportsDesigner.E_Commerce {
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-        public class CityModelRowChangeEvent : global::System.EventArgs {
+        public class UserModelRowChangeEvent : global::System.EventArgs {
             
-            private CityModelRow eventRow;
+            private UserModelRow eventRow;
             
             private global::System.Data.DataRowAction eventAction;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public CityModelRowChangeEvent(CityModelRow row, global::System.Data.DataRowAction action) {
+            public UserModelRowChangeEvent(UserModelRow row, global::System.Data.DataRowAction action) {
                 this.eventRow = row;
                 this.eventAction = action;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public CityModelRow Row {
+            public UserModelRow Row {
                 get {
                     return this.eventRow;
                 }

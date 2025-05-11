@@ -9,13 +9,16 @@
       </DataSource>
     </xs:appinfo>
   </xs:annotation>
-  <xs:element name="E_Commerce" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="E_Commerce" msprop:Generator_DataSetName="E_Commerce">
+  <xs:element name="E_Commerce" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="E_Commerce" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="E_Commerce">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="CityModel" msprop:Generator_RowEvHandlerName="CityModelRowChangeEventHandler" msprop:Generator_RowDeletedName="CityModelRowDeleted" msprop:Generator_RowDeletingName="CityModelRowDeleting" msprop:Generator_RowEvArgName="CityModelRowChangeEvent" msprop:Generator_TablePropName="CityModel" msprop:Generator_RowChangedName="CityModelRowChanged" msprop:Generator_RowChangingName="CityModelRowChanging" msprop:Generator_TableClassName="CityModelDataTable" msprop:Generator_RowClassName="CityModelRow" msprop:Generator_TableVarName="tableCityModel" msprop:Generator_UserTableName="CityModel">
+        <xs:element name="UserModel" msprop:Generator_RowClassName="UserModelRow" msprop:Generator_RowEvHandlerName="UserModelRowChangeEventHandler" msprop:Generator_RowDeletedName="UserModelRowDeleted" msprop:Generator_RowDeletingName="UserModelRowDeleting" msprop:Generator_RowEvArgName="UserModelRowChangeEvent" msprop:Generator_TablePropName="UserModel" msprop:Generator_RowChangedName="UserModelRowChanged" msprop:Generator_UserTableName="UserModel" msprop:Generator_RowChangingName="UserModelRowChanging" msprop:Generator_TableClassName="UserModelDataTable" msprop:Generator_TableVarName="tableUserModel">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="Name" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
+              <xs:element name="UserId" msprop:Generator_UserColumnName="UserId" msprop:Generator_ColumnPropNameInTable="UserIdColumn" msprop:Generator_ColumnPropNameInRow="UserId" msprop:Generator_ColumnVarNameInTable="columnUserId" type="xs:string" minOccurs="0" />
+              <xs:element name="UserFullName" msprop:Generator_ColumnPropNameInRow="UserFullName" msprop:Generator_ColumnPropNameInTable="UserFullNameColumn" msprop:Generator_ColumnVarNameInTable="columnUserFullName" msprop:Generator_UserColumnName="UserFullName" type="xs:string" minOccurs="0" />
+              <xs:element name="MobileNumber" msprop:Generator_ColumnPropNameInRow="MobileNumber" msprop:Generator_ColumnPropNameInTable="MobileNumberColumn" msprop:Generator_ColumnVarNameInTable="columnMobileNumber" msprop:Generator_UserColumnName="MobileNumber" type="xs:string" minOccurs="0" />
+              <xs:element name="Gender" msprop:Generator_ColumnPropNameInRow="Gender" msprop:Generator_ColumnPropNameInTable="GenderColumn" msprop:Generator_ColumnVarNameInTable="columnGender" msprop:Generator_UserColumnName="Gender" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
