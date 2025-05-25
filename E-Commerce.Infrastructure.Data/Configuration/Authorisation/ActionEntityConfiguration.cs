@@ -19,6 +19,9 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                 new Domain.Domains.Authorisation.Action(){ ActionId = (int)Actions.Delete, Name = "Delete" , NameAr = "حذف"},
                 new Domain.Domains.Authorisation.Action(){ ActionId = (int)Actions.View, Name = "View" , NameAr = "عرض"},
                 new Domain.Domains.Authorisation.Action(){ ActionId = (int)Actions.Print, Name = "Print" , NameAr = "طباعة"},
+                new Domain.Domains.Authorisation.Action(){ ActionId = (int)Actions.Active, Name = "Active" , NameAr = "فعال"},
+                new Domain.Domains.Authorisation.Action(){ ActionId = (int)Actions.InActive, Name = "InActive" , NameAr = "غير فعال"},
+                new Domain.Domains.Authorisation.Action(){ ActionId = (int)Actions.Restor, Name = "Restor" , NameAr = "استعادة"},
             });
             #endregion
 

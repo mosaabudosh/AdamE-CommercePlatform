@@ -9,11 +9,11 @@ namespace E_Commerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ShopController(IMediator _mediator) : BaseController
+    public class ShopManagementController(IMediator _mediator) : BaseController
     {
         [Route("shops")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetCountries()
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetShops()
         {
             try
             {
@@ -21,7 +21,7 @@ namespace E_Commerce.API.Controllers
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetCountries), UserAccessor.GetCurrentUserId());
+                await ExceptionService.LogErrorAsync(ex, nameof(GetShops), UserAccessor.GetCurrentUserId());
                 return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
             }
         }

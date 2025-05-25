@@ -40,7 +40,7 @@ namespace E_Commerce.Application.Authentication.Security
                     tokenSize = _configuration.GetSection("AuthenticationOption").GetSection("RefreshTokenSizeByt").Exists() ? Convert.ToInt32(_configuration.GetSection("AuthenticationOption").GetSection("RefreshTokenSizeByt").Value) : tokenSize;
                 }
                 userLogin.RefreshTokenExpirationDate = DateTime.Now.AddMinutes(refreshTokenExpirationMinutes).Ticks;
-                userLogin.AccessToken = GenerateToken(userLogin.User, DateTime.Now.AddMinutes(refreshTokenExpirationMinutes));
+                userLogin.AccessToken = GenerateToken(userLogin.User, DateTime.Now.AddDays(accessTokenValidDays));
                 userLogin.RefreshToken = GenerateToken(userLogin.User, DateTime.Now.AddMinutes(refreshTokenExpirationMinutes), true);
                 return userLogin;
             }

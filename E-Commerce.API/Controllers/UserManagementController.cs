@@ -236,5 +236,20 @@ namespace E_Commerce.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("user-settings-modification")]
+        public async Task<ActionResult<BaseResponse>> UpdateUserSettings([FromBody] List<UserSettingModel> userSettingModels)
+        {
+            try
+            {
+                return await _mediator.Send(new UserSettingsUpdationCommands.Command(userSettingModels));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(UpdateUserSettings), UserAccessor.GetCurrentUserId(), userSettingModels);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
     }
 }

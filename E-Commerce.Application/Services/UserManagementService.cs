@@ -10,12 +10,15 @@ using E_Commerce.Application.Model;
 using E_Commerce.Domain.Domains;
 using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.Domains.DMS;
+using E_Commerce.Domain.Enum;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using System.Collections.Generic;
 using System.Text;
+using static Adam.Generic.Constants.Constants;
 using static E_Commerce.Domain.Enum.Enums;
+using ErrorCode = Adam.Generic.Constants.Constants.ErrorCode;
 
 namespace E_Commerce.Application.Services
 {
@@ -67,7 +70,8 @@ namespace E_Commerce.Application.Services
                     IsBlock = userModel.IsBlock.HasValue ? userModel.IsBlock.Value : false,
                     UserTypeId = userModel.UserTypeId,
                     ProfileImage = !string.IsNullOrEmpty(userModel.ProfileImage) ? userModel.ProfileImage.Trim() : null,
-                    UserRoles = new List<UserRole>(),
+                    UserRoles = new List<Domain.Domains.Authorisation.UserRole>(),
+                    UserSettings = new List<UserSetting>(),
                     CreationUserId = _userAccessor.GetCurrentUserId(),
                     CreationDate = DateTime.UtcNow,
                     IsActive = true
@@ -76,12 +80,31 @@ namespace E_Commerce.Application.Services
                 _authenticationService.HashPassword(userModel.Password, out passwordHash, out passwordSalt);
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
-                user.UserRoles.Add(new UserRole
+                user.UserRoles.Add(new Domain.Domains.Authorisation.UserRole
                 {
                     RoleId = (int)Roles.User,
                     CreationUserId = _userAccessor.GetCurrentUserId(),
                     CreationDate = DateTime.UtcNow,
                     IsActive = true
+                });
+                user.UserSettings.AddRange(new List<UserSetting>()
+                {
+                    new UserSetting()
+                    {
+                        PlatformSettingId = (int)PlatformSettings.DefaultTheme,
+                        Value = PlatformTheme.NormalMode,
+                        CreationUserId = _userAccessor.GetCurrentUserId(),
+                        CreationDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new UserSetting()
+                    {
+                        PlatformSettingId = (int)PlatformSettings.DefaultLanguage,
+                        Value = $"{Enums.Languages.English}",
+                        CreationUserId = _userAccessor.GetCurrentUserId(),
+                        CreationDate = DateTime.UtcNow,
+                        IsActive = true
+                    }
                 });
                 _unitOfWork.GetRepository<User>().Insert(user);
                 await _unitOfWork.CommitChanges();
@@ -122,9 +145,10 @@ namespace E_Commerce.Application.Services
                 IQueryable<User> users = _unitOfWork.GetRepository<User>().GetByExpression(x => x.UserName == userName && x.IsActive == true, includedEntities: new System.Collections.Generic.List<System.Linq.Expressions.Expression<Func<User, object>>>
                 {
                     z => z.UserLogins.Where(p => !string.IsNullOrEmpty(p.AccessToken)),
-                    z => z.UserRoles
+                    z => z.UserRoles,
+                    z => z.UserSettings
                 });
-                User user = users.FirstOrDefault();
+                User user = await _unitOfWork.GetRepository<User>().FirstOrDefaultAsync(users);
                 if (user is null)
                 {
                     return new BaseResponse<UserModel>(false, string.Empty, ErrorCode.InvalidUserNameOrPassword);
@@ -145,9 +169,9 @@ namespace E_Commerce.Application.Services
                 {
                     UserId = user.UserId,
                     User = user,
-                    LoginDate = DateTime.Now,
+                    LoginDate = DateTime.UtcNow,
                     CreationUserId = user.UserId,
-                    CreationDate = DateTime.Now,
+                    CreationDate = DateTime.UtcNow,
                     IsActive = true
                 };
                 userLogin = _tokenHandler.BuildTokens(userLogin);
@@ -174,7 +198,14 @@ namespace E_Commerce.Application.Services
                     LanguageId = user.LanguageId,
                     ProfileImage = user.ProfileImage,
                     RoleIds = roleIds,
-                    UserMenus = userMenus
+                    UserMenus = userMenus,
+                    UserSettingModels = user.UserSettings.Select(s => new UserSettingModel()
+                    {
+                        UserSettingId = s.UserSettingId,
+                        PlatformSettingId = s.PlatformSettingId,
+                        UserId = s.UserId,
+                        Value = s.Value
+                    }).ToList()
                 };
                 if (!string.IsNullOrEmpty(userModel.ProfileImage))
                 {
@@ -207,7 +238,7 @@ namespace E_Commerce.Application.Services
             List<UserMenu> userMenus = new List<UserMenu>();
             try
             {
-                userMenus = _unitOfWork.GetRepository<RoleScreen>().GetByExpressionAsNoTracking(p => roleIds.Contains(p.RoleId)).GroupBy(g => g.Screen.ModuleId).Select(s => new UserMenu
+                userMenus = _unitOfWork.GetRepository<E_Commerce.Domain.Domains.Authorisation.RoleScreen>().GetByExpressionAsNoTracking(p => roleIds.Contains(p.RoleId)).GroupBy(g => g.Screen.ModuleId).Select(s => new UserMenu
                 {
                     Id = s.Key,
                     Label = s.FirstOrDefault().Screen.Module.Name,
@@ -224,9 +255,10 @@ namespace E_Commerce.Application.Services
                         Expanded = false,
                         IsActive = false,
                         ParentId = s.Key,
-                        URL = m.Screen.Url
+                        URL = m.Screen.Url,                        
                     }).ToList()
                 }).ToList();
+                userMenus = userMenus.Select(sm => { sm.UserMenuItems = sm.UserMenuItems.DistinctBy(p=> p.Id).ToList(); return sm; }).Distinct().ToList();
                 return userMenus;
             }
             catch (Exception ex) 
@@ -421,7 +453,14 @@ namespace E_Commerce.Application.Services
                     IsBlock = s.IsBlock,
                     IsActive = s.IsActive,
                     ProfileImage = s.ProfileImage,
-                    Gender = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Gender.Name : s.Gender.NameAr
+                    Gender = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Gender.Name : s.Gender.NameAr,
+                    UserRoles = s.UserRoles.Select(r => new UserRoleModel()
+                    {
+                        UserRoleId = r.UserRoleId,
+                        RoleId = r.RoleId,
+                        UserId = r.UserId,
+                        Role = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? r.Role.Name : r.Role.NameAr,
+                    }).ToList()
                 }).Skip(pageNumber * pageSize).Take(pageSize).ToList();
 
                 if (users.Any(p => !string.IsNullOrEmpty(p.ProfileImage)) && (!readProfileImage.HasValue || readProfileImage.Value))
@@ -497,7 +536,9 @@ namespace E_Commerce.Application.Services
                     Adresse = s.Adresse,
                     CityId =s.CityId,
                     UserTypeId = s.UserTypeId,
-                    ProfileImage = s.ProfileImage
+                    ProfileImage = s.ProfileImage,
+                    Gender = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Gender.Name : s.Gender.NameAr,
+                    Age = s.DateOfBirth.HasValue ? string.Format("( {0} ) {1}", (DateTime.UtcNow.Year - s.DateOfBirth.Value.Year).ToString(), _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? "Year" : "سنة") : string.Empty
                 }).SingleOrDefault();
 
                 if (!string.IsNullOrEmpty(user.ProfileImage))
@@ -544,10 +585,12 @@ namespace E_Commerce.Application.Services
                 user.CityId = userModel.CityId;
                 user.LanguageId = userModel.LanguageId;
                 user.GenderId = userModel.GenderId;
+                user.DateOfBirth = userModel.DateOfBirth;
                 user.ProfileImage = !string.IsNullOrEmpty(userModel.ProfileImage) ? userModel.ProfileImage.Trim() : null;
                 user.LastUpdatedDate = DateTime.UtcNow;
                 user.LastUpdateUserId = _userAccessor.GetCurrentUserId();
 
+                _unitOfWork.GetRepository<User>().Update(user);
                 await _unitOfWork.CommitChanges();
 
                 if (userModel.FileCreationModels is not null && userModel.FileCreationModels.Any())

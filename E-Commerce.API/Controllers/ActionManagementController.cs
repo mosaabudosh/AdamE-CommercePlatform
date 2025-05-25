@@ -1,6 +1,10 @@
-﻿using E_Commerce.Application.Interfaces;
+﻿using Adam.Generic.Generic;
+using E_Commerce.Application.Interfaces;
 using E_Commerce.Application.Model;
+using E_Commerce.Application.Services.Action.Queries;
+using E_Commerce.Application.Services.City.Queries;
 using Generic.Response;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +16,14 @@ namespace E_Commerce.API.Controllers
     {
         #region Fields
         private readonly IActionManagementService _userManagementService;
+        private readonly IMediator _mediator;
         #endregion
 
         #region Constructor
-        public ActionManagementController(IActionManagementService actionManagementService)
+        public ActionManagementController(IActionManagementService actionManagementService, IMediator mediator)
         {
             _userManagementService = actionManagementService;
+            _mediator = mediator;
         }
         #endregion
 
@@ -108,6 +114,21 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetActionsCount), UserAccessor.GetCurrentUserId());
                 return new BaseResponse<int>(false, ex.Message);
+            }
+        }
+
+        [Route("actions-ddl")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetActionsDDl()
+        {
+            try
+            {
+                return await _mediator.Send(new ActionQuery.Query());
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetActionsDDl), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
             }
         }
     }

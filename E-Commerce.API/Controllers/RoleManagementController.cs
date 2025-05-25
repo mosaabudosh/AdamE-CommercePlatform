@@ -1,5 +1,8 @@
-﻿using E_Commerce.Application.Interfaces;
+﻿using Adam.Generic.Generic;
+using E_Commerce.Application.Interfaces;
 using E_Commerce.Application.Model;
+using E_Commerce.Application.Services.Action.Queries;
+using E_Commerce.Application.Services.Role.Queries;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -13,12 +16,14 @@ namespace E_Commerce.API.Controllers
     {
         #region Fields
         private readonly IRoleManagementService _roleManagementService;
+        private readonly IMediator _mediator;
         #endregion
 
         #region Constructor
-        public RoleManagementController(IRoleManagementService roleManagementService)
+        public RoleManagementController(IRoleManagementService roleManagementService, IMediator mediator)
         {
             _roleManagementService = roleManagementService;
+            _mediator = mediator;
         }
         #endregion
 
@@ -109,6 +114,21 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetRolesCount), UserAccessor.GetCurrentUserId());
                 return new BaseResponse<int>(false, ex.Message);
+            }
+        }
+
+        [Route("roles-ddl")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetRolesDDl()
+        {
+            try
+            {
+                return await _mediator.Send(new RoleQuery.Query());
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetRolesDDl), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
             }
         }
 

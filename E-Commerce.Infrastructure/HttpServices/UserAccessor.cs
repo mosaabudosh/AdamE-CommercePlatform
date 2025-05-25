@@ -3,6 +3,7 @@ using Adam.Generic.Enum;
 using E_Commerce.Domain.IHttpServices;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using static Adam.Generic.Constants.Constants;
 
 namespace E_Commerce.Infrastructure.HttpServices
 {

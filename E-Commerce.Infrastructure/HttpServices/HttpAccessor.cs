@@ -35,9 +35,9 @@ namespace E_Commerce.Infrastructure.HttpServices
             {
                 case null:
                 case "":
-                case Adam.Generic.Constants.Languages.LanguageCodeEn:
+                case Adam.Generic.Constants.Constants.Languages.LanguageCodeEn:
                     return LanguageCode.enUS;
-                case Adam.Generic.Constants.Languages.LanguageCodeAr:
+                case Adam.Generic.Constants.Constants.Languages.LanguageCodeAr:
                     return LanguageCode.arJO;
                 default:
                     return LanguageCode.enUS;

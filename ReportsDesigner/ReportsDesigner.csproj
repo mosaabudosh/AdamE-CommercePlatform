@@ -28,4 +28,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="E_Commerce\Reports\" />
+  </ItemGroup>
+
 </Project>
