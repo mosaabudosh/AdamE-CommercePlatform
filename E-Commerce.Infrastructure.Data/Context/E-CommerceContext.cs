@@ -2,9 +2,11 @@
 using E_Commerce.Domain.Domains;
 using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.Domains.DMS;
+using E_Commerce.Domain.Domains.Settings;
 using E_Commerce.Infrastructure.Data.Configuration;
 using E_Commerce.Infrastructure.Data.Configuration.Authorisation;
 using E_Commerce.Infrastructure.Data.Configuration.DMS;
+using E_Commerce.Infrastructure.Data.Configuration.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Action = E_Commerce.Domain.Domains.Authorisation.Action;
@@ -26,7 +28,6 @@ namespace E_Commerce.Infrastructure.Data.Context
         #region Override
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			#region AuthorisationConfiguration
 			modelBuilder.ApplyConfiguration(new ActionEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new RoleEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new ModuleEntityConfiguration());
@@ -37,8 +38,6 @@ namespace E_Commerce.Infrastructure.Data.Context
 			modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new UserRoleEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new UserTypeEntityConfiguration());
-			#endregion
-
 			modelBuilder.ApplyConfiguration(new CartEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new CartDetailEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new CartStatusEntityConfiguration());
@@ -54,11 +53,15 @@ namespace E_Commerce.Infrastructure.Data.Context
 			modelBuilder.ApplyConfiguration(new ShopEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new ShopItemEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new TaxEntityConfiguration());
-
             modelBuilder.ApplyConfiguration(new FolderConfigurationEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FolderEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileTypeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new DataTypeEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new PlatformSettingEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UserSettingEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ScreenActionEntityConfiguration());
+
         }
         #endregion
 
@@ -88,12 +91,14 @@ namespace E_Commerce.Infrastructure.Data.Context
 		public DbSet<Shop> Shops { get; set; }
 		public DbSet<ShopItem> ShopItems { get; set; }
 		public DbSet<Tax> Taxs { get; set; }
-
-
         public DbSet<FolderConfiguration> FolderConfigurations { get; set; }
         public DbSet<Folder> Folders { get; set; }
         public DbSet<FileType> FileTypes { get; set; }
         public DbSet<File> Files { get; set; }
+        public DbSet<DataType> DataTypes { get; set; }
+        public DbSet<PlatformSetting> PlatformSettings { get; set; }
+        public DbSet<UserSetting> UserSettings { get; set; }
+        public DbSet<ScreenAction> ScreenActions { get; set; }
         #endregion
 
     }

@@ -198,7 +198,7 @@ namespace E_Commerce.Application.Services.DMS
         {
             try
             {
-                IQueryable<Folder> foldersQuery = _unitOfWork.GetRepository<Folder>().GetByExpressionAsNoTracking(x => x.Path.Contains(folderPath));
+                IQueryable<Folder> foldersQuery = _unitOfWork.GetRepository<Folder>().GetByExpression(x => x.Path.Contains(folderPath));
                 List<Folder> folders = await _unitOfWork.GetRepository<Folder>().ToListAsync(foldersQuery);
                 return new BaseResponse<List<Folder>>(true, string.Empty, folders);
             }
@@ -389,7 +389,7 @@ namespace E_Commerce.Application.Services.DMS
                 {
                     if (fileCreationModel is not null)
                     {
-                        fileCreationModel.FileName = $"{fileCreationModel.FileName}\\{fileCreationModel.FileType}";
+                        fileCreationModel.FileName = $"{fileCreationModel.FileName}.{fileCreationModel.FileType}";
                         string newPath = $"{path}\\{fileCreationModel.FileName}";
                         if (!System.IO.File.Exists(newPath))
                         {
@@ -581,7 +581,7 @@ namespace E_Commerce.Application.Services.DMS
                     }
                 }
 
-                IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpressionAsNoTracking(x => x.Path.Contains(folderPath),
+                IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpression(x => x.Path.Contains(folderPath),
                includedEntities: new List<System.Linq.Expressions.Expression<Func<File, object>>>() { z => z.Folder });
                 List<File> oldfiles = await _unitOfWork.GetRepository<File>().ToListAsync(filesQuery);
 
@@ -670,7 +670,7 @@ namespace E_Commerce.Application.Services.DMS
             }
             catch (Exception ex)
             {
-                folder.Path = $"{pathFromFolderConfiguration}{folder.Path}\\{folder.Name}";
+                folder.Path = $"{pathFromFolderConfiguration}{folder.Path}";
                 BaseResponse<List<Folder>> folders = await GetFolderByPath(folder.Path);
                 if (!folders.IsSuccess)
                 {

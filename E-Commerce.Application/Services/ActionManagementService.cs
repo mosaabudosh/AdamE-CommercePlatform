@@ -1,11 +1,11 @@
-﻿using Adam.Generic.Constants;
-using Adam.Logging.Interfaces;
+﻿using Adam.Logging.Interfaces;
 using E_Commerce.Application.Interfaces;
 using E_Commerce.Application.Model;
 using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
+using static Adam.Generic.Constants.Constants;
 using Action = E_Commerce.Domain.Domains.Authorisation.Action;
 
 namespace E_Commerce.Application.Services
@@ -23,11 +23,11 @@ namespace E_Commerce.Application.Services
             _userAccessor = userAccessor;
         }
 
-        public async Task<BaseResponse<Action>> AddAction(ActionModel actionModel)
+        public async Task<BaseResponse<Domain.Domains.Authorisation.Action>> AddAction(ActionModel actionModel)
         {
             try
             {
-                Action action = new Action()
+                Domain.Domains.Authorisation.Action action = new Domain.Domains.Authorisation.Action()
                 {
                     ActionId = 0,
                     Name = actionModel.Name.Trim(),
@@ -39,11 +39,11 @@ namespace E_Commerce.Application.Services
                 BaseResponse validationBaseResponse = ValidateAction(action, false);
                 if (!validationBaseResponse.IsSuccess)
                 {
-                    return new BaseResponse<Action>(false, string.Empty, ErrorCodes.Duplicate);
+                    return new BaseResponse<Domain.Domains.Authorisation.Action>(false, string.Empty, ErrorCode.Duplicate);
                 }
-                _unitOfWork.GetRepository<Action>().Insert(action);
+                _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().Insert(action);
                 await _unitOfWork.CommitChanges();
-                return new BaseResponse<Action>(true, string.Empty, action);
+                return new BaseResponse<Domain.Domains.Authorisation.Action>(true, string.Empty, action);
 
             }
             catch (Exception ex)
@@ -53,7 +53,7 @@ namespace E_Commerce.Application.Services
                     ex = ex.InnerException;
                 }
                 await _exceptionService.LogErrorAsync(ex, nameof(AddAction), _userAccessor.GetCurrentUserId(), actionModel);
-                return new BaseResponse<Action>(false, ex.Message);
+                return new BaseResponse<Domain.Domains.Authorisation.Action>(false, ex.Message);
             }
         }
 
@@ -61,7 +61,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                Action action = new Action()
+                Domain.Domains.Authorisation.Action action = new Domain.Domains.Authorisation.Action()
                 {
                     ActionId = actionModel.ActionId,
                     Name = actionModel.Name.Trim(),
@@ -73,9 +73,9 @@ namespace E_Commerce.Application.Services
                 BaseResponse validationBaseResponse = ValidateAction(action, true);
                 if (!validationBaseResponse.IsSuccess)
                 {
-                    return new BaseResponse<Action>(false, string.Empty, ErrorCodes.Duplicate);
+                    return new BaseResponse<Domain.Domains.Authorisation.Action>(false, string.Empty, ErrorCode.Duplicate);
                 }
-                _unitOfWork.GetRepository<Action>().Update(action);
+                _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().Update(action);
                 await _unitOfWork.CommitChanges();
                 return new BaseResponse(true, string.Empty);
             }
@@ -99,8 +99,8 @@ namespace E_Commerce.Application.Services
                 {
                     return validationBaseResponse;
                 }
-                Action action = await _unitOfWork.GetRepository<Action>().GetById(actionId);
-                _unitOfWork.GetRepository<Action>().Delete(action);
+                Domain.Domains.Authorisation.Action action = await _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetById(actionId);
+                _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().Delete(action);
                 await _unitOfWork.CommitChanges();
                 return new BaseResponse(true, string.Empty);
             }
@@ -119,7 +119,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                List<ActionModel> actions = _unitOfWork.GetRepository<Action>().GetByExpressionAsNoTracking().Select(s => new ActionModel()
+                List<ActionModel> actions = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetByExpressionAsNoTracking().Select(s => new ActionModel()
                 {
                     ActionId = s.ActionId,
                     Name = s.Name,
@@ -143,7 +143,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                int actionsCount = _unitOfWork.GetRepository<Action>().GetByExpression().Count();
+                int actionsCount = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetByExpression().Count();
                 return new BaseResponse<int>(true, string.Empty, string.Empty, actionsCount);
             }
             catch (Exception ex)
@@ -161,7 +161,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                ActionModel action = _unitOfWork.GetRepository<Action>().GetByExpressionAsNoTracking(p => p.ActionId == actionId).Select(s => new ActionModel()
+                ActionModel action = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetByExpressionAsNoTracking(p => p.ActionId == actionId).Select(s => new ActionModel()
                 {
                     ActionId = actionId,
                     Name = s.Name,
@@ -181,15 +181,15 @@ namespace E_Commerce.Application.Services
             }
         }
 
-        private BaseResponse ValidateAction(Action action, bool isUpdate)
+        private BaseResponse ValidateAction(Domain.Domains.Authorisation.Action action, bool isUpdate)
         {
             try
             {
-                Action existingAction = _unitOfWork.GetRepository<Action>().GetByExpressionAsNoTracking(x => x.Name == action.Name && (isUpdate ? (x.ActionId != action.ActionId) : true)).FirstOrDefault();
+                Domain.Domains.Authorisation.Action existingAction = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetByExpressionAsNoTracking(x => x.Name == action.Name && (isUpdate ? (x.ActionId != action.ActionId) : true)).FirstOrDefault();
 
                 if (existingAction is not null)
                 {
-                    return new BaseResponse(false, string.Empty, ErrorCodes.Exsist);
+                    return new BaseResponse(false, string.Empty, ErrorCode.AlreadyExsist);
                 }
                 return new BaseResponse(true);
             }
@@ -200,7 +200,7 @@ namespace E_Commerce.Application.Services
                     ex = ex.InnerException;
                 }
                 _exceptionService.LogErrorAsync(ex, nameof(ValidateAction), _userAccessor.GetCurrentUserId(), action, isUpdate);
-                return new BaseResponse<Action>(false, ex.Message);
+                return new BaseResponse<Domain.Domains.Authorisation.Action>(false, ex.Message);
             }
 
         }
@@ -209,10 +209,10 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                bool haveUserActions = _unitOfWork.GetRepository<Action>().GetByExpressionAsNoTracking(i => i.ActionId == actionId && i.RoleScreenActions.Any()).Any();
+                bool haveUserActions = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetByExpressionAsNoTracking(i => i.ActionId == actionId && i.RoleScreenActions.Any()).Any();
                 if (haveUserActions)
                 {
-                    return new BaseResponse(false, string.Empty, ErrorCodes.RelatedData);
+                    return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);
                 }
                 return new BaseResponse(true, string.Empty);
 

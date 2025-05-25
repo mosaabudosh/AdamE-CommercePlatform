@@ -31,7 +31,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Services\Action\Commands\" />
+    <Folder Include="Services\Role\Commands\" />
+    <Folder Include="Services\ScreenAction\Queries\" />
+    <Folder Include="Services\Screen\Commands\" />
     <Folder Include="Services\Shop\Commands\" />
+    <Folder Include="Services\UserRole\Queries\" />
     <Folder Include="Services\UserType\Commands\" />
   </ItemGroup>
 

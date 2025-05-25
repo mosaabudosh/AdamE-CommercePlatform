@@ -14,6 +14,7 @@ using static E_Commerce.Domain.Enum.Enums;
 using Adam.Generic.Constants;
 using System.Data;
 using E_Commerce.Application.Interfaces;
+using static Adam.Generic.Constants.Constants;
 
 namespace E_Commerce.Application.Services
 {
@@ -30,11 +31,11 @@ namespace E_Commerce.Application.Services
             _userAccessor = userAccessor;
         }
 
-        public async Task<BaseResponse<Role>> AddRole(RoleModel roleModel)
+        public async Task<BaseResponse<Domain.Domains.Authorisation.Role>> AddRole(RoleModel roleModel)
         {
             try
             {
-                Role role = new Role()
+                Domain.Domains.Authorisation.Role role = new Domain.Domains.Authorisation.Role()
                 {
                     RoleId = 0,
                     Name = roleModel.Name.Trim(),
@@ -46,11 +47,11 @@ namespace E_Commerce.Application.Services
                 BaseResponse validationBaseResponse = ValidateRole(role, false);
                 if (!validationBaseResponse.IsSuccess)
                 {
-                    return new BaseResponse<Role>(false, string.Empty, ErrorCodes.Duplicate);
+                    return new BaseResponse<Domain.Domains.Authorisation.Role>(false, string.Empty, ErrorCode.Duplicate);
                 }
-                _unitOfWork.GetRepository<Role>().Insert(role);
+                _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().Insert(role);
                 await _unitOfWork.CommitChanges();
-                return new BaseResponse<Role>(true, string.Empty, role);
+                return new BaseResponse<Domain.Domains.Authorisation.Role>(true, string.Empty, role);
 
             }
             catch (Exception ex)
@@ -60,7 +61,7 @@ namespace E_Commerce.Application.Services
                     ex = ex.InnerException;
                 }
                 await _exceptionService.LogErrorAsync(ex, nameof(AddRole), _userAccessor.GetCurrentUserId(), roleModel);
-                return new BaseResponse<Role>(false, ex.Message);
+                return new BaseResponse<Domain.Domains.Authorisation.Role>(false, ex.Message);
             }
         }
 
@@ -68,7 +69,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                Role role = new Role()
+                Domain.Domains.Authorisation.Role role = new Domain.Domains.Authorisation.Role()
                 {
                     RoleId = roleModel.RoleId,
                     Name = roleModel.Name.Trim(),
@@ -80,9 +81,9 @@ namespace E_Commerce.Application.Services
                 BaseResponse validationBaseResponse = ValidateRole(role, true);
                 if (!validationBaseResponse.IsSuccess)
                 {
-                    return new BaseResponse<Role>(false, string.Empty, ErrorCodes.Duplicate);
+                    return new BaseResponse<Domain.Domains.Authorisation.Role>(false, string.Empty, ErrorCode.Duplicate);
                 }
-                _unitOfWork.GetRepository<Role>().Update(role);
+                _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().Update(role);
                 await _unitOfWork.CommitChanges();
                 return new BaseResponse(true, string.Empty);
             }
@@ -106,8 +107,8 @@ namespace E_Commerce.Application.Services
                 {
                     return validationBaseResponse;
                 }
-                Role role = await _unitOfWork.GetRepository<Role>().GetById(roleId);
-                _unitOfWork.GetRepository<Role>().Delete(role);
+                Domain.Domains.Authorisation.Role role = await _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().GetById(roleId);
+                _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().Delete(role);
                 await _unitOfWork.CommitChanges();
                 return new BaseResponse(true, string.Empty);
             }
@@ -126,7 +127,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                List<RoleModel> roles = _unitOfWork.GetRepository<Role>().GetByExpressionAsNoTracking().Select(s => new RoleModel()
+                List<RoleModel> roles = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().GetByExpressionAsNoTracking().Select(s => new RoleModel()
                 {
                     RoleId = s.RoleId,
                     Name = s.Name,
@@ -150,7 +151,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                int rolesCount = _unitOfWork.GetRepository<Role>().GetByExpression().Count();
+                int rolesCount = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().GetByExpression().Count();
                 return new BaseResponse<int>(true, string.Empty, string.Empty, rolesCount);
             }
             catch (Exception ex)
@@ -168,7 +169,7 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                RoleModel role = _unitOfWork.GetRepository<Role>().GetByExpressionAsNoTracking(p => p.RoleId == roleId).Select(s => new RoleModel()
+                RoleModel role = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().GetByExpressionAsNoTracking(p => p.RoleId == roleId).Select(s => new RoleModel()
                 {
                     RoleId = roleId,
                     Name = s.Name,
@@ -188,15 +189,15 @@ namespace E_Commerce.Application.Services
             }
         }
 
-        private BaseResponse ValidateRole(Role role, bool isUpdate)
+        private BaseResponse ValidateRole(Domain.Domains.Authorisation.Role role, bool isUpdate)
         {
             try
             {
-                Role existingRole = _unitOfWork.GetRepository<Role>().GetByExpression(x => x.Name == role.Name && (isUpdate ? (x.RoleId != role.RoleId) : true)).FirstOrDefault();
+                Domain.Domains.Authorisation.Role existingRole = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().GetByExpression(x => x.Name == role.Name && (isUpdate ? (x.RoleId != role.RoleId) : true)).FirstOrDefault();
 
                 if (existingRole is not null)
                 {
-                    return new BaseResponse(false, string.Empty, ErrorCodes.Exsist);
+                    return new BaseResponse(false, string.Empty, ErrorCode.AlreadyExsist);
                 }
                 return new BaseResponse(true);
             }
@@ -207,7 +208,7 @@ namespace E_Commerce.Application.Services
                     ex = ex.InnerException;
                 }
                 _exceptionService.LogErrorAsync(ex, nameof(ValidateRole), _userAccessor.GetCurrentUserId(), role, isUpdate);
-                return new BaseResponse<Role>(false, ex.Message);
+                return new BaseResponse<Domain.Domains.Authorisation.Role>(false, ex.Message);
             }
            
         }
@@ -216,10 +217,10 @@ namespace E_Commerce.Application.Services
         {
             try
             {
-                bool haveUserRoles = _unitOfWork.GetRepository<Role>().GetByExpressionAsNoTracking(i => i.RoleId == roleId && i.UserRoles.Any()).Any();
+                bool haveUserRoles = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().GetByExpressionAsNoTracking(i => i.RoleId == roleId && i.UserRoles.Any()).Any();
                 if (haveUserRoles)
                 {
-                    return new BaseResponse(false, string.Empty, ErrorCodes.RelatedData);
+                    return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);
                 }
                 return new BaseResponse(true, string.Empty);
 

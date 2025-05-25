@@ -16,5 +16,7 @@ namespace E_Commerce.Domain.Domains.Authorisation
 
 		public virtual Module Module { get; set; }
 		public virtual List<RoleScreen> RoleScreens { get; set; }
-	}
+        public virtual List<ScreenAction> ScreenActions { get; set; }
+
+    }
 }

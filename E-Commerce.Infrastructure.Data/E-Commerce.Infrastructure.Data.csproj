@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\E-Commerce.Domain\E-Commerce.Domain.csproj" />
+    <ProjectReference Include="..\Generic\Adam.Generic.csproj" />
   </ItemGroup>
 
   <ItemGroup>

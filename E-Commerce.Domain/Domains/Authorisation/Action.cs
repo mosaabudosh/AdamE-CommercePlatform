@@ -9,6 +9,7 @@ namespace E_Commerce.Domain.Domains.Authorisation
 		public string NameAr { get; set; }
 
 		public virtual List<RoleScreenAction> RoleScreenActions { get; set; }
+        public virtual List<ScreenAction> ScreenActions { get; set; }
 
-	}
+    }
 }

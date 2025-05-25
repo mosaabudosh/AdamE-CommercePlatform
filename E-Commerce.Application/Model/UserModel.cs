@@ -27,12 +27,16 @@ namespace E_Commerce.Application.Model
         public int LanguageId { get; set; }
         public int GenderId { get; set; }
         public string? Gender { get; set; }
+        public string? Age { get; set; }
         public int CityId { get; set; }
         public int? ShopId { get; set; }
         public bool? IsActive { get; set; }
         public List<int>? RoleIds { get; set; }
         public List<UserMenu>? UserMenus { get; set; }
         public List<FileCreationModel>? FileCreationModels { get; set; }
+        public List<UserRoleModel>? UserRoles { get; set; }
+        public List<UserSettingModel>? UserSettingModels { get; set; }
+
     }
 
     public class UserMenu
@@ -56,6 +60,15 @@ namespace E_Commerce.Application.Model
         public bool IsActive { get; set; }
         public int ParentId { get; set; }
         public string URL { get; set; }
-
     }
+
+    public class UserSettingModel
+    {
+        public int UserSettingId { get; set; }
+        public int PlatformSettingId { get; set; }
+        public Guid UserId { get; set; }
+        public string? Value { get; set; }
+    }
+
+
 }

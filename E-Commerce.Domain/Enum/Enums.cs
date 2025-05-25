@@ -9,8 +9,11 @@ namespace E_Commerce.Domain.Enum
 			Edit = 2,
 			Delete = 3 ,
 			View = 4 ,
-			Print = 5
-		}
+			Print = 5,
+            Active = 6,
+            InActive = 7,
+            Restor = 8
+        }
 
 		public enum Roles
 		{
@@ -88,6 +91,29 @@ namespace E_Commerce.Domain.Enum
             WEBP = 18,
             JFIF = 19,
             GIF = 20
+        }
+
+		public enum DataTypes
+		{
+            Integer = 1,
+            Decimal = 2,
+            String = 3,
+            Boolean = 4
+        }
+
+        public enum PlatformSettings
+        {
+            DefaultTheme = 1,
+            DefaultLanguage = 2,
+            Logo = 3,
+            LogoAr = 4,
+			WaterMark = 5,
+            Name = 6,
+            NameAr = 7,
+			DateFormat = 8,
+            In24Format = 9,
+            DMSUserPath = 10,
+            DMSSettingsPath = 11
         }
     }
 }

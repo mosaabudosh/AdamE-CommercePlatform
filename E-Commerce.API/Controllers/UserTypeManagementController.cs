@@ -9,7 +9,7 @@ namespace E_Commerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserTypeController(IMediator _mediator) : BaseController
+    public class UserTypeManagementController(IMediator _mediator) : BaseController
     {
         [Route("user-types")]
         [HttpGet]

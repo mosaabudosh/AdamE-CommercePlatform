@@ -40,5 +40,6 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public virtual List<UserLogin> UserLogins { get; set; }
         public virtual List<User> CreationUsers { get; set; }
         public virtual List<User> LastUpdateUsers { get; set; }
+        public virtual List<UserSetting> UserSettings { get; set; }
     }
 }
