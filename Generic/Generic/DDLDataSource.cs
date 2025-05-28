@@ -8,6 +8,7 @@ namespace Adam.Generic.Generic
         public int Value { get; set; }
         public object Attributes { get; set; }
         public bool Disabled { get; set; }
+        public Guid ValueGuid { get; set; }
 
         public DDLDataSource()
         {
@@ -18,6 +19,12 @@ namespace Adam.Generic.Generic
         {
             this.Label = label;
             this.Value = value;
+        }
+
+        public DDLDataSource(string label, Guid valueGuid)
+        {
+            this.Label = label;
+            this.ValueGuid = valueGuid;
         }
     }
 }

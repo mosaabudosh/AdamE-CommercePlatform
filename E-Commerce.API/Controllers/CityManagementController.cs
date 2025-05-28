@@ -70,7 +70,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new CityQuery.Query());
+                return await _mediator.Send(new CitiesDDLQuery.Query());
             }
             catch (Exception ex)
             {

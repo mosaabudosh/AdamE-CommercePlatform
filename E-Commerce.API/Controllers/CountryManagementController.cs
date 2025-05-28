@@ -74,7 +74,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new CountryQuery.Query());
+                return await _mediator.Send(new CountriesDDLQuery.Query());
             }
             catch (Exception ex)
             {

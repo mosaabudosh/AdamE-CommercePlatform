@@ -23,7 +23,6 @@ namespace E_Commerce.Application.ServicesRegistration
             services.AddSingleton<ITokenHandler, TokenHandler>();
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IRoleManagementService, RoleManagementService>();
-            services.AddScoped<IActionManagementService, ActionManagementService>();
 
             services.AddScoped<IFolderConfigurationService, FolderConfigurationService>();
             services.AddScoped<IFolderService, FolderService>();

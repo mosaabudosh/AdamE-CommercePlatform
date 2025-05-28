@@ -7,13 +7,11 @@ using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
 
-namespace E_Commerce.Application.Services.Country.Queries
+namespace E_Commerce.Application.Services.City.Queries
 {
-    public class CountryQuery
+    public class CitiesDDLQuery
     {
-        public record Query() : IRequest<BaseResponse<List<DDLDataSource>>>
-        {
-        }
+        public record Query() : IRequest<BaseResponse<List<DDLDataSource>>> { }
 
         public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Query, BaseResponse<List<DDLDataSource>>>
         {
@@ -21,13 +19,12 @@ namespace E_Commerce.Application.Services.Country.Queries
             {
                 try
                 {
-                    List<DDLDataSource> countries = _unitOfWork.GetRepository<Domain.Domains.Country>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
+                    List<DDLDataSource> cities = _unitOfWork.GetRepository<Domain.Domains.City>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
                     {
-                        Value = p.CountryId,
+                        Value = p.CityId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
-                        Attributes = p.Banner
                     }).ToList();
-                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, countries);
+                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, cities);
                 }
                 catch (Exception ex)
                 {
@@ -35,7 +32,7 @@ namespace E_Commerce.Application.Services.Country.Queries
                     {
                         ex = ex.InnerException;
                     }
-                    await _exceptionService.LogErrorAsync(ex, "CountryQuery", _userAccessor.GetCurrentUserId());
+                    await _exceptionService.LogErrorAsync(ex, "CitiesDDLQuery", _userAccessor.GetCurrentUserId());
                     return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
                 }
             }

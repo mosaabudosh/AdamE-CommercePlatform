@@ -10,13 +10,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.Services.Action.Queries
+namespace E_Commerce.Application.Services.Categories.Queries
 {
-    public class ActionQuery
+    public class CategoriesDDLQuery
     {
-        public record Query() : IRequest<BaseResponse<List<DDLDataSource>>>
-        {
-        }
+        public record Query() : IRequest<BaseResponse<List<DDLDataSource>>> { }
 
         public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Query, BaseResponse<List<DDLDataSource>>>
         {
@@ -24,9 +22,9 @@ namespace E_Commerce.Application.Services.Action.Queries
             {
                 try
                 {
-                    List<DDLDataSource> cities = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
+                    List<DDLDataSource> cities = _unitOfWork.GetRepository<Domain.Domains.Category>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
                     {
-                        Value = p.ActionId,
+                        Value = p.CategoryId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
                     }).ToList();
                     return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, cities);
@@ -37,7 +35,7 @@ namespace E_Commerce.Application.Services.Action.Queries
                     {
                         ex = ex.InnerException;
                     }
-                    await _exceptionService.LogErrorAsync(ex, "ActionQuery", _userAccessor.GetCurrentUserId());
+                    await _exceptionService.LogErrorAsync(ex, "CategoriesDDLQuery", _userAccessor.GetCurrentUserId());
                     return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
                 }
             }

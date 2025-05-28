@@ -2,42 +2,34 @@
 using E_Commerce.Application.Interfaces;
 using E_Commerce.Application.Model;
 using E_Commerce.Application.Services.Action.Queries;
+using E_Commerce.Application.Services.Actions.Commands;
+using E_Commerce.Application.Services.Actions.Queries;
 using E_Commerce.Application.Services.City.Queries;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using PdfSharp;
+using ActionModel = E_Commerce.Application.Model.ActionModel;
 
 namespace E_Commerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ActionManagementController : BaseController
+    public class ActionManagementController(IMediator _mediator) : BaseController
     {
-        #region Fields
-        private readonly IActionManagementService _userManagementService;
-        private readonly IMediator _mediator;
-        #endregion
-
-        #region Constructor
-        public ActionManagementController(IActionManagementService actionManagementService, IMediator mediator)
-        {
-            _userManagementService = actionManagementService;
-            _mediator = mediator;
-        }
-        #endregion
-
         [HttpPost]
         [Route("action-creation")]
-        public async Task<ActionResult<BaseResponse>> AddAction([FromBody] ActionModel ActionModel)
+        public async Task<ActionResult<BaseResponse>> AddAction([FromBody] ActionModel actionModel)
         {
             try
             {
-                return await _userManagementService.AddAction(ActionModel);
+                return await _mediator.Send(new ActionCreationCommands.Command(actionModel));
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(AddAction), UserAccessor.GetCurrentUserId(), ActionModel);
+                await ExceptionService.LogErrorAsync(ex, nameof(AddAction), UserAccessor.GetCurrentUserId(), actionModel);
                 return new BaseResponse(false, ex.Message);
             }
         }
@@ -48,7 +40,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.UpdateAction(actionModel);
+                return await _mediator.Send(new ActionUpdationCommands.Command(actionModel));
             }
             catch (Exception ex)
             {
@@ -63,7 +55,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.GetActionById(actionId);
+                return await _mediator.Send(new ActionQueryById.Query(actionId));
             }
             catch (Exception ex)
             {
@@ -78,7 +70,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.DeleteAction(actionId);
+                return await _mediator.Send(new ActionDeletionCommands.Command(actionId));
             }
             catch (Exception ex)
             {
@@ -93,7 +85,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.GetActions(pageNumber, pageSize);
+                return await _mediator.Send(new ActionsQuery.Query(pageNumber, pageSize));
             }
             catch (Exception ex)
             {
@@ -108,7 +100,12 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.GetActionsCount();
+                BaseResponse<List<ActionModel>> responseActionModels = await _mediator.Send(new ActionsQuery.Query(0, int.MaxValue));
+                if (!responseActionModels.IsSuccess)
+                {
+                    return new BaseResponse<int>(false, responseActionModels.Message, responseActionModels.ErrorCode);
+                }
+                return new BaseResponse<int>(true, string.Empty, responseActionModels.DataObject.Count());
             }
             catch (Exception ex)
             {
@@ -123,7 +120,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new ActionQuery.Query());
+                return await _mediator.Send(new ActionsDDLQuery.Query());
             }
             catch (Exception ex)
             {
