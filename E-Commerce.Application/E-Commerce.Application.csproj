@@ -31,13 +31,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Action\Commands\" />
-    <Folder Include="Services\Role\Commands\" />
+    <Folder Include="Services\Items\Commands\" />
+    <Folder Include="Services\Orders\Commands\" />
+    <Folder Include="Services\Orders\Queries\" />
+    <Folder Include="Services\Roles\Commands\" />
     <Folder Include="Services\ScreenAction\Queries\" />
-    <Folder Include="Services\Screen\Commands\" />
-    <Folder Include="Services\Shop\Commands\" />
-    <Folder Include="Services\UserRole\Queries\" />
-    <Folder Include="Services\UserType\Commands\" />
+    <Folder Include="Services\Screens\Commands\" />
+    <Folder Include="Services\Shops\Commands\" />
+    <Folder Include="Services\Taxs\Commands\" />
+    <Folder Include="Services\Taxs\Queries\" />
+    <Folder Include="Services\UserRoles\Queries\" />
+    <Folder Include="Services\UserTypes\Commands\" />
   </ItemGroup>
 
 </Project>

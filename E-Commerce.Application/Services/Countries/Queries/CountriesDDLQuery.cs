@@ -7,9 +7,9 @@ using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
 
-namespace E_Commerce.Application.Services.City.Queries
+namespace E_Commerce.Application.Services.Country.Queries
 {
-    public class CityQuery
+    public class CountriesDDLQuery
     {
         public record Query() : IRequest<BaseResponse<List<DDLDataSource>>>
         {
@@ -21,12 +21,13 @@ namespace E_Commerce.Application.Services.City.Queries
             {
                 try
                 {
-                    List<DDLDataSource> cities = _unitOfWork.GetRepository<Domain.Domains.City>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
+                    List<DDLDataSource> countries = _unitOfWork.GetRepository<Domain.Domains.Country>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
                     {
-                        Value = p.CityId,
+                        Value = p.CountryId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Attributes = p.Banner
                     }).ToList();
-                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, cities);
+                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, countries);
                 }
                 catch (Exception ex)
                 {
@@ -34,7 +35,7 @@ namespace E_Commerce.Application.Services.City.Queries
                     {
                         ex = ex.InnerException;
                     }
-                    await _exceptionService.LogErrorAsync(ex, "CityQuery", _userAccessor.GetCurrentUserId());
+                    await _exceptionService.LogErrorAsync(ex, "CountriesDDLQuery", _userAccessor.GetCurrentUserId());
                     return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
                 }
             }

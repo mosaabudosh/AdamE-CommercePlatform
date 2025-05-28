@@ -238,7 +238,7 @@ namespace E_Commerce.Application.Services
             List<UserMenu> userMenus = new List<UserMenu>();
             try
             {
-                userMenus = _unitOfWork.GetRepository<E_Commerce.Domain.Domains.Authorisation.RoleScreen>().GetByExpressionAsNoTracking(p => roleIds.Contains(p.RoleId)).GroupBy(g => g.Screen.ModuleId).Select(s => new UserMenu
+                userMenus = _unitOfWork.GetRepository<E_Commerce.Domain.Domains.Authorisation.RoleScreen>().GetByExpressionAsNoTracking(p => roleIds.Contains(p.RoleId) && p.Screen.IsInMenue ).GroupBy(g => g.Screen.ModuleId).Select(s => new UserMenu
                 {
                     Id = s.Key,
                     Label = s.FirstOrDefault().Screen.Module.Name,
@@ -543,7 +543,7 @@ namespace E_Commerce.Application.Services
 
                 if (!string.IsNullOrEmpty(user.ProfileImage))
                 {
-                    string folderPath = $"{userPathDMS}\\{userId}";
+                    string folderPath = $"{userPathDMS}\\{userId.ToString().ToLower()}";
                     BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _folderService.GetFilesByFolderPath(folderPath);
                     if (!responseGetFileCreationModels.IsSuccess)
                     {

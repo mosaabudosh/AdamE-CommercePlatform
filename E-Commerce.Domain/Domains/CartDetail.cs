@@ -10,7 +10,9 @@ namespace E_Commerce.Domain.Domains
 		public decimal Tax { get; set; }
 		public decimal Price { get; set; }
 		public Guid ShopItemId { get; set; }
+        public Guid CartId { get; set; }
 
-		public virtual ShopItem ShopItem { get; set; }
-	}
+        public virtual ShopItem ShopItem { get; set; }
+        public virtual Cart Cart { get; set; }
+    }
 }
