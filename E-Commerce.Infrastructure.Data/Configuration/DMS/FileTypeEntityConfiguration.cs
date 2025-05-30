@@ -180,6 +180,8 @@ namespace E_Commerce.Infrastructure.Data.Configuration.DMS
             #endregion
 
             #region Ignore
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
             builder.Ignore(x => x.CreationUserId);
             builder.Ignore(x => x.LastUpdateUserId);
             builder.Ignore(x => x.CreationDate);

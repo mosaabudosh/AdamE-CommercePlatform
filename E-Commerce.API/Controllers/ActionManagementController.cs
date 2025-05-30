@@ -1,17 +1,10 @@
 ﻿using Adam.Generic.Generic;
-using E_Commerce.Application.Interfaces;
-using E_Commerce.Application.Model;
-using E_Commerce.Application.Services.Action.Queries;
-using E_Commerce.Application.Services.Actions.Commands;
-using E_Commerce.Application.Services.Actions.Queries;
-using E_Commerce.Application.Services.City.Queries;
+using E_Commerce.Application.Services.AuthenticationManagement.ActionsManagement.Commands;
+using E_Commerce.Application.Services.AuthenticationManagement.ActionsManagement.Queries;
 using Generic.Response;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using PdfSharp;
-using ActionModel = E_Commerce.Application.Model.ActionModel;
+using ActionModel = E_Commerce.Application.Model.Authorisation.ActionModel;
 
 namespace E_Commerce.API.Controllers
 {
@@ -81,26 +74,26 @@ namespace E_Commerce.API.Controllers
 
         [Route("actions")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<ActionModel>>>> GetActions(int pageNumber, int pageSize)
+        public async Task<ActionResult<BaseResponse<List<ActionModel>>>> GetActions(int pageNumber, int pageSize, string? searchText = null)
         {
             try
             {
-                return await _mediator.Send(new ActionsQuery.Query(pageNumber, pageSize));
+                return await _mediator.Send(new ActionsQuery.Query(pageNumber, pageSize,searchText));
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetActions), UserAccessor.GetCurrentUserId(), pageNumber, pageSize);
+                await ExceptionService.LogErrorAsync(ex, nameof(GetActions), UserAccessor.GetCurrentUserId(), pageNumber, pageSize,searchText);
                 return new BaseResponse<List<ActionModel>>(false, ex.Message);
             }
         }
 
         [Route("actions-count")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<int>>> GetActionsCount()
+        public async Task<ActionResult<BaseResponse<int>>> GetActionsCount(string? searchText = null)
         {
             try
             {
-                BaseResponse<List<ActionModel>> responseActionModels = await _mediator.Send(new ActionsQuery.Query(0, int.MaxValue));
+                BaseResponse<List<ActionModel>> responseActionModels = await _mediator.Send(new ActionsQuery.Query(0, int.MaxValue, searchText));
                 if (!responseActionModels.IsSuccess)
                 {
                     return new BaseResponse<int>(false, responseActionModels.Message, responseActionModels.ErrorCode);
@@ -109,7 +102,7 @@ namespace E_Commerce.API.Controllers
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetActionsCount), UserAccessor.GetCurrentUserId());
+                await ExceptionService.LogErrorAsync(ex, nameof(GetActionsCount), UserAccessor.GetCurrentUserId(), searchText);
                 return new BaseResponse<int>(false, ex.Message);
             }
         }

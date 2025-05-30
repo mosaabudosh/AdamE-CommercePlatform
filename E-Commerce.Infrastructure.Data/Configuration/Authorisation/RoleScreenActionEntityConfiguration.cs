@@ -15,7 +15,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 			#region Foreignkeys
 			builder.HasOne(e => e.RoleScreen).WithMany(e => e.RoleScreenActions).HasForeignKey(f => f.RoleScreenId);
 			builder.HasOne(e => e.Action).WithMany(e => e.RoleScreenActions).HasForeignKey(f => f.ActionId);
-			#endregion
-		}
-	}
+            #endregion
+
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            #endregion
+        }
+    }
 }

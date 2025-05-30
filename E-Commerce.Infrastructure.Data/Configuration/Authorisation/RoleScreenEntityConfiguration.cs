@@ -28,8 +28,8 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 					ScreenId = 1,
 					RoleId = (int)Roles.SuperAdmin,
                     CreationDate = new DateTime(2025,1,1),
-                    IsActive = true,
-                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E")
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
                 },
                 new RoleScreen()
                 {
@@ -37,10 +37,15 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     ScreenId = 2,
                     RoleId = (int)Roles.SuperAdmin,
                     CreationDate = new DateTime(2025,1,1),
-                    IsActive = true,
-                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E")
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
                 }
             });
+            #endregion
+
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
             #endregion
 
         }

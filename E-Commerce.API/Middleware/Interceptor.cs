@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Text;
-using E_Commerce.Application.ServiceModels.AppSettings;
+using E_Commerce.Application.Model.AppSettings;
 
 namespace E_Commerce.API.Middleware
 {

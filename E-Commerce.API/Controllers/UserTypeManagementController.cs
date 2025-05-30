@@ -1,6 +1,5 @@
 ﻿using Adam.Generic.Generic;
-using E_Commerce.Application.Services.Gender.Queries;
-using E_Commerce.Application.Services.UserType.Queries;
+using E_Commerce.Application.Services.AuthenticationManagement.UserTypesManagement.Queries;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +16,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new UserTypeQuery.Query());
+                return await _mediator.Send(new UserTypesDDLQuery.Query());
             }
             catch (Exception ex)
             {

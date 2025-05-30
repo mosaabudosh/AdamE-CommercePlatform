@@ -12,7 +12,7 @@
     "E-Commerce.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
+      "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5065",
       "environmentVariables": {
@@ -22,7 +22,7 @@
     "E-Commerce.APIs": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
+      "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:5027",
       "environmentVariables": {

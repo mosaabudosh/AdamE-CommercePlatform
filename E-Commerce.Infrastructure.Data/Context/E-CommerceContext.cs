@@ -2,10 +2,12 @@
 using E_Commerce.Domain.Domains;
 using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.Domains.DMS;
+using E_Commerce.Domain.Domains.Notification;
 using E_Commerce.Domain.Domains.Settings;
 using E_Commerce.Infrastructure.Data.Configuration;
 using E_Commerce.Infrastructure.Data.Configuration.Authorisation;
 using E_Commerce.Infrastructure.Data.Configuration.DMS;
+using E_Commerce.Infrastructure.Data.Configuration.Notification;
 using E_Commerce.Infrastructure.Data.Configuration.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -53,7 +55,6 @@ namespace E_Commerce.Infrastructure.Data.Context
 			modelBuilder.ApplyConfiguration(new ShopEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new ShopItemEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new TaxEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new FolderConfigurationEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FolderEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileTypeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
@@ -61,7 +62,11 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new PlatformSettingEntityConfiguration());
             modelBuilder.ApplyConfiguration(new UserSettingEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ScreenActionEntityConfiguration());
-
+            modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationStatusEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationTypeEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationTypeRoleEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new DiscountEntityConfiguration());
         }
         #endregion
 
@@ -91,7 +96,6 @@ namespace E_Commerce.Infrastructure.Data.Context
 		public DbSet<Shop> Shops { get; set; }
 		public DbSet<ShopItem> ShopItems { get; set; }
 		public DbSet<Tax> Taxs { get; set; }
-        public DbSet<FolderConfiguration> FolderConfigurations { get; set; }
         public DbSet<Folder> Folders { get; set; }
         public DbSet<FileType> FileTypes { get; set; }
         public DbSet<File> Files { get; set; }
@@ -99,6 +103,11 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<PlatformSetting> PlatformSettings { get; set; }
         public DbSet<UserSetting> UserSettings { get; set; }
         public DbSet<ScreenAction> ScreenActions { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationStatus> NotificationStatuses { get; set; }
+        public DbSet<NotificationType> NotificationTypes { get; set; }
+        public DbSet<NotificationTypeRole> NotificationTypeRoles { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
         #endregion
 
     }

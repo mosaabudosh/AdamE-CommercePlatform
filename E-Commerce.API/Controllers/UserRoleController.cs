@@ -1,9 +1,7 @@
-﻿using E_Commerce.Application.Model;
-using E_Commerce.Application.Services.ScreenAction.Commands;
-using E_Commerce.Application.Services.UserRole.Commands;
+﻿using E_Commerce.Application.Model.Authorisation;
+using E_Commerce.Application.Services.AuthenticationManagement.UserRolesManagement.Commands;
 using Generic.Response;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.API.Controllers

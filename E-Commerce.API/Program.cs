@@ -2,35 +2,26 @@
 
 using Adam.Generic.Models;
 using Adam.Logging;
-using Adam.Logging.Interfaces;
 using E_Commerce.API;
 using E_Commerce.API.Middleware;
-using E_Commerce.Application.Authentication.Interfaces;
 using E_Commerce.Application.Authentication.Security;
-using E_Commerce.Application.Authentication.Services;
-using E_Commerce.Application.Interfaces;
-using E_Commerce.Application.ServiceModels.AppSettings;
-using E_Commerce.Application.Services;
+using E_Commerce.Application.Caching;
+using E_Commerce.Application.Model.AppSettings;
 using E_Commerce.Application.ServicesRegistration;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
-using E_Commerce.Infrastructure.Data.Context;
-using E_Commerce.Infrastructure.Data.Repository;
 using E_Commerce.Infrastructure.Data.ServicesRegistration;
 using E_Commerce.Infrastructure.DependencyInjection;
-using E_Commerce.Infrastructure.HttpServices;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using PdfSharp.Charting;
 
 try
 {
-    IUserAccessor userAccessor = null;
-
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
@@ -56,16 +47,17 @@ try
             .AllowCredentials()
         );
     });
+
     builder.Services.AddAdamLoggingService(builder.Configuration);
     builder.Services.ConfigureInfrastructureDataService(builder.Configuration);
     builder.Services.AddAdamInfrastructureService();
-    builder.Services.ConfigureAdamService();
 
     ServiceProvider serviceProvider = builder.Services.BuildServiceProvider();
-    //IServiceScope serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+    IUserAccessor userAccessor = serviceProvider.GetRequiredService<IUserAccessor>();
+    //IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
 
-    userAccessor = serviceProvider.GetRequiredService<IUserAccessor>();
-    //IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    builder.Services.ConfigureAdamService(serviceProvider);
+    //builder.Services.AddSingleton(unitOfWork);
 
     builder.Services.Configure<TokenOptions>(options => builder.Configuration.GetSection("TokenOptions").Bind(options));
 

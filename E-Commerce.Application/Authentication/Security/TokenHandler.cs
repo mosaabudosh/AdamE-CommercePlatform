@@ -3,6 +3,8 @@
 using Adam.Generic.Models;
 using E_Commerce.Application.Authentication.Interfaces;
 using E_Commerce.Domain.Domains.Authorisation;
+using E_Commerce.Domain.RepositoryInterfaces;
+using Generic.Response;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -94,5 +96,6 @@ namespace E_Commerce.Application.Authentication.Security
                 throw new Exception(ex.Message);
             }
         }
+ 
     }
 }

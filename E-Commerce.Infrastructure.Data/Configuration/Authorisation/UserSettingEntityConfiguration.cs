@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static E_Commerce.Domain.Enum.Enums;
+using E_Commerce.Domain.Enum;
+using static Adam.Generic.Constants.Constants;
 
 namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 {
@@ -20,6 +22,58 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
             #region Foreignkeys
             builder.HasOne(e => e.User).WithMany(e => e.UserSettings).HasForeignKey(f => f.UserId);
             builder.HasOne(e => e.PlatformSetting).WithMany(e => e.UserSettings).HasForeignKey(f => f.PlatformSettingId);
+            #endregion
+
+            #region Seeding
+            Guid userId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E");
+            builder.HasData(new UserSetting[]
+            {
+                new UserSetting()
+                {
+                    UserSettingId = 1,
+                    PlatformSettingId = (int)PlatformSettings.DefaultTheme,
+                    Value = PlatformTheme.NormalMode,
+                    UserId = userId ,
+                    CreationUserId = userId,
+                    CreationDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new UserSetting()
+                {
+                    UserSettingId = 2,
+                    PlatformSettingId = (int)PlatformSettings.DefaultLanguage,
+                    Value = $"{Enums.Languages.English}",
+                    UserId = userId ,
+                    CreationUserId = userId,
+                    CreationDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new UserSetting()
+                {
+                    UserSettingId = 3,
+                    PlatformSettingId = (int)PlatformSettings.DefaultPage,
+                    Value = $"{Enums.Screens.Welcome}",
+                    UserId = userId ,
+                    CreationUserId = userId,
+                    CreationDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new UserSetting()
+                {
+                    UserSettingId = 4,
+                    PlatformSettingId = (int)PlatformSettings.DefaultMenuType,
+                    Value = $"{Enums.MenuType.Open}",
+                    UserId = userId ,
+                    CreationUserId = userId,
+                    CreationDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+            });
+            #endregion
+
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
             #endregion
         }
     }

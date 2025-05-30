@@ -21,6 +21,16 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
             builder.HasOne(e => e.Action).WithMany(e => e.ScreenActions).HasForeignKey(f => f.ActionId);
             #endregion
 
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            builder.Ignore(p => p.CreationDate);
+            builder.Ignore(p => p.CreationUserId);
+            builder.Ignore(p => p.LastUpdatedDate);
+            builder.Ignore(p => p.LastUpdateUserId);
+            builder.Ignore(p => p.IsActive);
+            #endregion
+
         }
     }
 }

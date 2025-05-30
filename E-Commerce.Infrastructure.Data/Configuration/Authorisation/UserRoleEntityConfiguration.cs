@@ -18,12 +18,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 			builder.HasOne(e => e.User).WithMany(e => e.UserRoles).HasForeignKey(f => f.UserId);
             #endregion
 
-            #region Seeding Data
+            #region Seeding
             Guid userId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E");
             builder.HasData(new UserRole[]
             {
-                new UserRole(){ 
-                    UserRoleId = 1,
+                 new UserRole(){
+                    UserRoleId = (int)Roles.SuperAdmin,
                     UserId = userId ,
                     RoleId = (int)Roles.SuperAdmin,
                     IsActive = true,
@@ -31,7 +31,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     CreationUserId = userId
                 },
                 new UserRole(){
-                    UserRoleId = 2,
+                    UserRoleId = (int)Roles.Admin,
                     UserId = userId ,
                     RoleId = (int)Roles.Admin,
                     IsActive = true,
@@ -39,7 +39,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     CreationUserId = userId
                 },
                 new UserRole(){
-                    UserRoleId = 3,
+                    UserRoleId = (int)Roles.User,
                     UserId = userId ,
                     RoleId = (int)Roles.User,
                     IsActive = true,
@@ -47,6 +47,13 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     CreationUserId = userId
                 }
             });
+            #endregion
+
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            builder.Ignore(p => p.LastUpdatedDate);
+            builder.Ignore(p => p.LastUpdateUserId);
             #endregion
         }
     }

@@ -1,39 +1,24 @@
 ﻿using Adam.Generic.Generic;
-using E_Commerce.Application.Interfaces;
-using E_Commerce.Application.Model;
-using E_Commerce.Application.Services.Action.Queries;
-using E_Commerce.Application.Services.Role.Queries;
+using E_Commerce.Application.Model.Authorisation;
+using E_Commerce.Application.Services.AuthenticationManagement.RolesManagement.Commands;
+using E_Commerce.Application.Services.AuthenticationManagement.RolesManagement.Queries;
 using Generic.Response;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleManagementController : BaseController
+    public class RoleManagementController(IMediator _mediator) : BaseController
     {
-        #region Fields
-        private readonly IRoleManagementService _roleManagementService;
-        private readonly IMediator _mediator;
-        #endregion
-
-        #region Constructor
-        public RoleManagementController(IRoleManagementService roleManagementService, IMediator mediator)
-        {
-            _roleManagementService = roleManagementService;
-            _mediator = mediator;
-        }
-        #endregion
-
         [HttpPost]
         [Route("role-creation")]
         public async Task<ActionResult<BaseResponse>> AddRole([FromBody] RoleModel roleModel)
         {
             try
             {
-                return await _roleManagementService.AddRole(roleModel);
+                return await _mediator.Send(new RoleCreationCommands.Command(roleModel));
             }
             catch (Exception ex)
             {
@@ -48,7 +33,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _roleManagementService.UpdateRole(roleModel);
+                return await _mediator.Send(new RoleUpdationCommands.Command(roleModel));
             }
             catch (Exception ex)
             {
@@ -63,7 +48,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _roleManagementService.GetRoleById(roleId);
+                return await _mediator.Send(new RoleQueryById.Query(roleId));
             }
             catch (Exception ex)
             {
@@ -78,7 +63,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _roleManagementService.DeleteRole(roleId);
+                return await _mediator.Send(new RoleDeletionCommands.Command(roleId));
             }
             catch (Exception ex)
             {
@@ -89,30 +74,35 @@ namespace E_Commerce.API.Controllers
 
         [Route("roles")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<RoleModel>>>> GetRoles(int pageNumber, int pageSize)
+        public async Task<ActionResult<BaseResponse<List<RoleModel>>>> GetRoles(int pageNumber, int pageSize,string? searchText = null)
         {
             try
             {
-                return await _roleManagementService.GetRoles(pageNumber, pageSize);
+                return await _mediator.Send(new RolesQuery.Query(pageNumber, pageSize, searchText));
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetRoles), UserAccessor.GetCurrentUserId(), pageNumber, pageSize);
+                await ExceptionService.LogErrorAsync(ex, nameof(GetRoles), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText);
                 return new BaseResponse<List<RoleModel>>(false, ex.Message);
             }
         }
 
         [Route("roles-count")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<int>>> GetRolesCount()
+        public async Task<ActionResult<BaseResponse<int>>> GetRolesCount(string? searchText = null)
         {
             try
             {
-                return await _roleManagementService.GetRolesCount();
+                BaseResponse<List<RoleModel>> responseRoles = await _mediator.Send(new RolesQuery.Query(0, int.MaxValue, searchText));
+                if (!responseRoles.IsSuccess)
+                {
+                    return new BaseResponse<int>(false, responseRoles.Message, responseRoles.ErrorCode);
+                }
+                return new BaseResponse<int>(true, string.Empty, responseRoles.DataObject.Count());
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetRolesCount), UserAccessor.GetCurrentUserId());
+                await ExceptionService.LogErrorAsync(ex, nameof(GetRolesCount), UserAccessor.GetCurrentUserId(), searchText);
                 return new BaseResponse<int>(false, ex.Message);
             }
         }
@@ -123,7 +113,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new RoleQuery.Query());
+                return await _mediator.Send(new RolesDDLQuery.Query());
             }
             catch (Exception ex)
             {

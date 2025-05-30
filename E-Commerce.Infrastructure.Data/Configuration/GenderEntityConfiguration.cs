@@ -19,10 +19,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration
 				new Gender(){ GenderId = (int)Genders.Male, Name = "Male" , NameAr = "ذكر"},
 				new Gender(){ GenderId = (int)Genders.Female, Name = "Female" , NameAr = "أنثى"},
 			});
-			#endregion
+            #endregion
 
-			#region NotMapped
-			builder.Ignore(p => p.CreationDate);
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            builder.Ignore(p => p.CreationDate);
 			builder.Ignore(p => p.CreationUserId);
 			builder.Ignore(p => p.LastUpdatedDate);
 			builder.Ignore(p => p.LastUpdateUserId);
