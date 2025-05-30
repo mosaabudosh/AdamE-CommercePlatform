@@ -1,12 +1,7 @@
 ﻿using Adam.Generic.Generic;
-using E_Commerce.Application.Interfaces;
 using E_Commerce.Application.Model;
-using E_Commerce.Application.Services;
-using E_Commerce.Application.Services.Country.Commands;
-using E_Commerce.Application.Services.Country.Queries;
-using E_Commerce.Application.Services.UserType.Queries;
-using E_Commerce.Domain.Domains;
-using E_Commerce.Domain.RepositoryInterfaces;
+using E_Commerce.Application.Services.DashBoardManagement.CountriesManagement.Commands;
+using E_Commerce.Application.Services.DashBoardManagement.CountriesManagement.Queries;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

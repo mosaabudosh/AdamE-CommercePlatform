@@ -12,10 +12,17 @@ namespace E_Commerce.Infrastructure.Data.Configuration.DMS
             builder.ToTable("Files");
             builder.HasKey(p => p.FileId);
 
-
             #region Foreign keys      
             builder.HasOne(i => i.Folder).WithMany(i => i.Files).HasForeignKey(k => k.FolderId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(i => i.FileType).WithMany(i => i.Files).HasForeignKey(k => k.FileTypeId);
+            #endregion
+
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            builder.Ignore(p => p.CreationDate);
+            builder.Ignore(p => p.CreationUserId);
+            builder.Ignore(p => p.IsActive);
             #endregion
         }
     }

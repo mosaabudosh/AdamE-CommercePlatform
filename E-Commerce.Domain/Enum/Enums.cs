@@ -12,7 +12,9 @@ namespace E_Commerce.Domain.Enum
 			Print = 5,
             Active = 6,
             InActive = 7,
-            Restor = 8
+            Restor = 8,
+            Download = 9,
+            Upload = 10
         }
 
 		public enum Roles
@@ -93,12 +95,13 @@ namespace E_Commerce.Domain.Enum
             GIF = 20
         }
 
-		public enum DataTypes
+		public enum PlatformSettingsDataTypes
 		{
             Integer = 1,
             Decimal = 2,
             String = 3,
-            Boolean = 4
+            Boolean = 4,
+            File = 5,
         }
 
         public enum PlatformSettings
@@ -113,7 +116,65 @@ namespace E_Commerce.Domain.Enum
 			DateFormat = 8,
             In24Format = 9,
             DMSUserPath = 10,
-            DMSSettingsPath = 11
+            DMSSettingsPath = 11,
+            DMSRootFolderPath = 12,
+            DMSCategoryPath = 13,
+            DMSCountryPath = 14,
+            DefaultPage = 15,
+            DefaultMenuType = 16
+        }
+
+        public enum PlatformSettingsCode
+        {
+            DefaultTheme,
+            DefaultLanguage,
+            Logo,
+            LogoAr,
+            WaterMark,
+            Name,
+            NameAr,
+            DateFormat,
+            In24Format,
+            DMSUserPath,
+            DMSSettingsPath,
+            DMSRootFolderPath,
+            DMSCategoryPath,
+            DMSCountryPath
+        }
+
+        public enum Screens
+        {
+            Users = 1,
+            Roles = 2,
+            Action = 3,
+            Screens = 4,
+            Welcome = 5,
+            Chats = 6,
+            Settings = 7,
+            Cities = 8,
+            Countries = 9,
+            Items = 10,
+            Shops = 11,
+            Taxs = 12,
+            Categories = 13,
+            Carts = 14,
+            CartStatuses = 15,
+            Orders = 16,
+            Reports = 17,
+            Notifications = 18
+        }
+
+        public enum MenuType
+        {
+            Open = 1,
+            Close = 2,
+            Short = 3
+        }
+
+        public enum NotificationStatuses
+        {
+            Read = 1,
+            UnRead = 2
         }
     }
 }

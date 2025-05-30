@@ -17,13 +17,27 @@ namespace E_Commerce.Infrastructure.Data.Configuration
 			#region Seeding Data
 			builder.HasData(new Language[]
 			{
-				new Language(){ LanguageId = (int)Languages.English, Name = "English" , NameAr = "الإنجليزية",Code = "en-US"},
-				new Language(){ LanguageId = (int)Languages.Arabic, Name = "Arabic" , NameAr = "العربية",Code = "ar-JO"},
+				new Language()
+				{ 
+					LanguageId = (int)Languages.English, 
+					Name = "English" , 
+					NameAr = "الإنجليزية",
+					Code = Adam.Generic.Constants.Constants.Languages.LanguageCodeEn
+                },
+				new Language()
+				{ 
+					LanguageId = (int)Languages.Arabic, 
+					Name = "Arabic" , 
+					NameAr = "العربية",
+					Code = Adam.Generic.Constants.Constants.Languages.LanguageCodeAr
+				},
 			});
-			#endregion
+            #endregion
 
-			#region NotMapped
-			builder.Ignore(p => p.CreationDate);
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            builder.Ignore(p => p.CreationDate);
 			builder.Ignore(p => p.CreationUserId);
 			builder.Ignore(p => p.LastUpdatedDate);
 			builder.Ignore(p => p.LastUpdateUserId);

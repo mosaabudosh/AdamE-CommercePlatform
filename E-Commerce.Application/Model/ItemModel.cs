@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domain.Domains;
+﻿using Adam.Generic.Generic;
+using E_Commerce.Domain.Domains;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,10 @@ namespace E_Commerce.Application.Model
         public string Code { get; set; }
         public string Image { get; set; }
         public string Descreption { get; set; }
-        public bool IsBlock { get; set; }
+        public bool? IsBlock { get; set; }
         public int CategoryId { get; set; }
         public string Category { get; set; }
+        public FileCreationModel? FileCreationModel { get; set; }
 
     }
 }

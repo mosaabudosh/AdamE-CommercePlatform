@@ -21,10 +21,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration
 				new CartStatus(){ CartStatusId = (int)CartStatuses.Ordered, Name = "Ordered" , NameAr = "تم الطلب"},
 				new CartStatus(){ CartStatusId = (int)CartStatuses.InProgrees, Name = "InProgrees" , NameAr = "قيد التنفيذ"},
 			});
-			#endregion
+            #endregion
 
-			#region NotMapped
-			builder.Ignore(p => p.CreationDate);
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            builder.Ignore(p => p.CreationDate);
 			builder.Ignore(p => p.CreationUserId);
 			builder.Ignore(p => p.LastUpdatedDate);
 			builder.Ignore(p => p.LastUpdateUserId);

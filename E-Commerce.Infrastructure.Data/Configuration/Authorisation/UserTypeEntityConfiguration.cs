@@ -21,10 +21,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 				new UserType(){ UserTypeId = (int)UserTypes.Vendor, Name = "Vendor" , NameAr = "بائع"},
 				new UserType(){ UserTypeId = (int)UserTypes.Customer, Name = "Customer" , NameAr = "العميل"},
 			});
-			#endregion
+            #endregion
 
-			#region NotMapped
-			builder.Ignore(p => p.CreationDate);
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            builder.Ignore(p => p.CreationDate);
 			builder.Ignore(p => p.CreationUserId);
 			builder.Ignore(p => p.LastUpdatedDate);
 			builder.Ignore(p => p.LastUpdateUserId);

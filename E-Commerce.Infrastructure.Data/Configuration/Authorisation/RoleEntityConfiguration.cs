@@ -15,20 +15,57 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
             #region Seeding Data
             builder.HasData(new Role[]
             {
-                new Role(){ RoleId = (int)Roles.SuperAdmin, Name = "Super Admin" , NameAr = "المشرف الأعلى"},
-                new Role(){ RoleId = (int)Roles.Admin, Name = "Admin" , NameAr = "المشرف "},
-                new Role(){ RoleId = (int)Roles.VendorAdmin, Name = "Vendors Admin" , NameAr = "مسؤول البائعين"},
-                new Role(){ RoleId = (int)Roles.Vendor, Name = "Vendor" , NameAr = "بائع"},
-                new Role(){ RoleId = (int)Roles.User, Name = "User" , NameAr = "مستخدم"},
+                new Role()
+                { 
+                    RoleId = (int)Roles.SuperAdmin,
+                    Name = "Super Admin" , 
+                    NameAr = "المشرف الأعلى",
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Role()
+                { 
+                    RoleId = (int)Roles.Admin, 
+                    Name = "Admin" , 
+                    NameAr = "المشرف",
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Role()
+                { 
+                    RoleId = (int)Roles.VendorAdmin, 
+                    Name = "Vendors Admin" , 
+                    NameAr = "مسؤول البائعين",
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Role()
+                { 
+                    RoleId = (int)Roles.Vendor, 
+                    Name = "Vendor" , 
+                    NameAr = "بائع",
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Role()
+                { 
+                    RoleId = (int)Roles.User, 
+                    Name = "User" , 
+                    NameAr = "مستخدم",
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
             });
             #endregion
 
             #region NotMapped
-            builder.Ignore(p => p.CreationDate);
-            builder.Ignore(p => p.CreationUserId);
-            builder.Ignore(p => p.LastUpdatedDate);
-            builder.Ignore(p => p.LastUpdateUserId);
-            builder.Ignore(p => p.IsActive);
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
             #endregion
         }
     }

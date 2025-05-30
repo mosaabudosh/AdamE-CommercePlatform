@@ -1,45 +1,25 @@
-﻿using Adam.Generic.Enum;
-using Adam.Generic.Generic;
-using E_Commerce.API.Model;
-using E_Commerce.Application.Interfaces;
-using E_Commerce.Application.Model;
-using E_Commerce.Application.Services.Users.Commands;
-using E_Commerce.Application.Services.UserType.Queries;
-using E_Commerce.Domain.Domains;
+﻿using E_Commerce.API.Model;
+using E_Commerce.Application.Model.Authorisation;
+using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Commands;
+using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Queries;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using System.Collections.Generic;
-using System.Drawing.Printing;
 
 namespace E_Commerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserManagementController : BaseController
+    public class UserManagementController(IMediator _mediator) : BaseController
     {
-        #region Fields
-        private readonly IUserManagementService _userManagementService;
-        private readonly IMediator _mediator;
-        #endregion
-
-        #region Constructor
-        public UserManagementController(IUserManagementService userManagementService, IMediator mediator)
-        {
-            _userManagementService = userManagementService;
-            _mediator = mediator;
-        }
-        #endregion
-
         [HttpPost]
         [Route("registration")]
         public async Task<ActionResult<BaseResponse>> Registration([FromBody] UserModel userModel)
         {
             try
             {
-                return await _userManagementService.Registration(userModel);
+                return await _mediator.Send(new RegistrationCommands.Command(userModel));
             }
             catch (Exception ex)
             {
@@ -55,7 +35,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.Login(loginModel.UserName, loginModel.Password);
+                return await _mediator.Send(new LoginCommands.Command(loginModel.UserName, loginModel.Password));
             }
             catch (Exception ex)
             {
@@ -71,7 +51,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.LogOut(refreshTokenModel.RefreshToken);
+                return await _mediator.Send(new LogOutCommands.Command(refreshTokenModel.RefreshToken));
             }
             catch (Exception ex)
             {
@@ -83,15 +63,15 @@ namespace E_Commerce.API.Controllers
         [AllowAnonymous]
         [Route("check-refresh-token")]
         [HttpPost]
-        public async Task<BaseResponse<UserModel>> CheckRefreshAccessToken([FromBody] RefreshTokenModel refreshToken)
+        public async Task<BaseResponse<UserModel>> CheckRefreshAccessToken([FromBody] RefreshTokenModel refreshTokenModel)
         {
             try
             {
-                return await _userManagementService.CheckRefreshAccessToken(refreshToken.RefreshToken);
+                return await _mediator.Send(new CheckRefreshAccessTokenCommands.Command(refreshTokenModel.RefreshToken));
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(CheckRefreshAccessToken), UserAccessor.GetCurrentUserId(), refreshToken);
+                await ExceptionService.LogErrorAsync(ex, nameof(CheckRefreshAccessToken), UserAccessor.GetCurrentUserId(), refreshTokenModel);
                 return new BaseResponse<UserModel>(false, ex.Message);
             }
         }
@@ -102,7 +82,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.ChangePassword(changePasswordModel.UserId, changePasswordModel.OldPassword, changePasswordModel.NewPassword);
+                return await _mediator.Send(new ChangePasswordCommands.Command(changePasswordModel.UserId, changePasswordModel.OldPassword, changePasswordModel.NewPassword));
             }
             catch (Exception ex)
             {
@@ -117,7 +97,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.GetUsers(pageNumber, pageSize, searchText, cityId, shopId, languageId);
+                return await _mediator.Send(new UsersQuery.Query(pageNumber, pageSize, searchText, cityId, shopId, languageId,true));
             }
             catch (Exception ex)
             {
@@ -132,7 +112,12 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.GetUsersCount(searchText, cityId, shopId, languageId);
+                BaseResponse<List<UserModel>> responseUserModels = await _mediator.Send(new UsersQuery.Query(0, int.MaxValue, searchText, cityId, shopId, languageId));
+                if (!responseUserModels.IsSuccess)
+                {
+                    return new BaseResponse<int>(false, responseUserModels.Message, responseUserModels.ErrorCode);
+                }
+                return new BaseResponse<int>(true,string.Empty,string.Empty, responseUserModels.DataObject.Count());
             }
             catch (Exception ex)
             {
@@ -147,7 +132,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.GetUserById(userId);
+                return await _mediator.Send(new GetUserByIdQuery.Query(userId));
             }
             catch (Exception ex)
             {
@@ -162,7 +147,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.UpdateUser(userModel);
+                return await _mediator.Send(new UserUpdationCommands.Command(userModel));
             }
             catch (Exception ex)
             {
@@ -177,7 +162,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _userManagementService.DeleteUser(userId);
+                return await _mediator.Send(new UserDeletionCommands.Command(new Guid(userId)));
             }
             catch (Exception ex)
             {
@@ -207,7 +192,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                BaseResponse<List<UserModel>> usersResponse = await _userManagementService.GetUsers(0, int.MaxValue, searchText, cityId, shopId, languageId,false);
+                BaseResponse<List<UserModel>> usersResponse = await _mediator.Send(new UsersQuery.Query(0, int.MaxValue, searchText, cityId, shopId, languageId));
                 if (!usersResponse.IsSuccess)
                 {
                     throw new Exception(usersResponse.Message);

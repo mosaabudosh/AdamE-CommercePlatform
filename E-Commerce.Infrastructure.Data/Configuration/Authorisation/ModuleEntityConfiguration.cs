@@ -21,10 +21,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     NameAr = "التحكم في الوصول",
                     Order = 1,
                     IsInMenue = true,
-                    Icon = "pi pi-shield",
-                    CreationDate = new DateTime(2025,1,1),
-                    IsActive = true,
-                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E")
+                    Icon = "pi pi-shield"
                 },
                 new Domain.Domains.Authorisation.Module()
                 { 
@@ -33,10 +30,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     NameAr = "البيانات",
                     Order = 2,
                     IsInMenue = true,
-                    Icon = "pi pi-server",
-                    CreationDate = new DateTime(2025,1,1),
-                    IsActive = true,
-                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E")
+                    Icon = "pi pi-server"
                 },
                 new Domain.Domains.Authorisation.Module()
                 { 
@@ -45,10 +39,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     NameAr = "الإشعارات",
                     Order = 3,
                     IsInMenue = true,
-                    Icon = "pi pi-bell",
-                    CreationDate = new DateTime(2025,1,1),
-                    IsActive = true,
-                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E")
+                    Icon = "pi pi-bell"
                 },
                 new Domain.Domains.Authorisation.Module()
                 { 
@@ -57,15 +48,14 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     NameAr = "التقارير",
                     Order = 4, 
                     IsInMenue = true,
-                    Icon = "pi pi-file",
-                    CreationDate = new DateTime(2025,1,1),
-                    IsActive = true,
-                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E")
+                    Icon = "pi pi-file"                    
                 },
             });
             #endregion
 
             #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
             builder.Ignore(p => p.CreationDate);
             builder.Ignore(p => p.CreationUserId);
             builder.Ignore(p => p.LastUpdatedDate);

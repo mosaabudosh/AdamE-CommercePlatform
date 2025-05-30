@@ -31,17 +31,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Items\Commands\" />
-    <Folder Include="Services\Orders\Commands\" />
-    <Folder Include="Services\Orders\Queries\" />
-    <Folder Include="Services\Roles\Commands\" />
-    <Folder Include="Services\ScreenAction\Queries\" />
-    <Folder Include="Services\Screens\Commands\" />
-    <Folder Include="Services\Shops\Commands\" />
-    <Folder Include="Services\Taxs\Commands\" />
-    <Folder Include="Services\Taxs\Queries\" />
-    <Folder Include="Services\UserRoles\Queries\" />
-    <Folder Include="Services\UserTypes\Commands\" />
+    <Folder Include="Services\DashBoardManagement\OrdersManagement\Commands\" />
+    <Folder Include="Services\DashBoardManagement\OrdersManagement\Queries\" />
+    <Folder Include="Services\AuthenticationManagement\ScreenActionsManagement\Queries\" />
+    <Folder Include="Services\AuthenticationManagement\ScreensManagement\Commands\" />
+    <Folder Include="Services\AuthenticationManagement\UserRolesManagement\Queries\" />
+    <Folder Include="Services\AuthenticationManagement\UserTypesManagement\Commands\" />
+    <Folder Include="Services\NotificationManagement\NotificationTypeRoleManagement\Commands\" />
+    <Folder Include="Services\NotificationManagement\NotificationTypeRoleManagement\Queries\" />
+    <Folder Include="Services\NotificationManagement\Notification\Commands\" />
+    <Folder Include="Services\NotificationManagement\Notification\Queries\" />
   </ItemGroup>
 
 </Project>

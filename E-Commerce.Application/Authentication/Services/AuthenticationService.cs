@@ -5,7 +5,7 @@ using E_Commerce.Application.Authentication.Interfaces;
 namespace E_Commerce.Application.Authentication.Services
 {
 	 public class AuthenticationService : IAuthenticationService
-    {
+     {
 
         public AuthenticationService()
         {
@@ -59,6 +59,5 @@ namespace E_Commerce.Application.Authentication.Services
                 throw new Exception(ex.Message);
             }
         }
-     
-    }
+     }
 }

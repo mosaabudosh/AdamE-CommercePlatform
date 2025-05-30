@@ -1,9 +1,7 @@
-﻿using E_Commerce.Application.Model;
-using E_Commerce.Application.Services.City.Queries;
-using E_Commerce.Application.Services.Screen.Queries;
+﻿using E_Commerce.Application.Model.Authorisation;
+using E_Commerce.Application.Services.AuthenticationManagement.ScreensManagement.Queries;
 using Generic.Response;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.API.Controllers

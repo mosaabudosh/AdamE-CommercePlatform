@@ -15,7 +15,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration
 
 			#region Foreignkeys
 			builder.HasOne(e => e.ParentCategory).WithMany(e => e.ChildCategories).HasForeignKey(f => f.ParentCategoryId);
-			#endregion
-		}
-	}
+            #endregion
+
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            #endregion
+        }
+    }
 }

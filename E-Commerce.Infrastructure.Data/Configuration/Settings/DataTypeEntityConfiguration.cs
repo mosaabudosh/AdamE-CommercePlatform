@@ -21,14 +21,17 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
             #region Seeding Data
             builder.HasData(new DataType[]
             {
-                new DataType(){ DataTypeId = (int)DataTypes.Integer, Name = "Integer" , NameAr = "عدد صحيح"},
-                new DataType(){ DataTypeId = (int)DataTypes.Decimal, Name = "Decimal" , NameAr = "عدد عشري"},
-                new DataType(){ DataTypeId = (int)DataTypes.String, Name = "String" , NameAr = "سلسلة"},
-                new DataType(){ DataTypeId = (int)DataTypes.Boolean, Name = "Boolean" , NameAr = "منطقي"},
+                new DataType(){ DataTypeId = (int)PlatformSettingsDataTypes.Integer, Name = "Integer" , NameAr = "عدد صحيح"},
+                new DataType(){ DataTypeId = (int)PlatformSettingsDataTypes.Decimal, Name = "Decimal" , NameAr = "عدد عشري"},
+                new DataType(){ DataTypeId = (int)PlatformSettingsDataTypes.String, Name = "String" , NameAr = "سلسلة"},
+                new DataType(){ DataTypeId = (int)PlatformSettingsDataTypes.Boolean, Name = "Boolean" , NameAr = "منطقي"},
+                new DataType(){ DataTypeId = (int)PlatformSettingsDataTypes.File, Name = "File" , NameAr = "ملف"}
             });
             #endregion
 
             #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
             builder.Ignore(p => p.CreationDate);
             builder.Ignore(p => p.CreationUserId);
             builder.Ignore(p => p.LastUpdatedDate);

@@ -1,12 +1,10 @@
 ﻿using Adam.Generic.Generic;
 using E_Commerce.Application.Model;
-using E_Commerce.Application.Services.City.Commands;
-using E_Commerce.Application.Services.City.Queries;
-using E_Commerce.Domain.Domains;
+using E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Commands;
+using E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Queries;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace E_Commerce.API.Controllers
 {

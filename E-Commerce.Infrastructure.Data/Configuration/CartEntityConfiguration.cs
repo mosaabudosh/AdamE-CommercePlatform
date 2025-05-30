@@ -17,7 +17,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration
 			builder.HasOne(e => e.CartStatus).WithMany(e => e.Carts).HasForeignKey(f => f.CartStatusId);
 			builder.HasOne(e => e.User).WithMany(e => e.Carts).HasForeignKey(f => f.UserId);
 			builder.HasOne(e => e.TempCustomer).WithMany(e => e.Carts).HasForeignKey(f => f.TempCustomerId);
-			#endregion
-		}
-	}
+            #endregion
+
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            #endregion
+        }
+    }
 }

@@ -38,7 +38,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     Value = PlatformTheme.NormalMode,
-                    DataTypeId = (int)DataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -49,7 +49,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     Value = Convert.ToInt32(Enums.Languages.English).ToString(),
-                    DataTypeId = (int)DataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -59,7 +59,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "Logo",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)DataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -69,7 +69,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "LogoAr",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)DataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -79,7 +79,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "WaterMark",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)DataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -90,7 +90,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     Value = "Adam E-Commerce Platform",
-                    DataTypeId = (int)DataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -101,7 +101,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     Value = "منصة آدم للتجارة الإلكترونية",
-                    DataTypeId = (int)DataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -112,7 +112,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     Value = "dd/MM/yyyy",
-                    DataTypeId = (int)DataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -122,7 +122,8 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "In24Format",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)DataTypes.Boolean
+                    Value = "true",
+                    DataTypeId = (int)PlatformSettingsDataTypes.Boolean
                 },
                 new PlatformSetting()
                 {
@@ -132,7 +133,8 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "DMSUserPath",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)DataTypes.String
+                    Value = "Users",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
                 new PlatformSetting()
                 {
@@ -142,12 +144,71 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "DMSSettingsPath",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)DataTypes.String
+                    Value = "Settings",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DMSRootFolderPath,
+                    Name = "DMS Root Folder Path" ,
+                    NameAr = "مسار المجلد الجذر لـ DMS",
+                    Code = "DMSRootFolderPath",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "E:\\DMS\\",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DMSCategoryPath,
+                    Name = "DMS Category Path" ,
+                    NameAr = "مسار فئة DMS",
+                    Code = "DMSCategoryPath",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "Categories",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DMSCountryPath,
+                    Name = "DMS Country Path" ,
+                    NameAr = "مسار البلدان في DMS",
+                    Code = "DMSCountryPath",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "Countries",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DefaultPage,
+                    Name = "Default Page" ,
+                    NameAr = "الصفحة الافتراضية",
+                    Code = "DefaultPage",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = ((int)Screens.Welcome).ToString(),
+                    DataTypeId = (int)PlatformSettingsDataTypes.Integer
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DefaultMenuType,
+                    Name = "Default Menu Type" ,
+                    NameAr = "نوع القائمة الافتراضية",
+                    Code = "DefaultMenuType",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = ((int)MenuType.Open).ToString(),
+                    DataTypeId = (int)PlatformSettingsDataTypes.Integer
                 },
             });
             #endregion
 
             #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
             builder.Ignore(p => p.CreationDate);
             builder.Ignore(p => p.CreationUserId);
             builder.Ignore(p => p.LastUpdatedDate);

@@ -1,6 +1,5 @@
 ﻿using Adam.Generic.Generic;
-using E_Commerce.Application.Services.Country.Queries;
-using E_Commerce.Application.Services.Shop.Queries;
+using E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Queries;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +16,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new ShopQuery.Query());
+                return await _mediator.Send(new ShopsDDLQuery.Query());
             }
             catch (Exception ex)
             {

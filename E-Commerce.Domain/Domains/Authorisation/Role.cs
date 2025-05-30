@@ -1,5 +1,7 @@
 ﻿
 
+using E_Commerce.Domain.Domains.Notification;
+
 namespace E_Commerce.Domain.Domains.Authorisation
 {
 	public class Role : SharedBase
@@ -10,6 +12,6 @@ namespace E_Commerce.Domain.Domains.Authorisation
 
 		public virtual List<UserRole> UserRoles { get; set; }
 		public virtual List<RoleScreen> RoleScreens { get; set; }
-
-	}
+        public virtual List<NotificationTypeRole> NotificationTypeRoles { get; set; }
+    }
 }

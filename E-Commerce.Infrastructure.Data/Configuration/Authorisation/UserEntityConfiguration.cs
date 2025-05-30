@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using static E_Commerce.Domain.Enum.Enums;
 using System.Text;
+using E_Commerce.Domain.Enum;
+using static Adam.Generic.Constants.Constants;
 
 namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 {
@@ -41,7 +43,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                       LastNameAr = "أدمن",
                       Email = "Admin@gmail.com",
                       MobileNumber = "0788647816",
-                      LanguageId = (int)Languages.English,
+                      LanguageId = (int)Enums.Languages.English,
                       GenderId = (int)Genders.Male,
                       Adresse = "Amman",
                       CityId = 1,

@@ -9,8 +9,9 @@ namespace E_Commerce.Domain.Domains
 		public string Name { get; set; }
 		public string NameAr { get; set; }
 		public decimal Value { get; set; }
+        public string Code { get; set; }
 
-		public virtual List<ShopItem> ShopItems { get; set; }
+        public virtual List<ShopItem> ShopItems { get; set; }
 
 	}
 }

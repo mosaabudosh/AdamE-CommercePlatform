@@ -15,7 +15,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration
 
 			#region Foreignkeys
 			builder.HasOne(e => e.ShopItem).WithOne(e => e.CartDetail).HasForeignKey<CartDetail>(f => f.ShopItemId);
-			#endregion
-		}
-	}
+            #endregion
+
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            #endregion
+        }
+    }
 }

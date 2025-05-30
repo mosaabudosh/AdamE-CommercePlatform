@@ -12,9 +12,6 @@ namespace E_Commerce.Infrastructure.Data.Configuration
 		{
 			builder.ToTable("OrderStatuses");
 			builder.HasKey(e => e.OrderStatusId);
-            builder.Property(e => e.OrderStatusId).ValueGeneratedNever();
-
-
 
             #region Seeding Data
             builder.HasData(new OrderStatus[]
@@ -27,10 +24,12 @@ namespace E_Commerce.Infrastructure.Data.Configuration
 				new OrderStatus(){ OrderStatusId = (int)OrderStatuses.Canceled, Name = "Canceled" , NameAr = "ملغي"},
 				new OrderStatus(){ OrderStatusId = (int)OrderStatuses.Rejected, Name = "Rejected" , NameAr = "مرفوض"},
 			});
-			#endregion
+            #endregion
 
-			#region NotMapped
-			builder.Ignore(p => p.CreationDate);
+            #region NotMapped
+            builder.Ignore(p => p.DeletedDate);
+            builder.Ignore(p => p.DeletedUserId);
+            builder.Ignore(p => p.CreationDate);
 			builder.Ignore(p => p.CreationUserId);
 			builder.Ignore(p => p.LastUpdatedDate);
 			builder.Ignore(p => p.LastUpdateUserId);
