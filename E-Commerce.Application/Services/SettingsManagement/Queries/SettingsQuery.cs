@@ -25,21 +25,21 @@ namespace E_Commerce.Application.Services.SettingsManagement.Queries
                 {
                     List<SettingsModel> platformSettings = _unitOfWork.GetRepository<Domain.Domains.Settings.PlatformSetting>().GetByExpressionAsNoTracking().Select(s => new SettingsModel()
                     {
-                     PlatformSettingId = s.PlatformSettingId,
-                     Code = s.Code,
-                     DataType = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.DataType.Name : s.DataType.NameAr,
-                     DataTypeId = s.DataTypeId,
-                     IsReadOnly = s.IsReadOnly,
-                     Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
-                     IsVisible = s.IsVisible,
-                     Value = s.Value
+                         PlatformSettingId = s.PlatformSettingId,
+                         Code = s.Code,
+                         DataType = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.DataType.Name : s.DataType.NameAr,
+                         DataTypeId = s.DataTypeId,
+                         IsReadOnly = s.IsReadOnly,
+                         Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
+                         IsVisible = s.IsVisible,
+                         Value = s.Value,
+                         NameAr = s.NameAr
                     }).ToList();
 
                     if (platformSettings.Any(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty( p.Value)))
                     {
                         string DMSSettingsPath = _cachingPlatformSettings[PlatformSettingsCode.DMSSettingsPath];
-
-                        List<string> filePaths = platformSettings.Where(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(p.Value)).Select(s => { return $"{DMSSettingsPath}\\{s.Name}_{s.PlatformSettingId}"; }).ToList();
+                        List<string> filePaths = platformSettings.Where(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(p.Value)).Select(s => { return $"{DMSSettingsPath}\\{s.Name}"; }).ToList();
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

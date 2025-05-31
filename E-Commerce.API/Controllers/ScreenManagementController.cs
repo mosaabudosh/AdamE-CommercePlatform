@@ -1,4 +1,6 @@
-﻿using E_Commerce.Application.Model.Authorisation;
+﻿using Adam.Generic.Generic;
+using E_Commerce.Application.Model.Authorisation;
+using E_Commerce.Application.Services.AuthenticationManagement.ActionsManagement.Queries;
 using E_Commerce.Application.Services.AuthenticationManagement.ScreensManagement.Queries;
 using Generic.Response;
 using MediatR;
@@ -42,6 +44,21 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetSecreensCount), UserAccessor.GetCurrentUserId(), searchText);
                 return new BaseResponse<int>(false, ex.Message);
+            }
+        }
+
+        [Route("secreens-ddl")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetSecreensDDl()
+        {
+            try
+            {
+                return await _mediator.Send(new ScreensDDLQuery.Query());
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetSecreensDDl), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
             }
         }
     }

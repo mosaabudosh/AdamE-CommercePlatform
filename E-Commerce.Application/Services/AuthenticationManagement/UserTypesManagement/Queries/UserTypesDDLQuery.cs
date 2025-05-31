@@ -20,7 +20,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UserTypesMana
             {
                 try
                 {
-                    List<DDLDataSource> userTypes = _unitOfWork.GetRepository<Domain.Domains.Authorisation.UserType>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> userTypes = _unitOfWork.GetRepository<Domain.Domains.Authorisation.UserType>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
                     {
                         Value = p.UserTypeId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

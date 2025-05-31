@@ -42,7 +42,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                 {
                     UserSettingId = 2,
                     PlatformSettingId = (int)PlatformSettings.DefaultLanguage,
-                    Value = $"{Enums.Languages.English}",
+                    Value = Convert.ToInt32(Enums.Languages.English).ToString(),
                     UserId = userId ,
                     CreationUserId = userId,
                     CreationDate = DateTime.UtcNow,
@@ -52,7 +52,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                 {
                     UserSettingId = 3,
                     PlatformSettingId = (int)PlatformSettings.DefaultPage,
-                    Value = $"{Enums.Screens.Welcome}",
+                    Value = Convert.ToInt32(Enums.Screens.Welcome).ToString(),
                     UserId = userId ,
                     CreationUserId = userId,
                     CreationDate = DateTime.UtcNow,
@@ -62,7 +62,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                 {
                     UserSettingId = 4,
                     PlatformSettingId = (int)PlatformSettings.DefaultMenuType,
-                    Value = $"{Enums.MenuType.Open}",
+                    Value = Convert.ToInt32(Enums.MenuType.Open).ToString(),
                     UserId = userId ,
                     CreationUserId = userId,
                     CreationDate = DateTime.UtcNow,

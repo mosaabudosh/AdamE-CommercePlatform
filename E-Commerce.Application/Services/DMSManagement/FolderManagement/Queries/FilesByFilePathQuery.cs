@@ -51,7 +51,8 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries
                     {
                         files.ForEach(async file =>
                         {
-                            byte[] fileInByte = System.IO.File.ReadAllBytes($"{file.Path}\\{file.Name}.{file.FileType.Extension}");
+                            string filePath = $"{file.Path}\\{file.Name}.{file.FileType.Extension}";
+                            byte[] fileInByte = System.IO.File.ReadAllBytes(filePath);
                             int startIndex = file.Path.IndexOf(pathFromFolderConfiguration) + pathFromFolderConfiguration.Length;
                             int pathLength = file.Path.Length;
                             int length = pathLength - startIndex;

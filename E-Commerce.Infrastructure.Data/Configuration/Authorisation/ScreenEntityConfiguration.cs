@@ -113,6 +113,149 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
                     IsActive = true
                 },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Cities,
+                    Name = "Cities" ,
+                    NameAr = "المدن",
+                    Url = "cities",
+                    Icon = "pi pi-map-marker",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Countries,
+                    Name = "Countries" ,
+                    NameAr = "البلدان",
+                    Url = "countries",
+                    Icon = "pi pi-map",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Items,
+                    Name = "Items" ,
+                    NameAr = "العناصر",
+                    Url = "items",
+                    Icon = "pi pi-list",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Shops,
+                    Name = "Shops" ,
+                    NameAr = "المتاجر",
+                    Url = "shops",
+                    Icon = "pi pi-building",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Taxs,
+                    Name = "Taxs" ,
+                    NameAr = "الضرائب",
+                    Url = "taxs",
+                    Icon = "pi pi-asterisk",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Categories,
+                    Name = "Categories" ,
+                    NameAr = "التصنيفات",
+                    Url = "categories",
+                    Icon = "pi pi-list",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Carts,
+                    Name = "Carts" ,
+                    NameAr = "العربات",
+                    Url = "carts",
+                    Icon = "pi pi-shopping-cart",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.CartStatuses,
+                    Name = "Cart Statuses" ,
+                    NameAr = "حالات عربة التسوق",
+                    Url = "cart-statuses",
+                    Icon = "pi pi-list",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Orders,
+                    Name = "Orders" ,
+                    NameAr = "طلبات",
+                    Url = "orders",
+                    Icon = "pi pi-briefcase",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Reports,
+                    Name = "Reports" ,
+                    NameAr = "التقارير",
+                    Url = "reports",
+                    Icon = "pi pi-file",
+                    ModuleId = (int)Modules.Report,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Notifications,
+                    Name = "Notifications" ,
+                    NameAr = "الإشعارات",
+                    Url = "notifications-page",
+                    Icon = "pi pi-bell",
+                    ModuleId = (int)Modules.Notification,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
             });
             #endregion
 

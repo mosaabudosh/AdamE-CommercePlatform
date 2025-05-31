@@ -42,8 +42,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Command
                     {
                         if (request.FileCreationModel is not null)
                         {
-                            request.FileCreationModel.FileName = $"{request.FileCreationModel.FileName}.{request.FileCreationModel.FileType}";
-                            string newPath = $"{path}\\{request.FileCreationModel.FileName}";
+                            string newPath = $"{path}\\{request.FileCreationModel.FileName}.{request.FileCreationModel.FileType}";
                             if (!System.IO.File.Exists(newPath))
                             {
                                 byte[] fileContentBytes = await _mediator.Send(new ConvertString64ToByteCommands.Command(request.FileCreationModel.FileContent));
@@ -57,8 +56,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Command
                         DirectoryInfo di = Directory.CreateDirectory(path);
                         if (request.FileCreationModel is not null)
                         {
-                            request.FileCreationModel.FileName = $"{request.FileCreationModel.FileName}\\{request.FileCreationModel.FileType}";
-                            string newPath = $"{path}\\{request.FileCreationModel.FileName}";
+                            string newPath = $"{path}\\{request.FileCreationModel.FileName}.{request.FileCreationModel.FileType}";
                             if (!System.IO.File.Exists(newPath))
                             {
                                 byte[] fileContentBytes = await _mediator.Send(new ConvertString64ToByteCommands.Command(request.FileCreationModel.FileContent));
