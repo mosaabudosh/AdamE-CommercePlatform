@@ -6,6 +6,7 @@ using static E_Commerce.Domain.Enum.Enums;
 using System.Text;
 using E_Commerce.Domain.Enum;
 using static Adam.Generic.Constants.Constants;
+using Microsoft.AspNetCore.Identity;
 
 namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 {
@@ -27,14 +28,21 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
             #endregion
 
             #region Seeding
+            byte[] passwordHash;
+            byte[] passwordSalt;
+            using (System.Security.Cryptography.HMACSHA512 HMACSHA512 = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = HMACSHA512.Key;
+                passwordHash = HMACSHA512.ComputeHash(System.Text.Encoding.UTF8.GetBytes("123456"));
+            }
             Guid userId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E");
             builder.HasData(new User[] {
                 new User()
                 {
                       UserId = userId,
                       UserName = "Admin",
-                      PasswordHash =  Encoding.ASCII.GetBytes("0x6FAA21E8435DC04FF2C575BE7AB367C3E1B671228874B058B03CCD07B2F91C7D4F59E920D41743E793FFD94BD6E6F05B37B32AD4168382D77E5D1D1CB66B8B4C"),
-                      PasswordSalt = Encoding.ASCII.GetBytes("0x7B099B445376E2E135AD1386D38EC88FD9B91233AA8EF44530178FAE81F195F490BC78D4408CAD69150D62F4CF6D023608936082410076F46F849AF67721B8DD041CE86909E894ADDCC37636A542CB3DFEF60F1EC4ACC409960D54BA2C345D3A0543F0355B3BC66B5621310520831D6C3BF54DAFF42AC8963121B7C6FEFA8C27"),
+                      PasswordHash = passwordHash,
+                      PasswordSalt = passwordSalt,
                       FirstName = "Admin",
                       FirstNameAr = "أدمن",
                       SecondName = "Admin",

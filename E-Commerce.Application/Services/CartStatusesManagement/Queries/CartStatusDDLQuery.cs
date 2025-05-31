@@ -22,7 +22,7 @@ namespace E_Commerce.Application.Services.CartStatuses.Queries
             {
                 try
                 {
-                    List<DDLDataSource> cartStatuses = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> cartStatuses = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
                     {
                         Value = p.CartStatusId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

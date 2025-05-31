@@ -5,6 +5,7 @@ using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.Authorisation;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
 using E_Commerce.Domain.Domains.Authorisation;
+using E_Commerce.Domain.Enum;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -69,8 +70,9 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
 
                         await _unitOfWork.CommitChanges();
 
+                        string? screenId = user.UserSettings.FirstOrDefault(p => p.PlatformSettingId == (int)Enums.PlatformSettings.DefaultPage)?.Value;
                         List<int> roleIds = user.UserRoles.Select(s => s.RoleId).ToList();
-                        List<UserMenu> userMenus = GetUserMenu(roleIds);
+                        List<UserMenu> userMenus = GetUserMenu(roleIds,!string.IsNullOrEmpty(screenId) ? Convert.ToInt32(screenId) : null);
 
                         UserModel userModel = new UserModel()
                         {
@@ -123,7 +125,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                     }
                 }
 
-                private List<UserMenu> GetUserMenu(List<int> roleIds)
+                private List<UserMenu> GetUserMenu(List<int> roleIds,int? screenId = null)
                 {
                     List<UserMenu> userMenus = new List<UserMenu>();
                     try
@@ -134,8 +136,8 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             Label = s.FirstOrDefault().Screen.Module.Name,
                             LabelAr = s.FirstOrDefault().Screen.Module.NameAr,
                             Icon = s.FirstOrDefault().Screen.Module.Icon,
-                            Expanded = false,
-                            IsActive = false,
+                            Expanded = screenId.HasValue ? screenId.Value == s.Key : false,
+                            IsActive = screenId.HasValue ? screenId.Value == s.Key : false,
                             UserMenuItems = s.Select(m => new UserMenuItem()
                             {
                                 Id = m.ScreenId,
@@ -143,7 +145,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                                 LabelAr = m.Screen.NameAr,
                                 Icon = m.Screen.Icon,
                                 Expanded = false,
-                                IsActive = false,
+                                IsActive = screenId.HasValue ? screenId.Value == m.ScreenId : false,
                                 ParentId = s.Key,
                                 URL = m.Screen.Url,
                             }).ToList()

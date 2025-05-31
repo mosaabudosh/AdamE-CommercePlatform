@@ -20,7 +20,7 @@ namespace E_Commerce.Application.Services.Gender.Queries
             {
                 try
                 {
-                    List<DDLDataSource> genders = _unitOfWork.GetRepository<Domain.Domains.Gender>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> genders = _unitOfWork.GetRepository<Domain.Domains.Gender>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
                     {
                         Value = p.GenderId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

@@ -4,6 +4,11 @@ using E_Commerce.Application.Authentication.Interfaces;
 using E_Commerce.Application.Authentication.Security;
 using E_Commerce.Application.Authentication.Services;
 using E_Commerce.Application.Caching;
+using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
+using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Application.Services.SettingsManagement.Queries;
+using E_Commerce.Domain.IHttpServices;
+using E_Commerce.Domain.RepositoryInterfaces;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,12 +22,12 @@ namespace E_Commerce.Application.ServicesRegistration
         {
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddSingleton<ITokenHandler, TokenHandler>();
-
+           
             Assembly assembly = Assembly.GetExecutingAssembly();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly));
 
-            IMediator mediator = new Mediator(serviceProvider);
-            CachingPlatformSettings cachingPlatformSettings = new CachingPlatformSettings(mediator);
+            IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
+            CachingPlatformSettings cachingPlatformSettings = new CachingPlatformSettings(unitOfWork);
             services.AddSingleton(cachingPlatformSettings);
 
             return services;

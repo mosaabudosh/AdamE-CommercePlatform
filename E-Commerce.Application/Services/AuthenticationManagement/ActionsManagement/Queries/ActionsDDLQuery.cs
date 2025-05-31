@@ -22,7 +22,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.ActionsManage
             {
                 try
                 {
-                    List<DDLDataSource> actions = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> actions = _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
                     {
                         Value = p.ActionId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

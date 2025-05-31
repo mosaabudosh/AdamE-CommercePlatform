@@ -139,7 +139,9 @@ namespace E_Commerce.Domain.Enum
             DMSSettingsPath,
             DMSRootFolderPath,
             DMSCategoryPath,
-            DMSCountryPath
+            DMSCountryPath,
+            DefaultPage,
+            DefaultMenuType
         }
 
         public enum Screens

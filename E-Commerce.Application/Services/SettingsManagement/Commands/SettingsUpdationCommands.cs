@@ -51,7 +51,7 @@ namespace E_Commerce.Application.Services.SettingsManagement.Commands
                     {
                         FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                         {
-                            FolderName = $"{platformSetting.Name}_{platformSetting.PlatformSettingId}",
+                            FolderName = $"{platformSetting.Name}",
                             FolderPath = $"{DMSSettingsPath}",
                             FileCreationModels = new List<FileCreationModel>(),
                         };

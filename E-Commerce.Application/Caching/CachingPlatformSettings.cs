@@ -2,6 +2,7 @@
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
 using E_Commerce.Application.Services.SettingsManagement.Queries;
 using E_Commerce.Domain.Enum;
+using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
 using Newtonsoft.Json.Linq;
@@ -18,10 +19,11 @@ namespace E_Commerce.Application.Caching
     public class CachingPlatformSettings
     {
         private Dictionary<PlatformSettingsCode, object> settings { get; set; }
-        private IMediator _mediator { get; set; }
-        public CachingPlatformSettings(IMediator mediator)
+        private IUnitOfWork _unitOfWork { get; set; }
+
+        public CachingPlatformSettings(IUnitOfWork unitOfWork)
         {
-            _mediator = mediator;
+            _unitOfWork = unitOfWork;
             this.GetPlatformSettingsAsync();
         }
 
@@ -29,11 +31,21 @@ namespace E_Commerce.Application.Caching
         {
             try
             {
-                BaseResponse<List<SettingsModel>> responseSettingss = await _mediator.Send(new SettingsQuery.Query());
-                if (responseSettingss.IsSuccess)
+                List<SettingsModel> platformSettings = _unitOfWork.GetRepository<Domain.Domains.Settings.PlatformSetting>().GetByExpressionAsNoTracking().Select(s => new SettingsModel()
+                {
+                    PlatformSettingId = s.PlatformSettingId,
+                    Code = s.Code,
+                    DataTypeId = s.DataTypeId,
+                    IsReadOnly = s.IsReadOnly,
+                    Name = s.Name,
+                    IsVisible = s.IsVisible,
+                    Value = s.Value
+                }).ToList();
+
+                if (platformSettings is not null )
                 {
                     this.settings = new Dictionary<PlatformSettingsCode, object>();
-                    foreach (SettingsModel setting in responseSettingss.DataObject)
+                    foreach (SettingsModel setting in platformSettings)
                     {
                         Enum.TryParse(setting.Code, out PlatformSettingsCode settingCode);
                         this.settings.Add(settingCode, setting.Value);
@@ -55,7 +67,7 @@ namespace E_Commerce.Application.Caching
             }
         }
 
-        private dynamic GetSettingByCode(PlatformSettingsCode platformSettingsCode)
+        private dynamic GetPlatformSettingByCode(PlatformSettingsCode platformSettingsCode)
         {
             if (settings == null)
             {
@@ -70,7 +82,7 @@ namespace E_Commerce.Application.Caching
 
         public dynamic this[PlatformSettingsCode platformSettingsCode]
         {
-            get => GetSettingByCode(platformSettingsCode);
+            get => GetPlatformSettingByCode(platformSettingsCode);
         }
     }
 }

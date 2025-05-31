@@ -86,7 +86,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             new UserSetting()
                             {
                                 PlatformSettingId = (int)PlatformSettings.DefaultLanguage,
-                                Value = $"{Enums.Languages.English}",
+                                Value = Convert.ToInt32(Enums.Languages.English).ToString(),
                                 CreationUserId = _userAccessor.GetCurrentUserId(),
                                 CreationDate = DateTime.UtcNow,
                                 IsActive = true
