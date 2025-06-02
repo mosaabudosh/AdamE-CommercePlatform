@@ -21,7 +21,6 @@ namespace E_Commerce.Domain.Domains.Authorisation
 		public string Adresse { get; set; }
 		public bool IsBlock { get; set; }
 		public int UserTypeId { get; set; }
-		public int LanguageId { get; set; }
 		public int GenderId { get; set; }
 		public int CityId { get; set; }
 		public int? ShopId { get; set; }
@@ -31,7 +30,6 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public virtual User LastUpdateUser { get; set; }
         public virtual List<UserRole> UserRoles { get; set; }
 		public virtual UserType UserType { get; set; }
-		public virtual Language Language { get; set; }
 		public virtual Gender Gender { get; set; }
 		public virtual City City { get; set; }
 		public virtual Shop Shop { get; set; }

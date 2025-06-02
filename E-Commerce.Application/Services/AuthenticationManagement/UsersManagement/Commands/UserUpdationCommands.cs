@@ -42,7 +42,6 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                     user.Email = request.UserModel.Email.Trim();
                     user.MobileNumber = request.UserModel.MobileNumber.Trim();
                     user.CityId = request.UserModel.CityId;
-                    user.LanguageId = request.UserModel.LanguageId;
                     user.GenderId = request.UserModel.GenderId;
                     user.DateOfBirth = request.UserModel.DateOfBirth;
                     user.ProfileImage = !string.IsNullOrEmpty(request.UserModel.ProfileImage) ? request.UserModel.ProfileImage.Trim() : null;

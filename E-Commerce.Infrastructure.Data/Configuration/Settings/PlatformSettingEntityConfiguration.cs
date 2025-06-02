@@ -49,7 +49,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     Value = Convert.ToInt32(Enums.Languages.English).ToString(),
-                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.Integer
                 },
                 new PlatformSetting()
                 {
@@ -59,7 +59,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "Logo",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.File
                 },
                 new PlatformSetting()
                 {
@@ -69,7 +69,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "LogoAr",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.File
                 },
                 new PlatformSetting()
                 {
@@ -79,7 +79,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Code = "WaterMark",
                     IsReadOnly = false,
                     IsVisible = true,
-                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                    DataTypeId = (int)PlatformSettingsDataTypes.File
                 },
                 new PlatformSetting()
                 {
@@ -138,18 +138,6 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                 },
                 new PlatformSetting()
                 {
-                    PlatformSettingId = (int)PlatformSettings.DMSSettingsPath,
-                    Name = "DMS Settings Path" ,
-                    NameAr = "مسار الإعدادات في DMS",
-                    Code = "DMSSettingsPath",
-                    IsReadOnly = false,
-                    IsVisible = true,
-                    Value = "Settings",
-                    DataTypeId = (int)PlatformSettingsDataTypes.String
-                },
-
-                new PlatformSetting()
-                {
                     PlatformSettingId = (int)PlatformSettings.DMSRootFolderPath,
                     Name = "DMS Root Folder Path" ,
                     NameAr = "مسار المجلد الجذر لـ DMS",
@@ -202,6 +190,95 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsVisible = true,
                     Value = ((int)MenuType.Open).ToString(),
                     DataTypeId = (int)PlatformSettingsDataTypes.Integer
+                },
+
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.LicenceNumber,
+                    Name = "Licence Number" ,
+                    NameAr = "رقم الرخصة",
+                    Code = "LicenceNumber",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "XXXXXXXXXX",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.TaxNumber,
+                    Name = "Tax Number" ,
+                    NameAr = "الرقم الضريبي",
+                    Code = "TaxNumber",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "XXXXXXXXXX",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.CRNumber,
+                    Name = "Commercial Registration Number" ,
+                    NameAr = "رقم السجل التجاري",
+                    Code = "CRNumber",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "XXXXXXXXXX",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.Address,
+                    Name = "Address" ,
+                    NameAr = "العنوان",
+                    Code = "Address",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "Amman",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.AddressAr,
+                    Name = "Address In Arabic" ,
+                    NameAr = "العنوان باللغة العربية",
+                    Code = "AddressAr",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "عمان",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.MobileNumber,
+                    Name = "Mobile Number" ,
+                    NameAr = "رقم الجوال",
+                    Code = "MobileNumber",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "+962788647816",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.Website,
+                    Name = "Website" ,
+                    NameAr = "الموقع الإلكتروني",
+                    Code = "Website",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "www.AdamE-CommercePlatform.com",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.Email,
+                    Name = "Email" ,
+                    NameAr = "البريد الإلكتروني",
+                    Code = "Email",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "AdamE-CommercePlatform@gmail.com",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
             });
             #endregion

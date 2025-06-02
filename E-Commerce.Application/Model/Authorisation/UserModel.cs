@@ -24,7 +24,6 @@ namespace E_Commerce.Application.Model.Authorisation
         public string Adresse { get; set; }
         public bool? IsBlock { get; set; }
         public int UserTypeId { get; set; }
-        public int LanguageId { get; set; }
         public int GenderId { get; set; }
         public string? Gender { get; set; }
         public string? Age { get; set; }
@@ -32,6 +31,7 @@ namespace E_Commerce.Application.Model.Authorisation
         public int? ShopId { get; set; }
         public bool? IsActive { get; set; }
         public List<int>? RoleIds { get; set; }
+
         public List<UserMenu>? UserMenus { get; set; }
         public FileCreationModel? FileCreationModel { get; set; }
         public List<UserRoleModel>? UserRoles { get; set; }

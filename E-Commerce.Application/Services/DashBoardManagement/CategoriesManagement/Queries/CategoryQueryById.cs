@@ -43,7 +43,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     if (!string.IsNullOrEmpty(category.Image))
                     {
                         string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
-                        string folderPath = $"{DMSCategoryPath}\\{category.CategoryId}";
+                        string folderPath = $"{DMSCategoryPath}\\{category.Name.Trim()}";
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

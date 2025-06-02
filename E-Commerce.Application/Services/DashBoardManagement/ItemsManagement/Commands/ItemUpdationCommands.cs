@@ -37,6 +37,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                         NameAr = request.ItemModel.NameAr.Trim(),
                         Image = request.ItemModel.Image?.Trim(),
                         Code = request.ItemModel.Code.Trim(),
+                        CategoryId = request.ItemModel.CategoryId,
                         Descreption = request.ItemModel.Descreption.Trim(),
                         IsBlock = request.ItemModel.IsBlock.HasValue ? request.ItemModel.IsBlock.Value : false,
                         LastUpdateUserId = _userAccessor.GetCurrentUserId(),

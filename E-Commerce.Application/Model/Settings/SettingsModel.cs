@@ -18,6 +18,6 @@ namespace E_Commerce.Application.Model.Settings
         public bool IsVisible { get; set; }
         public int DataTypeId { get; set; }
         public string DataType { get; set; }
-        public FileCreationModel? FileCreationModel { get; set; }
+        //public FileCreationModel? FileCreationModel { get; set; }
     }
 }

@@ -18,8 +18,8 @@ namespace E_Commerce.Infrastructure.HttpServices
 
         public string GetCurrentUserName()
         {
-            string userName = _httpContextAccessor.HttpContext.User?.Claims?.LastOrDefault(p => p.Type == ClaimTypes.NameIdentifier)?.Value;
-            return userName;
+            string name = _httpContextAccessor.HttpContext.User?.Claims?.LastOrDefault(p => p.Type == ClaimTypes.Name)?.Value;
+            return name;
         }
         public Guid? GetCurrentUserId()
         {

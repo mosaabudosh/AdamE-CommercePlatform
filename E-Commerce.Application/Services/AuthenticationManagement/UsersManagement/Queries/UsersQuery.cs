@@ -46,20 +46,19 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                     List<UserModel> users = _unitOfWork.GetRepository<User>().GetByExpressionAsNoTracking(p =>
                     (string.IsNullOrEmpty(request.SearchText) || p.FirstName.Contains(request.SearchText))
                     && (!request.CityId.HasValue || p.CityId == request.CityId.Value)
-                    && (!request.ShopId.HasValue || p.ShopId == request.ShopId.Value)
-                    && (!request.LanguageId.HasValue || p.LanguageId == request.LanguageId.Value)).Select(s => new UserModel
+                    && (!request.ShopId.HasValue || p.ShopId == request.ShopId.Value)).Select(s => new UserModel
                     {
                         FirstName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.FirstName : s.FirstNameAr,
                         SecondName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.SecondName : s.SecondNameAr,
                         LastName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.LastName : s.LastNameAr,
                         Email = s.Email,
-                        LanguageId = s.LanguageId,
                         MobileNumber = s.MobileNumber,
                         UserId = s.UserId.ToString(),
                         GenderId = s.GenderId,
                         IsBlock = s.IsBlock,
                         IsActive = s.IsActive,
-                        ProfileImage = s.ProfileImage,
+                        ProfileImage = !request.ReadProfileImage.HasValue || request.ReadProfileImage.Value ? s.ProfileImage : string.Empty,
+                        Age = s.DateOfBirth.HasValue ? $"{DateTime.UtcNow.Year - s.DateOfBirth.Value.Year}" :string.Empty,
                         Gender = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Gender.Name : s.Gender.NameAr,
                         UserRoles = s.UserRoles.Select(r => new UserRoleModel()
                         {

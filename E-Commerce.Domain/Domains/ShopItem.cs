@@ -10,7 +10,8 @@ namespace E_Commerce.Domain.Domains
 		public decimal Price { get; set; }
 		public double? InStocks { get; set; }
 		public double? OutOfStocks { get; set; }
-		public int? TaxId { get; set; }
+        public string? Image { get; set; }
+        public int? TaxId { get; set; }
 		public Guid ItemId { get; set; }
         public int ShopId { get; set; }
 

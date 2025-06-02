@@ -39,7 +39,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
                     List<ItemModel> items = _unitOfWork.GetRepository<Domain.Domains.Item>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText) || p.Category.Name.Contains(request.SearchText) || p.Category.NameAr.Contains(request.SearchText)) && (!request.CategoryId.HasValue || p.CategoryId == request.CategoryId.Value)).Select(s => new ItemModel()
                     {
                         ItemId = s.ItemId,
-                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
+                        Name = s.Name,
+                        NameAr = s.NameAr,
                         CategoryId = s.CategoryId,
                         Category = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Category.Name : s.Category.NameAr,
                         Code = s.Code,
@@ -50,7 +51,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
 
                     if (items.Any(p => !string.IsNullOrEmpty(p.Image)))
                     {
-                        List<string> filePaths = items.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{request.ItemPathDMS}\\{s.CategoryId}"; }).ToList();
+                        List<string> filePaths = items.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{request.ItemPathDMS}\\{s.ItemId}"; }).ToList();
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {
