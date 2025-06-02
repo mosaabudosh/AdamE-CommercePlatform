@@ -10,6 +10,7 @@ using E_Commerce.Application.Services.SettingsManagement.Queries;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;

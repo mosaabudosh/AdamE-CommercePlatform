@@ -48,7 +48,6 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             LastNameAr = request.UserModel.LastNameAr,
                             Email = request.UserModel.Email,
                             MobileNumber = request.UserModel.MobileNumber,
-                            LanguageId = request.UserModel.LanguageId,
                             GenderId = request.UserModel.GenderId,
                             Adresse = request.UserModel.Adresse,
                             CityId = request.UserModel.CityId,
@@ -94,7 +93,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             new UserSetting()
                             {
                                 PlatformSettingId = (int)PlatformSettings.DefaultPage,
-                                Value = $"{Enums.Screens.Welcome}",
+                                Value =Convert.ToInt32(Enums.Screens.Welcome).ToString(),
                                 CreationUserId = _userAccessor.GetCurrentUserId(),
                                 CreationDate = DateTime.UtcNow,
                                 IsActive = true
@@ -102,7 +101,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             new UserSetting()
                             {
                                 PlatformSettingId = (int)PlatformSettings.DefaultMenuType,
-                                Value = $"{Enums.MenuType.Open}",
+                                Value = Convert.ToInt32(Enums.MenuType.Open).ToString(),
                                 CreationUserId = _userAccessor.GetCurrentUserId(),
                                 CreationDate = DateTime.UtcNow,
                                 IsActive = true

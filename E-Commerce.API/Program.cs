@@ -54,10 +54,7 @@ try
 
     ServiceProvider serviceProvider = builder.Services.BuildServiceProvider();
     IUserAccessor userAccessor = serviceProvider.GetRequiredService<IUserAccessor>();
-    //IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
-
     builder.Services.ConfigureAdamService(serviceProvider);
-    //builder.Services.AddSingleton(unitOfWork);
 
     builder.Services.Configure<TokenOptions>(options => builder.Configuration.GetSection("TokenOptions").Bind(options));
 

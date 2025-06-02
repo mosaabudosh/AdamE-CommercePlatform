@@ -1,5 +1,6 @@
 ﻿using E_Commerce.API.Model;
 using E_Commerce.Application.Model.Authorisation;
+using E_Commerce.Application.Model.Settings;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Commands;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Queries;
 using Generic.Response;
@@ -13,6 +14,7 @@ namespace E_Commerce.API.Controllers
     [ApiController]
     public class UserManagementController(IMediator _mediator) : BaseController
     {
+        [AllowAnonymous]
         [HttpPost]
         [Route("registration")]
         public async Task<ActionResult<BaseResponse>> Registration([FromBody] UserModel userModel)
@@ -202,12 +204,17 @@ namespace E_Commerce.API.Controllers
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 var userModels = usersResponse.DataObject.Select(x => new
                 {
-                    UserFullName = x.FirstName,
+                    UserFullName = HttpAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? $"{x.FirstName} {x.SecondName} {x.LastName}" : $"{x.FirstNameAr} {x.SecondNameAr} {x.LastNameAr}",
                     MobileNumber = x.MobileNumber,
-                    Gender = x.Gender
+                    Gender = x.Gender,
+                    Age = x.Age
                 }).ToList();
+
+                PlatformInfoModel platformInfoModel = CachingPlatformSettings.GetPlatformInfo();
+                platformInfoModel.PrintedBy = UserAccessor.GetCurrentUserName();
+                dataSources.Add("PlatformInfoModel", new[] { platformInfoModel });
                 dataSources.Add("UserModel", userModels);
-                parameters.Add("PrintedBy", "Admin");
+
                 return ToPDF("\\Reports\\Users.rdlc", dataSources, parameters);
             }
             catch (Exception ex)

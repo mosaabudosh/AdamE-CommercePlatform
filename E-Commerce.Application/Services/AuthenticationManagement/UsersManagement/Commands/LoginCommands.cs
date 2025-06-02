@@ -86,7 +86,6 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             RefreshToken = userLogin.RefreshToken,
                             GenderId = user.GenderId,
                             UserTypeId = user.UserTypeId,
-                            LanguageId = user.LanguageId,
                             ProfileImage = user.ProfileImage,
                             RoleIds = roleIds,
                             UserMenus = userMenus,

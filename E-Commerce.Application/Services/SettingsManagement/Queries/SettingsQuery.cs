@@ -36,23 +36,23 @@ namespace E_Commerce.Application.Services.SettingsManagement.Queries
                          NameAr = s.NameAr
                     }).ToList();
 
-                    if (platformSettings.Any(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty( p.Value)))
-                    {
-                        string DMSSettingsPath = _cachingPlatformSettings[PlatformSettingsCode.DMSSettingsPath];
-                        List<string> filePaths = platformSettings.Where(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(p.Value)).Select(s => { return $"{DMSSettingsPath}\\{s.Name}"; }).ToList();
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<List<SettingsModel>>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
-                        {
-                            foreach (SettingsModel platformSetting in platformSettings.Where(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(p.Value)))
-                            {
-                                platformSetting.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == platformSetting.Value);
-                            }
-                        }
-                    }
+                    //if (platformSettings.Any(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(p.Value)))
+                    //{
+                    //    string DMSSettingsPath = _cachingPlatformSettings[PlatformSettingsCode.DMSSettingsPath];
+                    //    List<string> filePaths = platformSettings.Where(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(p.Value)).Select(s => { return $"{DMSSettingsPath}\\{s.Name}"; }).ToList();
+                    //    BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
+                    //    if (!responseGetFileCreationModels.IsSuccess)
+                    //    {
+                    //        return new BaseResponse<List<SettingsModel>>(false, responseGetFileCreationModels.Message);
+                    //    }
+                    //    if (responseGetFileCreationModels.DataObject.Any())
+                    //    {
+                    //        foreach (SettingsModel platformSetting in platformSettings.Where(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(p.Value)))
+                    //        {
+                    //            platformSetting.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == platformSetting.Value);
+                    //        }
+                    //    }
+                    //}
 
                     return new BaseResponse<List<SettingsModel>>(true, string.Empty, string.Empty, platformSettings);
                 }

@@ -41,7 +41,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                     List<CountryModel> Countries = _unitOfWork.GetRepository<Domain.Domains.Country>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(p => new CountryModel()
                     {
                         CountryId = p.CountryId,
-                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Name = p.Name,
+                        NameAr = p.NameAr,
                         Banner = p.Banner
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
 
@@ -49,7 +50,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                     {
                         string DMSCountryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath];
 
-                        List<string> filePaths = Countries.Where(p => !string.IsNullOrEmpty(p.Banner)).Select(s => { return $"{DMSCountryPath}\\{s.CountryId}"; }).ToList();
+                        List<string> filePaths = Countries.Where(p => !string.IsNullOrEmpty(p.Banner)).Select(s => { return $"{DMSCountryPath}\\{s.Name.Trim()}"; }).ToList();
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {
@@ -59,7 +60,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                         {
                             foreach (CountryModel country in Countries.Where(p => !string.IsNullOrEmpty(p.Banner)))
                             {
-                                country.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == country.Banner);
+                                country.Banner = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == country.Banner)?.FileContent;
                             }
                         }
                     }

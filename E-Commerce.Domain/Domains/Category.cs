@@ -8,8 +8,8 @@ namespace E_Commerce.Domain.Domains
 		public string Name { get; set; }
 		public string NameAr { get; set; }
 		public string Code { get; set; }
-		public string Image { get; set; }
-		public string Descreption { get; set; }
+		public string? Image { get; set; }
+		public string? Descreption { get; set; }
 		public bool IsBlock { get; set; }
 		public int? ParentCategoryId { get; set; }
 

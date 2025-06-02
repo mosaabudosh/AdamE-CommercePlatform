@@ -44,7 +44,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
 
                     FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                     {
-                        FolderName = $"{country.CountryId}",
+                        FolderName = $"{country.Name.Trim()}",
                         FolderPath = $"{DMSCountryPath}",
                         FileCreationModels = new List<FileCreationModel>(),
                     };
@@ -64,7 +64,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                 {
                     if (request.CountryModel.FileCreationModel is not null)
                     {
-                        string folderPath = $"{DMSCountryPath}\\{request.CountryModel.CountryId}";
+                        string folderPath = $"{DMSCountryPath}\\{request.CountryModel.Name.Trim()}";
                         BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

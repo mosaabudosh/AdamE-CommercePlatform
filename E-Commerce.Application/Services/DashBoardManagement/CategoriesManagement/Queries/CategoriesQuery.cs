@@ -36,7 +36,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     List<CategoryModel> categories = _unitOfWork.GetRepository<Domain.Domains.Category>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(p => new CategoryModel()
                     {
                         CategoryId = p.CategoryId,
-                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Name = p.Name,
+                        NameAr = p.NameAr,
                         Code = p.Code,
                         Image = p.Image,
                         ParentCategoryId = p.ParentCategoryId,
@@ -47,7 +48,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     if (categories.Any(p => !string.IsNullOrEmpty(p.Image)))
                     {
                         string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
-                        List<string> filePaths = categories.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{DMSCategoryPath}\\{s.CategoryId}"; }).ToList();
+                        List<string> filePaths = categories.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{DMSCategoryPath}\\{s.Name.Trim()}"; }).ToList();
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

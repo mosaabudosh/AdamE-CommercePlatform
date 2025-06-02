@@ -1,6 +1,7 @@
 ﻿using Adam.Generic.Enum;
 using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model;
 using E_Commerce.Domain.IHttpServices;
 using Generic.Response;
@@ -22,11 +23,14 @@ namespace E_Commerce.API.Controllers
         private IInformationService _informationService;
         private IUserAccessor _userAccessor;
         private IHttpAccessor _httpAccessor;
+        private CachingPlatformSettings _cachingPlatformSettings;
+
 
         protected IExceptionService ExceptionService => _exceptionService ?? (_exceptionService = HttpContext.RequestServices.GetService<IExceptionService>());
         protected IInformationService InformationService => _informationService ?? (_informationService = HttpContext.RequestServices.GetService<IInformationService>());
         protected IUserAccessor UserAccessor => _userAccessor ?? (_userAccessor = HttpContext.RequestServices.GetService<IUserAccessor>());
         protected IHttpAccessor HttpAccessor => _httpAccessor ?? (_httpAccessor = HttpContext.RequestServices.GetService<IHttpAccessor>());
+        protected CachingPlatformSettings CachingPlatformSettings => _cachingPlatformSettings ?? (_cachingPlatformSettings = HttpContext.RequestServices.GetService<CachingPlatformSettings>());
 
 
         protected async Task<IActionResult> ExportReportByType(ExportReportParameters exportReportParameters)

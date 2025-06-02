@@ -38,7 +38,6 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                         SecondNameAr = s.SecondNameAr,
                         LastNameAr = s.LastNameAr,
                         Email = s.Email,
-                        LanguageId = s.LanguageId,
                         MobileNumber = s.MobileNumber,
                         UserId = s.UserId.ToString(),
                         GenderId = s.GenderId,

@@ -43,6 +43,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                         ParentCategoryId = request.CategoryModel.ParentCategoryId,
                         LastUpdateUserId = _userAccessor.GetCurrentUserId(),
                         LastUpdatedDate = DateTime.UtcNow,
+                        IsActive = true
                     };
                     BaseResponse validationBaseResponse = ValidateUpdation(category);
                     if (!validationBaseResponse.IsSuccess)
@@ -54,7 +55,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
 
                     FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                     {
-                        FolderName = $"{category.CategoryId}",
+                        FolderName = $"{category.Name.Trim()}",
                         FolderPath = $"{DMSCategoryPath}",
                         FileCreationModels = new List<FileCreationModel>(),
                     };
@@ -73,7 +74,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                 {
                     if (request.CategoryModel.FileCreationModel is not null)
                     {
-                        string folderPath = $"{DMSCategoryPath}\\{request.CategoryModel.CategoryId}";
+                        string folderPath = $"{DMSCategoryPath}\\{request.CategoryModel.Name.Trim()}";
                         BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

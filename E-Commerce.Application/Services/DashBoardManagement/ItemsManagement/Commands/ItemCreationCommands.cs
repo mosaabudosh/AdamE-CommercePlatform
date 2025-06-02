@@ -37,6 +37,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                         Image = request.ItemModel.Image?.Trim(),
                         Code = request.ItemModel.Code.Trim(),
                         Descreption = request.ItemModel.Descreption.Trim(),
+                        CategoryId = request.ItemModel.CategoryId,
                         IsBlock = false,
                         CreationUserId = _userAccessor.GetCurrentUserId(),
                         CreationDate = DateTime.UtcNow,
@@ -47,11 +48,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                     {
                         return validationBaseResponse;
                     }
+                    _unitOfWork.GetRepository<Domain.Domains.Item>().Insert(item);
+                    await _unitOfWork.CommitChanges();
                     if (request.ItemModel.FileCreationModel is not null)
                     {
                         FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                         {
-                            FolderName = $"{item.CategoryId}",
+                            FolderName = $"{item.ItemId}",
                             FolderPath = $"{request.ItemPathDMS}",
                             FileCreationModels = new List<FileCreationModel>(),
                         };
@@ -62,8 +65,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                             return createFolderAndOneFileResponse;
                         }
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Item>().Insert(item);
-                    await _unitOfWork.CommitChanges();
+                   
                     return new BaseResponse(true);
                 }
                 catch (Exception ex)

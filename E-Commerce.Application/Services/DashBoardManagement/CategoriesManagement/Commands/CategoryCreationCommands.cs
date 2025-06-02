@@ -8,6 +8,7 @@ using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
+using System.Xml.Linq;
 using static Adam.Generic.Constants.Constants;
 using static E_Commerce.Domain.Enum.Enums;
 
@@ -57,7 +58,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     {
                         FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                         {
-                            FolderName = $"{category.CategoryId}",
+                            FolderName = $"{category.Name.Trim()}",
                             FolderPath = $"{DMSCategoryPath}",
                             FileCreationModels = new List<FileCreationModel>(),
                         };
@@ -75,7 +76,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                 {
                     if (request.CategoryModel.FileCreationModel is not null)
                     {
-                        string folderPath = $"{DMSCategoryPath}\\{category.CategoryId}";
+                        string folderPath = $"{DMSCategoryPath}\\{category.Name.Trim()}";
                         BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

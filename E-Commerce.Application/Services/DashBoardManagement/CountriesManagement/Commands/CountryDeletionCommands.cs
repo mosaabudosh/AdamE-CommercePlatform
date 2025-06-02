@@ -37,7 +37,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                     if (!string.IsNullOrEmpty(country.Banner))
                     {
                         string DMSCountryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath];
-                        string folderPath = $"{DMSCountryPath}\\{country.CountryId}";
+                        string folderPath = $"{DMSCountryPath}\\{country.Name.Trim()}";
                         BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath, false));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

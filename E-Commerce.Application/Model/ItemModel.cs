@@ -14,11 +14,11 @@ namespace E_Commerce.Application.Model
         public string Name { get; set; }
         public string NameAr { get; set; }
         public string Code { get; set; }
-        public string Image { get; set; }
+        public string? Image { get; set; }
         public string Descreption { get; set; }
         public bool? IsBlock { get; set; }
         public int CategoryId { get; set; }
-        public string Category { get; set; }
+        public string? Category { get; set; }
         public FileCreationModel? FileCreationModel { get; set; }
 
     }

@@ -19,7 +19,6 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 
 			#region Foreignkeys
 			builder.HasOne(e => e.UserType).WithMany(e => e.Users).HasForeignKey(f => f.UserTypeId);
-			builder.HasOne(e => e.Language).WithMany(e => e.Users).HasForeignKey(f => f.LanguageId);
 			builder.HasOne(e => e.Gender).WithMany(e => e.Users).HasForeignKey(f => f.GenderId);
 			builder.HasOne(e => e.City).WithMany(e => e.Users).HasForeignKey(f => f.CityId);
 			builder.HasOne(e => e.Shop).WithMany(e => e.Users).HasForeignKey(f => f.ShopId);
@@ -51,7 +50,6 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                       LastNameAr = "أدمن",
                       Email = "Admin@gmail.com",
                       MobileNumber = "0788647816",
-                      LanguageId = (int)Enums.Languages.English,
                       GenderId = (int)Genders.Male,
                       Adresse = "Amman",
                       CityId = 1,

@@ -116,12 +116,19 @@ namespace E_Commerce.Domain.Enum
 			DateFormat = 8,
             In24Format = 9,
             DMSUserPath = 10,
-            DMSSettingsPath = 11,
-            DMSRootFolderPath = 12,
-            DMSCategoryPath = 13,
-            DMSCountryPath = 14,
-            DefaultPage = 15,
-            DefaultMenuType = 16
+            DMSRootFolderPath = 11,
+            DMSCategoryPath = 12,
+            DMSCountryPath = 13,
+            DefaultPage = 14,
+            DefaultMenuType = 15,
+            LicenceNumber = 16,
+            TaxNumber = 17,
+            CRNumber = 18,
+            Address = 19,
+            AddressAr = 20,
+            MobileNumber = 21,
+            Website = 22,
+            Email = 23
         }
 
         public enum PlatformSettingsCode
@@ -136,12 +143,19 @@ namespace E_Commerce.Domain.Enum
             DateFormat,
             In24Format,
             DMSUserPath,
-            DMSSettingsPath,
             DMSRootFolderPath,
             DMSCategoryPath,
             DMSCountryPath,
             DefaultPage,
-            DefaultMenuType
+            DefaultMenuType,
+            LicenceNumber,
+            TaxNumber,
+            CRNumber,
+            Address,
+            AddressAr,
+            MobileNumber,
+            Website,
+            Email
         }
 
         public enum Screens
