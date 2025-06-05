@@ -10,16 +10,16 @@ using System.Text;
 using System.Threading.Tasks;
 using static Adam.Generic.Constants.Constants;
 
-namespace E_Commerce.Application.Services.CartStatuses.Commands
+namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManagement.Commands
 {
-    public class CartStatusDeletionCommands
+    public class OrderStatusDeletionCommands
     {
         public class Command : IRequest<BaseResponse>
         {
-            public int CartStatusId { get; set; }
-            public Command(int cartStatusId)
+            public int OrderStatusId { get; set; }
+            public Command(int orderStatusId)
             {
-                this.CartStatusId = cartStatusId;
+                OrderStatusId = orderStatusId;
             }
         }
 
@@ -29,13 +29,13 @@ namespace E_Commerce.Application.Services.CartStatuses.Commands
             {
                 try
                 {
-                    BaseResponse validationBaseResponse = ValidateDeletion(request.CartStatusId);
+                    BaseResponse validationBaseResponse = ValidateDeletion(request.OrderStatusId);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    Domain.Domains.CartStatus cartStatus = await _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetById(request.CartStatusId);
-                    _unitOfWork.GetRepository<Domain.Domains.CartStatus>().Delete(cartStatus);
+                    Domain.Domains.OrderStatus orderStatus = await _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetById(request.OrderStatusId);
+                    _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().Delete(orderStatus);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -45,16 +45,16 @@ namespace E_Commerce.Application.Services.CartStatuses.Commands
                     {
                         ex = ex.InnerException;
                     }
-                    await _exceptionService.LogErrorAsync(ex, "CartStatusDeletionCommands", _userAccessor.GetCurrentUserId());
+                    await _exceptionService.LogErrorAsync(ex, "OrderStatusDeletionCommands", _userAccessor.GetCurrentUserId());
                     return new BaseResponse(false, ex.Message);
                 }
             }
 
-            private BaseResponse ValidateDeletion(int cartStatusId)
+            private BaseResponse ValidateDeletion(int orderStatusId)
             {
                 try
                 {
-                    bool haveUserActions = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(i => i.CartStatusId == cartStatusId && i.Carts.Any()).Any();
+                    bool haveUserActions = _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetByExpressionAsNoTracking(i => i.OrderStatusId == orderStatusId && i.Orders.Any()).Any();
                     if (haveUserActions)
                     {
                         return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);
@@ -68,7 +68,7 @@ namespace E_Commerce.Application.Services.CartStatuses.Commands
                     {
                         ex = ex.InnerException;
                     }
-                    _exceptionService.LogErrorAsync(ex, nameof(ValidateDeletion), _userAccessor.GetCurrentUserId(), cartStatusId);
+                    _exceptionService.LogErrorAsync(ex, nameof(ValidateDeletion), _userAccessor.GetCurrentUserId(), orderStatusId);
                     return new BaseResponse(false, ex.Message);
                 }
             }

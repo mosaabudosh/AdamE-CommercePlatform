@@ -18,5 +18,6 @@ namespace E_Commerce.Application.Model
         public int? MaxNumberOfUsage { get; set; }
         public decimal Value { get; set; }
         public decimal? FirstValueUse { get; set; }
+        public string? Status { get; set; }
     }
 }

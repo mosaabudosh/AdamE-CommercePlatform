@@ -30,27 +30,26 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
             {
                 try
                 {
-                    Domain.Domains.Item item = new Domain.Domains.Item()
-                    {
-                        ItemId = request.ItemModel.ItemId.Value,
-                        Name = request.ItemModel.Name.Trim(),
-                        NameAr = request.ItemModel.NameAr.Trim(),
-                        Image = request.ItemModel.Image?.Trim(),
-                        Code = request.ItemModel.Code.Trim(),
-                        CategoryId = request.ItemModel.CategoryId,
-                        Descreption = request.ItemModel.Descreption.Trim(),
-                        IsBlock = request.ItemModel.IsBlock.HasValue ? request.ItemModel.IsBlock.Value : false,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                        LastUpdatedDate = DateTime.UtcNow,
-                    };
-                    BaseResponse validationBaseResponse = ValidateUpdation(item);
+                    Domain.Domains.Item exisitItem = _unitOfWork.GetRepository<Domain.Domains.Item>().GetByExpression(p => p.ItemId == request.ItemModel.ItemId.Value).SingleOrDefault();
+
+                    exisitItem.Name = request.ItemModel.Name.Trim();
+                    exisitItem.NameAr = request.ItemModel.NameAr.Trim();
+                    exisitItem.Image = request.ItemModel.Image?.Trim();
+                    exisitItem.Code = request.ItemModel.Code.Trim();
+                    exisitItem.CategoryId = request.ItemModel.CategoryId;
+                    exisitItem.Descreption = request.ItemModel.Descreption.Trim();
+                    exisitItem.IsBlock = request.ItemModel.IsBlock.HasValue ? request.ItemModel.IsBlock.Value : false;
+                    exisitItem.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+                    exisitItem.LastUpdatedDate = DateTime.UtcNow;
+                    
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitItem);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
                     FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                     {
-                        FolderName = $"{item.ItemId}",
+                        FolderName = $"{exisitItem.ItemId}",
                         FolderPath = $"{request.ItemPathDMS}",
                         FileCreationModels = new List<FileCreationModel>(),
                     };
@@ -63,7 +62,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                     {
                         return createFolderAndOneFileResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Item>().Update(item);
+
                     await _unitOfWork.CommitChanges();
 
                     return new BaseResponse(true);

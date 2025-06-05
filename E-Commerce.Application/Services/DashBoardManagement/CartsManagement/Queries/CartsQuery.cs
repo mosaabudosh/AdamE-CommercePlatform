@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.Services.Carts.Queries
+namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Queries
 {
     public class CartsQuery
     {
@@ -26,12 +26,12 @@ namespace E_Commerce.Application.Services.Carts.Queries
 
             public Query(int pageNumber, int pageSize, Guid? userId = null, Guid? tempCustomerId = null, int? cartStatusId = null, Guid? shopItemId = null)
             {
-                this.PageNumber = pageNumber;
-                this.PageSize = pageSize;
-                this.UserId = userId;
-                this.TempCustomerId = tempCustomerId;
-                this.CartStatusId = cartStatusId;
-                this.ShopItemId = shopItemId;
+                PageNumber = pageNumber;
+                PageSize = pageSize;
+                UserId = userId;
+                TempCustomerId = tempCustomerId;
+                CartStatusId = cartStatusId;
+                ShopItemId = shopItemId;
             }
         }
 
@@ -41,7 +41,7 @@ namespace E_Commerce.Application.Services.Carts.Queries
             {
                 try
                 {
-                    List<CartModel> cart = _unitOfWork.GetRepository<Domain.Domains.Cart>().GetByExpressionAsNoTracking(p => (!request.UserId.HasValue || p.UserId == request.UserId) && (!request.TempCustomerId.HasValue || p.TempCustomerId == request.TempCustomerId) && (!request.CartStatusId.HasValue || p.CartStatusId == request.CartStatusId) && (!request.ShopItemId.HasValue || p.CartDetails.Any(x => x.ShopItemId == request.ShopItemId))).Select(s => new CartModel()
+                    List<CartModel> cart = _unitOfWork.GetRepository<Cart>().GetByExpressionAsNoTracking(p => (!request.UserId.HasValue || p.UserId == request.UserId) && (!request.TempCustomerId.HasValue || p.TempCustomerId == request.TempCustomerId) && (!request.CartStatusId.HasValue || p.CartStatusId == request.CartStatusId) && (!request.ShopItemId.HasValue || p.CartDetails.Any(x => x.ShopItemId == request.ShopItemId))).Select(s => new CartModel()
                     {
                         CartId = s.CartId,
                         UserId = s.UserId,

@@ -31,8 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\DashBoardManagement\OrdersManagement\Commands\" />
-    <Folder Include="Services\DashBoardManagement\OrdersManagement\Queries\" />
     <Folder Include="Services\AuthenticationManagement\ScreenActionsManagement\Queries\" />
     <Folder Include="Services\AuthenticationManagement\ScreensManagement\Commands\" />
     <Folder Include="Services\AuthenticationManagement\UserRolesManagement\Queries\" />

@@ -40,6 +40,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                     country.Banner = request.CountryModel.Banner;
                     country.LastUpdatedDate = DateTime.UtcNow;
                     country.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+
                     await _unitOfWork.CommitChanges();
 
                     FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()

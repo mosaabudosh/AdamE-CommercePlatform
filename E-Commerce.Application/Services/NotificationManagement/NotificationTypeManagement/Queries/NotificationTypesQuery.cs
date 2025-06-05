@@ -38,7 +38,8 @@ namespace E_Commerce.Application.Services.NotificationManagement.NotificationTyp
                     List<NotificationTypeModel> notificationTypes = _unitOfWork.GetRepository<Domain.Domains.Notification.NotificationType>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || (p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)))).Select(p => new NotificationTypeModel()
                     {
                         NotificationTypeId = p.NotificationTypeId,
-                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Name = p.Name,
+                        NameAr = p.NameAr,
                         Code = p.Code,
                         IsPlaySound = p.IsPlaySound,
                         Icon = p.Icon,

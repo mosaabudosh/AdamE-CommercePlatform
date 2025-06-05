@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Adam.Generic.Constants.Constants;
 
-namespace E_Commerce.Application.Services.CartStatuses.Commands
+namespace E_Commerce.Application.Services.DashBoardManagement.CartStatusesManagement.Commands
 {
     public class CartStatusCreationCommands
     {
@@ -21,7 +21,7 @@ namespace E_Commerce.Application.Services.CartStatuses.Commands
             public CartStatusModel CartStatusModel { get; set; }
             public Command(CartStatusModel cartStatusModel)
             {
-                this.CartStatusModel = cartStatusModel;
+                CartStatusModel = cartStatusModel;
             }
         }
 

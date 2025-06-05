@@ -1,6 +1,7 @@
 ﻿using Adam.Logging.Interfaces;
 using E_Commerce.Application.Model;
 using E_Commerce.Application.Model.Notification;
+using E_Commerce.Domain.Domains.Notification;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -31,21 +32,19 @@ namespace E_Commerce.Application.Services.NotificationManagement.NotificationSta
             {
                 try
                 {
-                    Domain.Domains.Notification.NotificationStatus notificationStatus = new Domain.Domains.Notification.NotificationStatus()
-                    {
-                        NotificationStatusId = request.NotificationStatusModel.NotificationStatusId,
-                        Name = request.NotificationStatusModel.Name.Trim(),
-                        NameAr = request.NotificationStatusModel.NameAr.Trim(),
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                        LastUpdatedDate = DateTime.UtcNow,
-                    };
+                    Domain.Domains.Notification.NotificationStatus exisitNotificationStatus = await _unitOfWork.GetRepository<Domain.Domains.Notification.NotificationStatus>().GetById(request.NotificationStatusModel.NotificationStatusId);
 
-                    BaseResponse validationBaseResponse = ValidateUpdation(notificationStatus);
+                    exisitNotificationStatus.Name = request.NotificationStatusModel.Name.Trim();
+                    exisitNotificationStatus.NameAr = request.NotificationStatusModel.NameAr.Trim();
+                    exisitNotificationStatus.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+                    exisitNotificationStatus.LastUpdatedDate = DateTime.UtcNow;                    
+
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitNotificationStatus);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Notification.NotificationStatus>().Update(notificationStatus);
+
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

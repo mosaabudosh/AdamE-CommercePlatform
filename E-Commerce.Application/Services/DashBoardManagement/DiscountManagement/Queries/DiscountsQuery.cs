@@ -37,7 +37,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
                     List<DiscountModel> actions = _unitOfWork.GetRepository<Domain.Domains.Discount>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(s => new DiscountModel()
                     {
                         DiscountId = s.DiscountId,
-                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
+                        Name = s.Name,
+                        NameAr = s.NameAr,
                         Code = s.Code,
                         Value = s.Value,
                         StartDate = s.StartDate,
@@ -45,6 +46,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
                         MaxNumberOfUsage = s.MaxNumberOfUsage,
                         Description = s.Description,
                         FirstValueUse = s.FirstValueUse,
+                        Status = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? (s.IsDeleted ? "Deleted" : "Not Deleted") : (s.IsDeleted ? "تم الحذف" : "لم يتم الحذف")
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
                     return new BaseResponse<List<DiscountModel>>(true, string.Empty, string.Empty, actions);
                 }

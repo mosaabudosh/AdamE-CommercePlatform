@@ -38,10 +38,10 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                         {
                             return new BaseResponse(false, string.Empty, ErrorCode.InvalidUserNameOrPassword);
                         }
-                        //if (!_authenticationService.VerifyPasswordHash(oldPassword, user.PasswordHash, user.PasswordSalt))
-                        //{
-                        //    return new BaseResponse(false, string.Empty, ErrorCode.InvalidUserNameOrPassword);
-                        //}
+                        if (!_authenticationService.VerifyPasswordHash(request.OldPassword, user.PasswordHash, user.PasswordSalt))
+                        {
+                            return new BaseResponse(false, string.Empty, ErrorCode.InvalidUserNameOrPassword);
+                        }
                         byte[] passwordHash, passwordSalt;
                         _authenticationService.HashPassword(request.NewPassword, out passwordHash, out passwordSalt);
                         user.PasswordHash = passwordHash;

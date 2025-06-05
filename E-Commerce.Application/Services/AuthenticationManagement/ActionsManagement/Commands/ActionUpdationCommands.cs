@@ -31,21 +31,18 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.ActionsManage
             {
                 try
                 {
-                    Domain.Domains.Authorisation.Action action = new Domain.Domains.Authorisation.Action()
-                    {
-                        ActionId = request.ActionModel.ActionId,
-                        Name = request.ActionModel.Name.Trim(),
-                        NameAr = !string.IsNullOrEmpty(request.ActionModel.NameAr) ? request.ActionModel.NameAr.Trim() : request.ActionModel.Name.Trim(),
-                        LastUpdatedDate = DateTime.UtcNow,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                    };
+                    Domain.Domains.Authorisation.Action exisitAction = await _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().GetById(request.ActionModel.ActionId);
 
-                    BaseResponse validationBaseResponse = ValidateUpdation(action);
+                    exisitAction.Name = request.ActionModel.Name.Trim();
+                    exisitAction.NameAr = !string.IsNullOrEmpty(request.ActionModel.NameAr) ? request.ActionModel.NameAr.Trim() : request.ActionModel.Name.Trim();
+                    exisitAction.LastUpdatedDate = DateTime.UtcNow;
+                    exisitAction.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitAction);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Authorisation.Action>().Update(action);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

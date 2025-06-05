@@ -27,61 +27,27 @@ namespace E_Commerce.Application.Services.SettingsManagement.Commands
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
-                Domain.Domains.Settings.PlatformSetting platformSetting = new Domain.Domains.Settings.PlatformSetting();
                 try
                 {
-                    platformSetting = new Domain.Domains.Settings.PlatformSetting()
-                    {
-                        PlatformSettingId = request.SettingsModel.PlatformSettingId,
-                        Code = request.SettingsModel.Code,
-                        DataTypeId = request.SettingsModel.DataTypeId,
-                        IsReadOnly = request.SettingsModel.IsReadOnly,
-                        Name = request.SettingsModel.Name,
-                        NameAr = request.SettingsModel.NameAr,
-                        IsVisible = request.SettingsModel.IsVisible,
-                        Value = request.SettingsModel.Value,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                        LastUpdatedDate = DateTime.UtcNow,
-                    };
-                    //if(platformSetting.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(platformSetting.Value))
-                    //{
-                    //    platformSetting.Value = request.SettingsModel.FileCreationModel.FileContent;
-                    //}
-                    _unitOfWork.GetRepository<Domain.Domains.Settings.PlatformSetting>().Update(platformSetting);
+                    Domain.Domains.Settings.PlatformSetting exisitPlatformSetting = await _unitOfWork.GetRepository<Domain.Domains.Settings.PlatformSetting>().GetById(request.SettingsModel.PlatformSettingId);
+
+                    exisitPlatformSetting.Code = request.SettingsModel.Code;
+                    exisitPlatformSetting.DataTypeId = request.SettingsModel.DataTypeId;
+                    exisitPlatformSetting.IsReadOnly = request.SettingsModel.IsReadOnly;
+                    exisitPlatformSetting.Name = request.SettingsModel.Name;
+                    exisitPlatformSetting.NameAr = request.SettingsModel.NameAr;
+                    exisitPlatformSetting.IsVisible = request.SettingsModel.IsVisible;
+                    exisitPlatformSetting.Value = request.SettingsModel.Value;
+                    exisitPlatformSetting.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+                    exisitPlatformSetting.LastUpdatedDate = DateTime.UtcNow;
+
                     await _unitOfWork.CommitChanges();
                     _cachingPlatformSettings.RefreshCachingData();
 
-                    //if (platformSetting.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File)
-                    //{
-                    //    FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
-                    //    {
-                    //        FolderName = $"{platformSetting.Name}",
-                    //        FolderPath = $"{DMSSettingsPath}",
-                    //        FileCreationModels = new List<FileCreationModel>(),
-                    //    };
-                    //    if (request.SettingsModel.FileCreationModel is not null)
-                    //    {
-                    //        folderAndFileCreationModel.FileCreationModels.Add(request.SettingsModel.FileCreationModel);
-                    //    }
-                    //    BaseResponse createFolderAndOneFileResponse = await _mediator.Send(new CreateFolderAndOneFileCommands.Command(folderAndFileCreationModel));
-                    //    if (!createFolderAndOneFileResponse.IsSuccess)
-                    //    {
-                    //        return createFolderAndOneFileResponse;
-                    //    }
-                    //}
                     return new BaseResponse(true);
                 }
                 catch (Exception ex)
                 {
-                    //if (platformSetting.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && request.SettingsModel.FileCreationModel is not null)
-                    //{
-                    //    string folderPath = $"{DMSSettingsPath}\\{platformSetting.Name}_{platformSetting.PlatformSettingId}";
-                    //    BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath));
-                    //    if (!responseGetFileCreationModels.IsSuccess)
-                    //    {
-                    //        return responseGetFileCreationModels;
-                    //    }
-                    //}
                     while (ex.InnerException is not null)
                     {
                         ex = ex.InnerException;

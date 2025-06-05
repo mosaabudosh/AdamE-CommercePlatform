@@ -39,7 +39,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.TaxsManagement.Que
                     {
                         TaxId = s.TaxId,
                         Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
-                        Code = s.Code
+                        Code = s.Code,
+                        Value = s.Value
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
                     return new BaseResponse<List<TaxModel>>(true, string.Empty, string.Empty, taxs);
                 }

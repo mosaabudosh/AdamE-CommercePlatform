@@ -25,7 +25,7 @@ namespace E_Commerce.Application.Model
         public string Code { get; set; }
         public int? CityId { get; set; }
         public int? ParentShopId { get; set; }
-        public string City { get; set; }
+        public string? City { get; set; }
         public FileCreationModel? FileCreationModel { get; set; }
 
     }
