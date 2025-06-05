@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.Services.CartStatuses.Queries
+namespace E_Commerce.Application.Services.DashBoardManagement.CartStatusesManagement.Queries
 {
     public class CartStatusQuery
     {
@@ -23,9 +23,9 @@ namespace E_Commerce.Application.Services.CartStatuses.Queries
 
             public Query(int pageNumber, int pageSize, string? searchText = null)
             {
-                this.PageNumber = pageNumber;
-                this.PageSize = pageSize;
-                this.SearchText = searchText;
+                PageNumber = pageNumber;
+                PageSize = pageSize;
+                SearchText = searchText;
             }
         }
 
@@ -35,11 +35,12 @@ namespace E_Commerce.Application.Services.CartStatuses.Queries
             {
                 try
                 {
-                    List<CartStatusModel> cartStatuses = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || (p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)))).Select(p => new CartStatusModel()
+                    List<CartStatusModel> cartStatuses = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(p => new CartStatusModel()
                     {
                         CartStatusId = p.CartStatusId,
-                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
-                        Color = p.Color,
+                        Name = p.Name,
+                        NameAr = p.NameAr,
+                        Color = p.Color
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
                     return new BaseResponse<List<CartStatusModel>>(true, string.Empty, string.Empty, cartStatuses);
                 }

@@ -31,31 +31,28 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                 string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
                 try
                 {
-                    Domain.Domains.Category category = new Domain.Domains.Category()
-                    {
-                        CategoryId = request.CategoryModel.CategoryId,
-                        Name = request.CategoryModel.Name.Trim(),
-                        NameAr = request.CategoryModel.NameAr.Trim(),
-                        Image = request.CategoryModel.Image?.Trim(),
-                        Code = request.CategoryModel.Code.Trim(),
-                        Descreption = request.CategoryModel.Descreption.Trim(),
-                        IsBlock = request.CategoryModel.IsBlock.HasValue ? request.CategoryModel.IsBlock.Value : false,
-                        ParentCategoryId = request.CategoryModel.ParentCategoryId,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                        LastUpdatedDate = DateTime.UtcNow,
-                        IsActive = true
-                    };
-                    BaseResponse validationBaseResponse = ValidateUpdation(category);
+                    Domain.Domains.Category exisitCategory = await _unitOfWork.GetRepository<Domain.Domains.Category>().GetById(request.CategoryModel.CategoryId);
+
+                    exisitCategory.Name = request.CategoryModel.Name.Trim();
+                    exisitCategory.NameAr = request.CategoryModel.NameAr.Trim();
+                    exisitCategory.Image = request.CategoryModel.Image?.Trim();
+                    exisitCategory.Code = request.CategoryModel.Code.Trim();
+                    exisitCategory.Descreption = request.CategoryModel.Descreption.Trim();
+                    exisitCategory.IsBlock = request.CategoryModel.IsBlock.HasValue ? request.CategoryModel.IsBlock.Value : false;
+                    exisitCategory.ParentCategoryId = request.CategoryModel.ParentCategoryId;
+                    exisitCategory.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+                    exisitCategory.LastUpdatedDate = DateTime.UtcNow;
+
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitCategory);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Category>().Update(category);
                     await _unitOfWork.CommitChanges();
 
                     FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                     {
-                        FolderName = $"{category.Name.Trim()}",
+                        FolderName = $"{exisitCategory.Name.Trim()}",
                         FolderPath = $"{DMSCategoryPath}",
                         FileCreationModels = new List<FileCreationModel>(),
                     };

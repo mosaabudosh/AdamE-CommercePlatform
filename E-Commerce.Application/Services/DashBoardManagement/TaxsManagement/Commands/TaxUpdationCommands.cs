@@ -30,23 +30,21 @@ namespace E_Commerce.Application.Services.DashBoardManagement.TaxsManagement.Com
             {
                 try
                 {
-                    Domain.Domains.Tax tax = new Domain.Domains.Tax()
-                    {
-                        TaxId = request.TaxModel.TaxId.Value,
-                        Name = request.TaxModel.Name.Trim(),
-                        NameAr = !string.IsNullOrEmpty(request.TaxModel.NameAr) ? request.TaxModel.NameAr.Trim() : request.TaxModel.Name.Trim(),
-                        Value = request.TaxModel.Value,
-                        Code = request.TaxModel.Code,
-                        LastUpdatedDate = DateTime.UtcNow,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                    };
+                    Domain.Domains.Tax exisitTax = await _unitOfWork.GetRepository<Domain.Domains.Tax>().GetById(request.TaxModel.TaxId.Value);
 
-                    BaseResponse validationBaseResponse = ValidateUpdation(tax);
+                    exisitTax.Name = request.TaxModel.Name.Trim();
+                    exisitTax.NameAr = !string.IsNullOrEmpty(request.TaxModel.NameAr) ? request.TaxModel.NameAr.Trim() : request.TaxModel.Name.Trim();
+                    exisitTax.Value = request.TaxModel.Value;
+                    exisitTax.Code = request.TaxModel.Code;
+                    exisitTax.LastUpdatedDate = DateTime.UtcNow;
+                    exisitTax.LastUpdateUserId = _userAccessor.GetCurrentUserId();                    
+
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitTax);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Tax>().Update(tax);
+
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

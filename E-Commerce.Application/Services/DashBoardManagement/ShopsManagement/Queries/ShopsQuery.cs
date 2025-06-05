@@ -9,7 +9,7 @@ using MediatR;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Queries
 {
-    internal class ShopsQuery
+    public class ShopsQuery
     {
         public class Query : IRequest<BaseResponse<List<ShopModel>>>
         {

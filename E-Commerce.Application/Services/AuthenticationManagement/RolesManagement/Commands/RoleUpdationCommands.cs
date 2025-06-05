@@ -30,21 +30,18 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.RolesManageme
             {
                 try
                 {
-                    Domain.Domains.Authorisation.Role role = new Domain.Domains.Authorisation.Role()
-                    {
-                        RoleId = request.RoleModel.RoleId,
-                        Name = request.RoleModel.Name.Trim(),
-                        NameAr = request.RoleModel.NameAr.Trim(),
-                        LastUpdatedDate = DateTime.UtcNow,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId()
-                    };
+                    Domain.Domains.Authorisation.Role exisitRole = await _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().GetById(request.RoleModel.RoleId);
 
-                    BaseResponse validationBaseResponse = ValidateUpdation(role);
+                    exisitRole.Name = request.RoleModel.Name.Trim();
+                    exisitRole.NameAr = request.RoleModel.NameAr.Trim();
+                    exisitRole.LastUpdatedDate = DateTime.UtcNow;
+                    exisitRole.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitRole);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Authorisation.Role>().Update(role);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

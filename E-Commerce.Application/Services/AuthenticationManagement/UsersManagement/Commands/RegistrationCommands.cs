@@ -54,6 +54,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             DateOfBirth = request.UserModel.DateOfBirth,
                             IsBlock = request.UserModel.IsBlock.HasValue ? request.UserModel.IsBlock.Value : false,
                             UserTypeId = request.UserModel.UserTypeId,
+                            ShopId = request.UserModel.ShopId,
                             ProfileImage = !string.IsNullOrEmpty(request.UserModel.ProfileImage) ? request.UserModel.ProfileImage.Trim() : null,
                             UserRoles = new List<UserRole>(),
                             UserSettings = new List<UserSetting>(),

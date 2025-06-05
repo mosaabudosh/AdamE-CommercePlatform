@@ -30,35 +30,34 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
             {
                 try
                 {
-                    Domain.Domains.Shop shop = new Domain.Domains.Shop()
-                    {
-                        ShopId = request.ShopModel.ShopId.Value,
-                        Name = request.ShopModel.Name.Trim(),
-                        Code = request.ShopModel.Code.Trim(),
-                        Descreption = request.ShopModel.Descreption?.Trim(),
-                        Logo = request.ShopModel.Logo?.Trim(),
-                        PhoneNumber = request.ShopModel.PhoneNumber.Trim(),
-                        PersonConcateName = request.ShopModel.PersonConcateName.Trim(),
-                        ParentShopId = request.ShopModel.ParentShopId,
-                        NoOfVendor = request.ShopModel.NoOfVendor,
-                        NoOfBranch = request.ShopModel.NoOfBranch,
-                        HasBranch = request.ShopModel.HasBranch,
-                        About = request.ShopModel.About?.Trim(),
-                        Adresse = request.ShopModel.Adresse.Trim(),
-                        CityId = request.ShopModel.CityId,
-                        CommercialName = request.ShopModel.CommercialName.Trim(),
-                        IsBlock = request.ShopModel.IsBlock.HasValue ? request.ShopModel.IsBlock.Value : false,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                        LastUpdatedDate = DateTime.UtcNow,
-                    };
-                    BaseResponse validationBaseResponse = ValidateUpdation(shop);
+                    Domain.Domains.Shop exisitShop = await _unitOfWork.GetRepository<Domain.Domains.Shop>().GetById(request.ShopModel.ShopId.Value);
+
+                    exisitShop.Name = request.ShopModel.Name.Trim();
+                    exisitShop.Code = request.ShopModel.Code.Trim();
+                    exisitShop.Descreption = request.ShopModel.Descreption?.Trim();
+                    exisitShop.Logo = request.ShopModel.Logo?.Trim();
+                    exisitShop.PhoneNumber = request.ShopModel.PhoneNumber.Trim();
+                    exisitShop.PersonConcateName = request.ShopModel.PersonConcateName.Trim();
+                    exisitShop.ParentShopId = request.ShopModel.ParentShopId;
+                    exisitShop.NoOfVendor = request.ShopModel.NoOfVendor;
+                    exisitShop.NoOfBranch = request.ShopModel.NoOfBranch;
+                    exisitShop.HasBranch = request.ShopModel.HasBranch;
+                    exisitShop.About = request.ShopModel.About?.Trim();
+                    exisitShop.Adresse = request.ShopModel.Adresse.Trim();
+                    exisitShop.CityId = request.ShopModel.CityId;
+                    exisitShop.CommercialName = request.ShopModel.CommercialName.Trim();
+                    exisitShop.IsBlock = request.ShopModel.IsBlock.HasValue ? request.ShopModel.IsBlock.Value : false;
+                    exisitShop.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+                    exisitShop.LastUpdatedDate = DateTime.UtcNow;
+
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitShop);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
                     FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                     {
-                        FolderName = $"{shop.ShopId}",
+                        FolderName = $"{exisitShop.ShopId}",
                         FolderPath = $"{request.ShopPathDMS}",
                         FileCreationModels = new List<FileCreationModel>(),
                     };
@@ -71,7 +70,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                     {
                         return createFolderAndOneFileResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Shop>().Update(shop);
+
                     await _unitOfWork.CommitChanges();
 
                     return new BaseResponse(true);

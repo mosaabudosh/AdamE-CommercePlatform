@@ -40,7 +40,8 @@ namespace E_Commerce.Application.Services.NotificationManagement.NotificationSta
                     List<NotificationStatusModel> notificationStatuses = _unitOfWork.GetRepository<Domain.Domains.Notification.NotificationStatus>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || (p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)))).Select(p => new NotificationStatusModel()
                     {
                         NotificationStatusId = p.NotificationStatusId,
-                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Name = p.Name ,
+                        NameAr = p.NameAr
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
                     return new BaseResponse<List<NotificationStatusModel>>(true, string.Empty, string.Empty, notificationStatuses);
                 }

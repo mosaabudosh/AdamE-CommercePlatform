@@ -35,6 +35,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.C
                     city.CountryId = request.CityModel.CountryId;
                     city.LastUpdatedDate = DateTime.UtcNow;
                     city.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+
                     await _unitOfWork.CommitChanges();
 
                     return new BaseResponse(true);

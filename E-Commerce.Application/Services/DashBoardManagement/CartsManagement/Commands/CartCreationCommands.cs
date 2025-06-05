@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
 using E_Commerce.Application.Model;
+using E_Commerce.Domain.Domains;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -10,16 +11,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.Services.Carts.Commands
+namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Commands
 {
-    public class CartUpdationCommands
+    public class CartCreationCommands
     {
         public class Command : IRequest<BaseResponse>
         {
             public CartModel CartModel { get; set; }
             public Command(CartModel cartModel)
             {
-                this.CartModel = cartModel;
+                CartModel = cartModel;
             }
         }
 
@@ -29,17 +30,28 @@ namespace E_Commerce.Application.Services.Carts.Commands
             {
                 try
                 {
-                    Domain.Domains.Cart cart = new Domain.Domains.Cart()
+                    Cart cart = new Cart()
                     {
-                        CartId = request.CartModel.CartId,
                         CartStatusId = request.CartModel.CartStatusId,
                         TempCustomerId = request.CartModel.TempCustomerId,
                         UserId = request.CartModel.UserId,
-                        LastUpdatedDate = DateTime.UtcNow,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
+                        CreationDate = DateTime.UtcNow,
+                        CreationUserId = _userAccessor.GetCurrentUserId(),
+                        IsActive = true,
+                        CartDetails = request.CartModel.CartDetailModels.Select(s => new CartDetail()
+                        {
+                            ShopItemId = s.ShopItemId,
+                            Discount = s.Discount,
+                            Price = s.Price,
+                            Quantity = s.Quantity,
+                            Tax = s.Tax,
+                            CreationDate = DateTime.UtcNow,
+                            CreationUserId = _userAccessor.GetCurrentUserId(),
+                            IsActive = true,
+                        }).ToList()
                     };
-                 
-                    _unitOfWork.GetRepository<Domain.Domains.Cart>().Update(cart);
+
+                    _unitOfWork.GetRepository<Cart>().Insert(cart);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -49,11 +61,12 @@ namespace E_Commerce.Application.Services.Carts.Commands
                     {
                         ex = ex.InnerException;
                     }
-                    await _exceptionService.LogErrorAsync(ex, "CartUpdationCommands", _userAccessor.GetCurrentUserId());
+                    await _exceptionService.LogErrorAsync(ex, "CartCreationCommands", _userAccessor.GetCurrentUserId());
                     return new BaseResponse(false, ex.Message);
                 }
             }
-           
+
+
         }
     }
 }

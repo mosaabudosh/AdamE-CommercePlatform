@@ -30,23 +30,22 @@ namespace E_Commerce.Application.Services.NotificationManagement.NotificationTyp
             {
                 try
                 {
-                    Domain.Domains.Notification.NotificationType notificationType = new Domain.Domains.Notification.NotificationType()
-                    {
-                        NotificationTypeId = request.NotificationTypeModel.NotificationTypeId,
-                        Name = request.NotificationTypeModel.Name.Trim(),
-                        NameAr = request.NotificationTypeModel.NameAr.Trim(),
-                        Icon = request.NotificationTypeModel.Icon,
-                        IsPlaySound = request.NotificationTypeModel.IsPlaySound,
-                        Code = request.NotificationTypeModel.Code,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                        LastUpdatedDate = DateTime.UtcNow,
-                    };
-                    BaseResponse validationBaseResponse = ValidateUpdation(notificationType);
+                    Domain.Domains.Notification.NotificationType exisitNotificationType = await _unitOfWork.GetRepository<Domain.Domains.Notification.NotificationType>().GetById(request.NotificationTypeModel.NotificationTypeId);
+
+                    exisitNotificationType.Name = request.NotificationTypeModel.Name.Trim();
+                    exisitNotificationType.NameAr = request.NotificationTypeModel.NameAr.Trim();
+                    exisitNotificationType.Icon = request.NotificationTypeModel.Icon;
+                    exisitNotificationType.IsPlaySound = request.NotificationTypeModel.IsPlaySound;
+                    exisitNotificationType.Code = request.NotificationTypeModel.Code;
+                    exisitNotificationType.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+                    exisitNotificationType.LastUpdatedDate = DateTime.UtcNow;
+                    
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitNotificationType);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Notification.NotificationType>().Update(notificationType);
+
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

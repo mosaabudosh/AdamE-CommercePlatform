@@ -58,7 +58,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                         IsBlock = s.IsBlock,
                         IsActive = s.IsActive,
                         ProfileImage = !request.ReadProfileImage.HasValue || request.ReadProfileImage.Value ? s.ProfileImage : string.Empty,
-                        Age = s.DateOfBirth.HasValue ? $"{DateTime.UtcNow.Year - s.DateOfBirth.Value.Year}" :string.Empty,
+                        Age = s.DateOfBirth.HasValue ? $"{DateTime.UtcNow.Year - s.DateOfBirth.Value.Year} Y" :string.Empty,
                         Gender = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Gender.Name : s.Gender.NameAr,
                         UserRoles = s.UserRoles.Select(r => new UserRoleModel()
                         {

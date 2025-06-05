@@ -30,28 +30,26 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
             {
                 try
                 {
-                    Domain.Domains.Discount discount = new Domain.Domains.Discount()
-                    {
-                        DiscountId = request.DiscountModel.DiscountId,
-                        Name = request.DiscountModel.Name.Trim(),
-                        NameAr = request.DiscountModel.NameAr.Trim(),
-                        Code = request.DiscountModel.Code.Trim(),
-                        Description = request.DiscountModel.Description?.Trim(),
-                        EndDate = request.DiscountModel.EndDate,
-                        FirstValueUse = request.DiscountModel.FirstValueUse,
-                        StartDate = request.DiscountModel.StartDate,
-                        Value = request.DiscountModel.Value,
-                        MaxNumberOfUsage = request.DiscountModel.MaxNumberOfUsage,
-                        LastUpdatedDate = DateTime.UtcNow,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                    };
+                    Domain.Domains.Discount exisitDiscount = await _unitOfWork.GetRepository<Domain.Domains.Discount>().GetById(request.DiscountModel.DiscountId);
 
-                    BaseResponse validationBaseResponse = ValidateUpdation(discount);
+                    exisitDiscount.Name = request.DiscountModel.Name.Trim();
+                    exisitDiscount.NameAr = request.DiscountModel.NameAr.Trim();
+                    exisitDiscount.Code = request.DiscountModel.Code.Trim();
+                    exisitDiscount.Description = request.DiscountModel.Description?.Trim();
+                    exisitDiscount.EndDate = request.DiscountModel.EndDate;
+                    exisitDiscount.FirstValueUse = request.DiscountModel.FirstValueUse;
+                    exisitDiscount.StartDate = request.DiscountModel.StartDate;
+                    exisitDiscount.Value = request.DiscountModel.Value;
+                    exisitDiscount.MaxNumberOfUsage = request.DiscountModel.MaxNumberOfUsage;
+                    exisitDiscount.LastUpdatedDate = DateTime.UtcNow;
+                    exisitDiscount.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+
+                    BaseResponse validationBaseResponse = ValidateUpdation(exisitDiscount);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Discount>().Update(discount);
+
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

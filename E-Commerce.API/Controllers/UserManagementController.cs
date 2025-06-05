@@ -1,4 +1,5 @@
 ﻿using E_Commerce.API.Model;
+using E_Commerce.API.Model.ReportModel;
 using E_Commerce.Application.Model.Authorisation;
 using E_Commerce.Application.Model.Settings;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Commands;
@@ -202,7 +203,7 @@ namespace E_Commerce.API.Controllers
 
                 Dictionary<string, object> dataSources = new Dictionary<string, object>();
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
-                var userModels = usersResponse.DataObject.Select(x => new
+                List<UserReportModel> userModels = usersResponse.DataObject.Select(x => new UserReportModel()
                 {
                     UserFullName = HttpAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? $"{x.FirstName} {x.SecondName} {x.LastName}" : $"{x.FirstNameAr} {x.SecondNameAr} {x.LastNameAr}",
                     MobileNumber = x.MobileNumber,

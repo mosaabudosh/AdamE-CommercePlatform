@@ -7,6 +7,11 @@ using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using E_Commerce.Application.Model.Authorisation;
+using E_Commerce.Application.Model.Settings;
+using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Queries;
+using E_Commerce.Domain.Domains;
+using E_Commerce.API.Model.ReportModel;
 
 namespace E_Commerce.API.Controllers
 {
@@ -123,5 +128,45 @@ namespace E_Commerce.API.Controllers
                 return new BaseResponse(false, ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("items-printing")]
+        public async Task<IActionResult> ItemsPrinting(string? searchText, int? categoryId)
+        {
+            try
+            {
+                BaseResponse<List<ItemModel>> itemsResponse = await _mediator.Send(new ItemsQuery.Query(0, int.MaxValue, searchText, categoryId));
+                if (!itemsResponse.IsSuccess)
+                {
+                    throw new Exception(itemsResponse.Message);
+                }
+
+                Dictionary<string, object> dataSources = new Dictionary<string, object>();
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                List<ItemReportModel> itemsModels = itemsResponse.DataObject.Select(x => new ItemReportModel()
+                {
+                    Name = HttpAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? $"{x.Name}" : $"{x.NameAr}",
+                    Code = x.Code,
+                    Category = x.Category
+                }).ToList();
+
+                PlatformInfoModel platformInfoModel = CachingPlatformSettings.GetPlatformInfo();
+                platformInfoModel.PrintedBy = UserAccessor.GetCurrentUserName();
+                dataSources.Add("PlatformInfoModel", new[] { platformInfoModel });
+                dataSources.Add("ItemModel", itemsModels);
+
+                return ToPDF("\\Reports\\Items.rdlc", dataSources, parameters);
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException is not null)
+                {
+                    ex = ex.InnerException;
+                }
+                await ExceptionService.LogErrorAsync(ex, nameof(ItemsPrinting), UserAccessor.GetCurrentUserId(), searchText, categoryId);
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

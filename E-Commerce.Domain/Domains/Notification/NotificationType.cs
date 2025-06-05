@@ -11,8 +11,8 @@ namespace E_Commerce.Domain.Domains.Notification
         public int NotificationTypeId { get; set; }
         public string Name { get; set; }
         public string NameAr { get; set; }
-        public string Icon { get; set; }
-        public int Code { get; set; }
+        public string? Icon { get; set; }
+        public string Code { get; set; }
         public bool IsPlaySound { get; set; }
 
         public virtual List<Notification> Notifications { set; get; }

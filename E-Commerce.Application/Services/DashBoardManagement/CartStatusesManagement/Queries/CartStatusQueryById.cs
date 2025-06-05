@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.Services.CartStatuses.Queries
+namespace E_Commerce.Application.Services.DashBoardManagement.CartStatusesManagement.Queries
 {
     public class CartStatusQueryById
     {
@@ -19,7 +19,7 @@ namespace E_Commerce.Application.Services.CartStatuses.Queries
             public int CartStatusId { get; set; }
             public Query(int cartStatusId)
             {
-                this.CartStatusId = cartStatusId;
+                CartStatusId = cartStatusId;
             }
         }
 
@@ -32,7 +32,7 @@ namespace E_Commerce.Application.Services.CartStatuses.Queries
                     CartStatusModel cartStatus = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(p => p.CartStatusId == request.CartStatusId).Select(p => new CartStatusModel()
                     {
                         CartStatusId = p.CartStatusId,
-                        Name = p.Name ,
+                        Name = p.Name,
                         NameAr = p.NameAr,
                         Color = p.Color,
                     }).FirstOrDefault();

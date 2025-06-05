@@ -87,6 +87,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             GenderId = user.GenderId,
                             UserTypeId = user.UserTypeId,
                             ProfileImage = user.ProfileImage,
+                            ShopId = user.ShopId,
                             RoleIds = roleIds,
                             UserMenus = userMenus,
                             UserSettingModels = user.UserSettings.Select(s => new UserSettingModel()

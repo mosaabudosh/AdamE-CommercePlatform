@@ -10,9 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.Services.CartStatuses.Queries
+namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManagement.Queries
 {
-    public class CartStatusDDLQuery
+    public class OrderStatusesDDLQuery
     {
         public record Query() : IRequest<BaseResponse<List<DDLDataSource>>> { }
 
@@ -22,12 +22,12 @@ namespace E_Commerce.Application.Services.CartStatuses.Queries
             {
                 try
                 {
-                    List<DDLDataSource> cartStatuses = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
+                    List<DDLDataSource> orderStatuses = _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
                     {
-                        Value = p.CartStatusId,
+                        Value = p.OrderStatusId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
                     }).ToList();
-                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, cartStatuses);
+                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, orderStatuses);
                 }
                 catch (Exception ex)
                 {
@@ -35,7 +35,7 @@ namespace E_Commerce.Application.Services.CartStatuses.Queries
                     {
                         ex = ex.InnerException;
                     }
-                    await _exceptionService.LogErrorAsync(ex, "CartStatusDDLQuery", _userAccessor.GetCurrentUserId());
+                    await _exceptionService.LogErrorAsync(ex, "OrderStatusesDDLQuery", _userAccessor.GetCurrentUserId());
                     return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
                 }
             }

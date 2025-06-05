@@ -1,4 +1,5 @@
 ﻿using Adam.Logging.Interfaces;
+using E_Commerce.Application.Model;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -9,16 +10,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.Services.Carts.Commands
+namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Commands
 {
-    internal class CartDeletionCommands
+    public class CartUpdationCommands
     {
         public class Command : IRequest<BaseResponse>
         {
-            public int CartId { get; set; }
-            public Command(int cartId)
+            public CartModel CartModel { get; set; }
+            public Command(CartModel cartModel)
             {
-                this.CartId = cartId;
+                CartModel = cartModel;
             }
         }
 
@@ -28,8 +29,14 @@ namespace E_Commerce.Application.Services.Carts.Commands
             {
                 try
                 {
-                    Domain.Domains.Cart cart = await _unitOfWork.GetRepository<Domain.Domains.Cart>().GetById(request.CartId);
-                    _unitOfWork.GetRepository<Domain.Domains.Cart>().Delete(cart);
+                    Domain.Domains.Cart exisitCart = _unitOfWork.GetRepository<Domain.Domains.Cart>().GetByExpression(p => p.CartId == request.CartModel.CartId).SingleOrDefault();
+
+                    exisitCart.CartStatusId = request.CartModel.CartStatusId;
+                    exisitCart.TempCustomerId = request.CartModel.TempCustomerId;
+                    exisitCart.UserId = request.CartModel.UserId;
+                    exisitCart.LastUpdatedDate = DateTime.UtcNow;
+                    exisitCart.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -39,7 +46,7 @@ namespace E_Commerce.Application.Services.Carts.Commands
                     {
                         ex = ex.InnerException;
                     }
-                    await _exceptionService.LogErrorAsync(ex, "CartDeletionCommands", _userAccessor.GetCurrentUserId());
+                    await _exceptionService.LogErrorAsync(ex, "CartUpdationCommands", _userAccessor.GetCurrentUserId());
                     return new BaseResponse(false, ex.Message);
                 }
             }

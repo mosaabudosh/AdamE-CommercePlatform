@@ -11,16 +11,16 @@ using System.Text;
 using System.Threading.Tasks;
 using static Adam.Generic.Constants.Constants;
 
-namespace E_Commerce.Application.Services.CartStatuses.Commands
+namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManagement.Commands
 {
-    public class CartStatusUpdationCommands
+    public class OrderStatusCreationCommands
     {
         public class Command : IRequest<BaseResponse>
         {
-            public CartStatusModel CartStatusModel { get; set; }
-            public Command(CartStatusModel cartStatusModel)
+            public OrderStatusModel OrderStatusModel { get; set; }
+            public Command(OrderStatusModel orderStatusModel)
             {
-                this.CartStatusModel = cartStatusModel;
+                OrderStatusModel = orderStatusModel;
             }
         }
 
@@ -30,22 +30,21 @@ namespace E_Commerce.Application.Services.CartStatuses.Commands
             {
                 try
                 {
-                    Domain.Domains.CartStatus cartStatus = new Domain.Domains.CartStatus()
+                    Domain.Domains.OrderStatus orderStatus = new Domain.Domains.OrderStatus()
                     {
-                        CartStatusId = request.CartStatusModel.CartStatusId,
-                        Name = request.CartStatusModel.Name.Trim(),
-                        NameAr = request.CartStatusModel.NameAr.Trim(),
-                        Color = request.CartStatusModel.Color,
-                        LastUpdateUserId = _userAccessor.GetCurrentUserId(),
-                        LastUpdatedDate = DateTime.UtcNow,
+                        Name = request.OrderStatusModel.Name.Trim(),
+                        NameAr = request.OrderStatusModel.NameAr.Trim(),
+                        Color = request.OrderStatusModel.Color,
+                        CreationUserId = _userAccessor.GetCurrentUserId(),
+                        CreationDate = DateTime.UtcNow,
+                        IsActive = true
                     };
-
-                    BaseResponse validationBaseResponse = ValidateUpdation(cartStatus);
+                    BaseResponse validationBaseResponse = ValidateCreation(orderStatus);
                     if (!validationBaseResponse.IsSuccess)
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.CartStatus>().Update(cartStatus);
+                    _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().Insert(orderStatus);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -55,16 +54,16 @@ namespace E_Commerce.Application.Services.CartStatuses.Commands
                     {
                         ex = ex.InnerException;
                     }
-                    await _exceptionService.LogErrorAsync(ex, "CartStatusUpdationCommands", _userAccessor.GetCurrentUserId());
+                    await _exceptionService.LogErrorAsync(ex, "OrderStatusCreationCommands", _userAccessor.GetCurrentUserId());
                     return new BaseResponse(false, ex.Message);
                 }
             }
 
-            private BaseResponse ValidateUpdation(Domain.Domains.CartStatus cartStatus)
+            private BaseResponse ValidateCreation(Domain.Domains.OrderStatus orderStatus)
             {
                 try
                 {
-                    Domain.Domains.CartStatus existingRecord = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(x => (x.Name == cartStatus.Name || x.NameAr == cartStatus.NameAr) && x.CartStatusId != cartStatus.CartStatusId).FirstOrDefault();
+                    Domain.Domains.OrderStatus existingRecord = _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetByExpressionAsNoTracking(x => x.Name == orderStatus.Name || x.NameAr == orderStatus.NameAr).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {
@@ -78,7 +77,7 @@ namespace E_Commerce.Application.Services.CartStatuses.Commands
                     {
                         ex = ex.InnerException;
                     }
-                    _exceptionService.LogErrorAsync(ex, nameof(ValidateUpdation), _userAccessor.GetCurrentUserId());
+                    _exceptionService.LogErrorAsync(ex, nameof(ValidateCreation), _userAccessor.GetCurrentUserId(), orderStatus);
                     return new BaseResponse(false, ex.Message);
                 }
             }

@@ -3,6 +3,7 @@ using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.Authorisation;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
+using E_Commerce.Domain.Domains;
 using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -44,6 +45,8 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                     user.CityId = request.UserModel.CityId;
                     user.GenderId = request.UserModel.GenderId;
                     user.DateOfBirth = request.UserModel.DateOfBirth;
+                    user.UserTypeId = request.UserModel.UserTypeId;
+                    user.ShopId = request.UserModel.ShopId;
                     user.ProfileImage = !string.IsNullOrEmpty(request.UserModel.ProfileImage) ? request.UserModel.ProfileImage.Trim() : null;
                     user.LastUpdatedDate = DateTime.UtcNow;
                     user.LastUpdateUserId = _userAccessor.GetCurrentUserId();

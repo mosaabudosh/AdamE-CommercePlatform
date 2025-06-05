@@ -177,7 +177,12 @@ namespace E_Commerce.Domain.Enum
             CartStatuses = 15,
             Orders = 16,
             Reports = 17,
-            Notifications = 18
+            Notifications = 18,
+            Discounts = 19,
+            NotificationStatuses = 20,
+            NotificationTypes = 21,
+            ShopItems = 22,
+            OrderStatuses = 23
         }
 
         public enum MenuType

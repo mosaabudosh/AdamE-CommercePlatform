@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.Services.Carts.Queries
+namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Queries
 {
     public class CartQueryById
     {
@@ -19,7 +19,7 @@ namespace E_Commerce.Application.Services.Carts.Queries
             public Guid CartId { get; set; }
             public Query(Guid cartId)
             {
-                this.CartId = cartId;
+                CartId = cartId;
             }
         }
 
