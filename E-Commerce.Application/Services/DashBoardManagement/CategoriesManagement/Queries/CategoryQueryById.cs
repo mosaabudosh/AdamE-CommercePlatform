@@ -1,8 +1,9 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -28,7 +29,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             {
                 try
                 {
-                    CategoryModel category = _unitOfWork.GetRepository<Domain.Domains.Category>().GetByExpressionAsNoTracking(p => p.CategoryId == request.CategoryId).Select(s => new CategoryModel()
+                    CategoryModel category = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => p.CategoryId == request.CategoryId).Select(s => new CategoryModel()
                     {
                         CategoryId = s.CategoryId,
                         Name = s.Name,

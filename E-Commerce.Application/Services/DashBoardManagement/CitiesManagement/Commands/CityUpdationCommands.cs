@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -29,7 +30,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.C
             {
                 try
                 {
-                    Domain.Domains.City city = await _unitOfWork.GetRepository<Domain.Domains.City>().GetById(request.CityModel.CityId);
+                    City city = await _unitOfWork.GetRepository<City>().GetById(request.CityModel.CityId);
                     city.Name = request.CityModel.Name.Trim();
                     city.NameAr = request.CityModel.NameAr.Trim();
                     city.CountryId = request.CityModel.CountryId;

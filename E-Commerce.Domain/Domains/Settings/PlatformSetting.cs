@@ -17,6 +17,7 @@ namespace E_Commerce.Domain.Domains.Settings
         public bool IsReadOnly { get; set; }
         public bool IsVisible { get; set; }
         public int DataTypeId { get; set; }
+        public string? Group { get; set; }
 
         public virtual DataType DataType { get; set; }
         public virtual List<UserSetting> UserSettings { get; set; }

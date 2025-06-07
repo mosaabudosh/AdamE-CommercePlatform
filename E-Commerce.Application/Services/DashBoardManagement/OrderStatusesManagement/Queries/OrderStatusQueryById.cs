@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -29,7 +30,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManag
             {
                 try
                 {
-                    OrderStatusModel orderStatus = _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetByExpressionAsNoTracking(p => p.OrderStatusId == request.OrderStatusId).Select(p => new OrderStatusModel()
+                    OrderStatusModel orderStatus = _unitOfWork.GetRepository<OrderStatus>().GetByExpressionAsNoTracking(p => p.OrderStatusId == request.OrderStatusId).Select(p => new OrderStatusModel()
                     {
                         OrderStatusId = p.OrderStatusId,
                         Name = p.Name,

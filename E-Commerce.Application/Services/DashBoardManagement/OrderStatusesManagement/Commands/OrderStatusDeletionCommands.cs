@@ -1,4 +1,5 @@
 ﻿using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -34,8 +35,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManag
                     {
                         return validationBaseResponse;
                     }
-                    Domain.Domains.OrderStatus orderStatus = await _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetById(request.OrderStatusId);
-                    _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().Delete(orderStatus);
+                    OrderStatus orderStatus = await _unitOfWork.GetRepository<OrderStatus>().GetById(request.OrderStatusId);
+                    _unitOfWork.GetRepository<OrderStatus>().Delete(orderStatus);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -54,7 +55,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManag
             {
                 try
                 {
-                    bool haveUserActions = _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetByExpressionAsNoTracking(i => i.OrderStatusId == orderStatusId && i.Orders.Any()).Any();
+                    bool haveUserActions = _unitOfWork.GetRepository<OrderStatus>().GetByExpressionAsNoTracking(i => i.OrderStatusId == orderStatusId && i.Orders.Any()).Any();
                     if (haveUserActions)
                     {
                         return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);

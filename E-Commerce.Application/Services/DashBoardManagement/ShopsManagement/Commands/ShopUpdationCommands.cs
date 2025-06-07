@@ -1,7 +1,8 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
             {
                 try
                 {
-                    Domain.Domains.Shop exisitShop = await _unitOfWork.GetRepository<Domain.Domains.Shop>().GetById(request.ShopModel.ShopId.Value);
+                    Shop exisitShop = await _unitOfWork.GetRepository<Shop>().GetById(request.ShopModel.ShopId.Value);
 
                     exisitShop.Name = request.ShopModel.Name.Trim();
                     exisitShop.Code = request.ShopModel.Code.Trim();
@@ -86,11 +87,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                 }
             }
 
-            private BaseResponse ValidateUpdation(Domain.Domains.Shop shop)
+            private BaseResponse ValidateUpdation(Shop shop)
             {
                 try
                 {
-                    Domain.Domains.Shop existingRecord = _unitOfWork.GetRepository<Domain.Domains.Shop>().GetByExpressionAsNoTracking(x => (x.Name == shop.Name || x.CommercialName == shop.CommercialName) && x.ShopId != shop.ShopId).FirstOrDefault();
+                    Shop existingRecord = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(x => (x.Name == shop.Name || x.CommercialName == shop.CommercialName) && x.ShopId != shop.ShopId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

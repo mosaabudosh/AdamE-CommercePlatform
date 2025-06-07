@@ -1,5 +1,4 @@
 ﻿using Adam.Generic.Generic;
-using E_Commerce.Application.Model;
 using E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Commands;
@@ -12,6 +11,7 @@ using E_Commerce.Application.Model.Settings;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Queries;
 using E_Commerce.Domain.Domains;
 using E_Commerce.API.Model.ReportModel;
+using E_Commerce.Application.Model.DashBoard;
 
 namespace E_Commerce.API.Controllers
 {

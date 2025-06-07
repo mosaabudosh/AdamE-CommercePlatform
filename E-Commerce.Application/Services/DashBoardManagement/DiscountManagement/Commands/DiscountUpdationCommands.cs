@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
             {
                 try
                 {
-                    Domain.Domains.Discount exisitDiscount = await _unitOfWork.GetRepository<Domain.Domains.Discount>().GetById(request.DiscountModel.DiscountId);
+                    Discount exisitDiscount = await _unitOfWork.GetRepository<Discount>().GetById(request.DiscountModel.DiscountId);
 
                     exisitDiscount.Name = request.DiscountModel.Name.Trim();
                     exisitDiscount.NameAr = request.DiscountModel.NameAr.Trim();
@@ -64,11 +65,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
                 }
             }
 
-            private BaseResponse ValidateUpdation(Domain.Domains.Discount discount)
+            private BaseResponse ValidateUpdation(Discount discount)
             {
                 try
                 {
-                    Domain.Domains.Discount existingRecord = _unitOfWork.GetRepository<Domain.Domains.Discount>().GetByExpressionAsNoTracking(x => (x.Name == discount.Name || x.NameAr == discount.NameAr || x.Code == discount.Code) && x.DiscountId != discount.DiscountId).FirstOrDefault();
+                    Discount existingRecord = _unitOfWork.GetRepository<Discount>().GetByExpressionAsNoTracking(x => (x.Name == discount.Name || x.NameAr == discount.NameAr || x.Code == discount.Code) && x.DiscountId != discount.DiscountId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

@@ -1,7 +1,8 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
             {
                 try
                 {
-                    Domain.Domains.Shop shop = new Domain.Domains.Shop()
+                    Shop shop = new Shop()
                     {
                         Name = request.ShopModel.Name.Trim(),
                         Code = request.ShopModel.Code.Trim(),
@@ -71,7 +72,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                             return createFolderAndOneFileResponse;
                         }
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Shop>().Insert(shop);
+                    _unitOfWork.GetRepository<Shop>().Insert(shop);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -86,11 +87,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                 }
             }
 
-            private BaseResponse ValidateCreation(Domain.Domains.Shop shop)
+            private BaseResponse ValidateCreation(Shop shop)
             {
                 try
                 {
-                    Domain.Domains.Shop existingRecord = _unitOfWork.GetRepository<Domain.Domains.Shop>().GetByExpressionAsNoTracking(x => x.Name == shop.Name || x.CommercialName == shop.CommercialName || x.Code == shop.Code).FirstOrDefault();
+                    Shop existingRecord = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(x => x.Name == shop.Name || x.CommercialName == shop.CommercialName || x.Code == shop.Code).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

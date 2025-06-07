@@ -1,4 +1,5 @@
 ﻿using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -29,7 +30,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
             {
                 try
                 {
-                    Domain.Domains.Discount discount = await _unitOfWork.GetRepository<Domain.Domains.Discount>().GetById(request.DiscountId);
+                    Discount discount = await _unitOfWork.GetRepository<Discount>().GetById(request.DiscountId);
 
                     discount.IsDeleted = true;
                     discount.DeletedDate = DateTime.UtcNow;

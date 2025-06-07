@@ -1,6 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
-using E_Commerce.Domain.Domains;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -19,17 +19,15 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Qu
         {
             public int PageNumber { get; set; }
             public int PageSize { get; set; }
-            public Guid? UserId { get; set; }
-            public Guid? TempCustomerId { get; set; }
+            public Guid? CustomerId { get; set; }
             public int? CartStatusId { get; set; }
             public Guid? ShopItemId { get; set; }
 
-            public Query(int pageNumber, int pageSize, Guid? userId = null, Guid? tempCustomerId = null, int? cartStatusId = null, Guid? shopItemId = null)
+            public Query(int pageNumber, int pageSize, Guid? customerId = null, int? cartStatusId = null, Guid? shopItemId = null)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
-                UserId = userId;
-                TempCustomerId = tempCustomerId;
+                CustomerId = customerId;
                 CartStatusId = cartStatusId;
                 ShopItemId = shopItemId;
             }
@@ -41,15 +39,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Qu
             {
                 try
                 {
-                    List<CartModel> cart = _unitOfWork.GetRepository<Cart>().GetByExpressionAsNoTracking(p => (!request.UserId.HasValue || p.UserId == request.UserId) && (!request.TempCustomerId.HasValue || p.TempCustomerId == request.TempCustomerId) && (!request.CartStatusId.HasValue || p.CartStatusId == request.CartStatusId) && (!request.ShopItemId.HasValue || p.CartDetails.Any(x => x.ShopItemId == request.ShopItemId))).Select(s => new CartModel()
+                    List<CartModel> cart = _unitOfWork.GetRepository<Cart>().GetByExpressionAsNoTracking(p => (!request.CustomerId.HasValue || p.CustomerId == request.CustomerId) && (!request.CartStatusId.HasValue || p.CartStatusId == request.CartStatusId) && (!request.ShopItemId.HasValue || p.CartDetails.Any(x => x.ShopItemId == request.ShopItemId))).Select(s => new CartModel()
                     {
                         CartId = s.CartId,
-                        UserId = s.UserId,
                         CartStatusId = s.CartStatusId,
-                        TempCustomerId = s.TempCustomerId,
+                        CustomerId = s.CustomerId,
                         CartStatus = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.CartStatus.Name : s.CartStatus.NameAr,
-                        TempCustomer = !s.TempCustomerId.HasValue ? null : _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? $"{s.TempCustomer.FirstName} {s.TempCustomer.SecondName} {s.TempCustomer.LastName}" : $"{s.TempCustomer.FirstNameAr} {s.TempCustomer.SecondNameAr} {s.TempCustomer.LastNameAr}",
-                        User = !s.UserId.HasValue ? null : _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? $"{s.User.FirstName} {s.User.SecondName} {s.User.LastName}" : $"{s.User.FirstNameAr} {s.User.SecondNameAr} {s.User.LastNameAr}",
+                        Customer = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? $"{s.Customer.FirstName} {s.Customer.SecondName} {s.Customer.LastName}" : $"{s.Customer.FirstNameAr} {s.Customer.SecondNameAr} {s.Customer.LastNameAr}",
                         CartDetailModels = s.CartDetails.Select(p => new CartDetailModel()
                         {
                             CartDetailId = p.CartDetailId,

@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -29,11 +30,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Co
             {
                 try
                 {
-                    Domain.Domains.Cart exisitCart = _unitOfWork.GetRepository<Domain.Domains.Cart>().GetByExpression(p => p.CartId == request.CartModel.CartId).SingleOrDefault();
+                    Cart exisitCart = _unitOfWork.GetRepository<Cart>().GetByExpression(p => p.CartId == request.CartModel.CartId).SingleOrDefault();
 
                     exisitCart.CartStatusId = request.CartModel.CartStatusId;
-                    exisitCart.TempCustomerId = request.CartModel.TempCustomerId;
-                    exisitCart.UserId = request.CartModel.UserId;
+                    exisitCart.CustomerId = request.CartModel.CustomerId;
                     exisitCart.LastUpdatedDate = DateTime.UtcNow;
                     exisitCart.LastUpdateUserId = _userAccessor.GetCurrentUserId();
 

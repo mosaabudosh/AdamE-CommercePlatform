@@ -22,7 +22,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new RegistrationCommands.Command(userModel));
+                return await _mediator.Send(new UserRegistrationCommands.Command(userModel));
             }
             catch (Exception ex)
             {
@@ -38,7 +38,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new LoginCommands.Command(loginModel.UserName, loginModel.Password));
+                return await _mediator.Send(new UserLoginCommands.Command(loginModel.UserName, loginModel.Password));
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new LogOutCommands.Command(refreshTokenModel.RefreshToken));
+                return await _mediator.Send(new UserLogOutCommands.Command(refreshTokenModel.RefreshToken));
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new CheckRefreshAccessTokenCommands.Command(refreshTokenModel.RefreshToken));
+                return await _mediator.Send(new CheckUserRefreshAccessTokenCommands.Command(refreshTokenModel.RefreshToken));
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new ChangePasswordCommands.Command(changePasswordModel.UserId, changePasswordModel.OldPassword, changePasswordModel.NewPassword));
+                return await _mediator.Send(new UserChangePasswordCommands.Command(changePasswordModel.UserId, changePasswordModel.OldPassword, changePasswordModel.NewPassword));
             }
             catch (Exception ex)
             {
@@ -180,7 +180,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new UserLockUnlockCommand.Command(new Guid(userLockUnlockModel.UserId), userLockUnlockModel.IsLock));
+                return await _mediator.Send(new UserLockUnlockCommands.Command(new Guid(userLockUnlockModel.UserId), userLockUnlockModel.IsLock));
             }
             catch (Exception ex)
             {

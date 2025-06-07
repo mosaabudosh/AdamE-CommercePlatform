@@ -1,6 +1,7 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Domain.Domains.Authorisation;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.C
             {
                 try
                 {
-                    Domain.Domains.City city = new Domain.Domains.City()
+                    City city = new City()
                     {
                         Name = request.CityModel.Name.Trim(),
                         NameAr = request.CityModel.NameAr.Trim(),
@@ -39,7 +40,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.C
                         CreationDate = DateTime.UtcNow,
                         IsActive = true
                     };
-                    _unitOfWork.GetRepository<Domain.Domains.City>().Insert(city);
+                    _unitOfWork.GetRepository<City>().Insert(city);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

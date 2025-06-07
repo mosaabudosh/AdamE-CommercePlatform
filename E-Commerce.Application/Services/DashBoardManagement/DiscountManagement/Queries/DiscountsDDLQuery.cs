@@ -1,5 +1,6 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -22,7 +23,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
             {
                 try
                 {
-                    List<DDLDataSource> actions = _unitOfWork.GetRepository<Domain.Domains.Discount>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> actions = _unitOfWork.GetRepository<Discount>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
                     {
                         Value = p.DiscountId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

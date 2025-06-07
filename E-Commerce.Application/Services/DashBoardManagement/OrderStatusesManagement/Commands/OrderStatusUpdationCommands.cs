@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManag
             {
                 try
                 {
-                    Domain.Domains.OrderStatus exisitOrderStatus = await _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetById(request.OrderStatusModel.OrderStatusId.Value);
+                    OrderStatus exisitOrderStatus = await _unitOfWork.GetRepository<OrderStatus>().GetById(request.OrderStatusModel.OrderStatusId.Value);
 
                     exisitOrderStatus.Name = request.OrderStatusModel.Name.Trim();
                     exisitOrderStatus.NameAr = request.OrderStatusModel.NameAr.Trim();
@@ -57,11 +58,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManag
                 }
             }
 
-            private BaseResponse ValidateUpdation(Domain.Domains.OrderStatus orderStatus)
+            private BaseResponse ValidateUpdation(OrderStatus orderStatus)
             {
                 try
                 {
-                    Domain.Domains.OrderStatus existingRecord = _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetByExpressionAsNoTracking(x => (x.Name == orderStatus.Name || x.NameAr == orderStatus.NameAr) && x.OrderStatusId != orderStatus.OrderStatusId).FirstOrDefault();
+                    OrderStatus existingRecord = _unitOfWork.GetRepository<OrderStatus>().GetByExpressionAsNoTracking(x => (x.Name == orderStatus.Name || x.NameAr == orderStatus.NameAr) && x.OrderStatusId != orderStatus.OrderStatusId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

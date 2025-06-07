@@ -2,6 +2,7 @@
 
 using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -19,7 +20,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
             {
                 try
                 {
-                    List<DDLDataSource> shops = _unitOfWork.GetRepository<Domain.Domains.Shop>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> shops = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
                     {
                         Value = p.ShopId,
                         Label = p.Name,

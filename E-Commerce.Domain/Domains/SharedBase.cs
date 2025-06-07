@@ -1,5 +1,7 @@
 ﻿
 
+using E_Commerce.Domain.Domains.Authorisation;
+
 namespace E_Commerce.Domain.Domains
 {
 	public class SharedBase
@@ -11,5 +13,5 @@ namespace E_Commerce.Domain.Domains
         public Guid? DeletedUserId { get; set; }
         public DateTime? DeletedDate { get; set; }
         public bool IsActive { get; set; }
-	}
+    }
 }

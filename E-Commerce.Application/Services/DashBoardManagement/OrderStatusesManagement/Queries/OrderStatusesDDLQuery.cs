@@ -1,5 +1,6 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -22,7 +23,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManag
             {
                 try
                 {
-                    List<DDLDataSource> orderStatuses = _unitOfWork.GetRepository<Domain.Domains.OrderStatus>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
+                    List<DDLDataSource> orderStatuses = _unitOfWork.GetRepository<OrderStatus>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
                     {
                         Value = p.OrderStatusId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

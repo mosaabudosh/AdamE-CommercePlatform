@@ -1,5 +1,5 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Domain.Domains;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;

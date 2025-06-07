@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
             {
                 try
                 {
-                    Domain.Domains.Discount discount = new Domain.Domains.Discount()
+                    Discount discount = new Discount()
                     {
                         DiscountId = 0,
                         Name = request.DiscountModel.Name.Trim(),
@@ -51,7 +52,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Discount>().Insert(discount);
+                    _unitOfWork.GetRepository<Discount>().Insert(discount);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -66,11 +67,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
                 }
             }
 
-            private BaseResponse ValidateCreation(Domain.Domains.Discount discount)
+            private BaseResponse ValidateCreation(Discount discount)
             {
                 try
                 {
-                    Domain.Domains.Discount existingRecord = _unitOfWork.GetRepository<Domain.Domains.Discount>().GetByExpressionAsNoTracking(x => x.Name == discount.Name || x.NameAr == discount.NameAr || x.Code == discount.Code).FirstOrDefault();
+                    Discount existingRecord = _unitOfWork.GetRepository<Discount>().GetByExpressionAsNoTracking(x => x.Name == discount.Name || x.NameAr == discount.NameAr || x.Code == discount.Code).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

@@ -18,7 +18,7 @@ namespace E_Commerce.Application.Services.Language.Queries
             {
                 try
                 {
-                    List<DDLDataSource> languages = _unitOfWork.GetRepository<Domain.Domains.Language>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
+                    List<DDLDataSource> languages = _unitOfWork.GetRepository<Domain.Domains.DashBoard.Language>().GetByExpressionAsNoTracking().Select(p => new DDLDataSource()
                     {
                         Value = p.LanguageId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

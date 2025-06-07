@@ -1,5 +1,6 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -22,7 +23,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
             {
                 try
                 {
-                    List<DDLDataSource> items = _unitOfWork.GetRepository<Domain.Domains.Item>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> items = _unitOfWork.GetRepository<Item>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
                     {
                         ValueGuid = p.ItemId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

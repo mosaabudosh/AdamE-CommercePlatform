@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -29,7 +30,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.TaxsManagement.Que
             {
                 try
                 {
-                    TaxModel tax = _unitOfWork.GetRepository<Domain.Domains.Tax>().GetByExpressionAsNoTracking(p => p.TaxId == request.TaxId).Select(s => new TaxModel()
+                    TaxModel tax = _unitOfWork.GetRepository<Tax>().GetByExpressionAsNoTracking(p => p.TaxId == request.TaxId).Select(s => new TaxModel()
                     {
                         TaxId = request.TaxId,
                         Name = s.Name,

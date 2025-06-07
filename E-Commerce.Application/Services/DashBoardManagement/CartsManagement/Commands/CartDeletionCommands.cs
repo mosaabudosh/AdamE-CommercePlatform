@@ -1,4 +1,5 @@
 ﻿using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -28,8 +29,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Co
             {
                 try
                 {
-                    Domain.Domains.Cart cart = await _unitOfWork.GetRepository<Domain.Domains.Cart>().GetById(request.CartId);
-                    _unitOfWork.GetRepository<Domain.Domains.Cart>().Delete(cart);
+                    Cart cart = await _unitOfWork.GetRepository<Cart>().GetById(request.CartId);
+                    _unitOfWork.GetRepository<Cart>().Delete(cart);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

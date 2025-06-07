@@ -1,7 +1,8 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -28,7 +29,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
             {
                 try
                 {
-                    ShopModel shop = _unitOfWork.GetRepository<Domain.Domains.Shop>().GetByExpressionAsNoTracking(p => p.ShopId == request.ShopId).Select(s => new ShopModel()
+                    ShopModel shop = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(p => p.ShopId == request.ShopId).Select(s => new ShopModel()
                     {
                         ShopId = s.ShopId,
                         ParentShopId = s.ParentShopId,

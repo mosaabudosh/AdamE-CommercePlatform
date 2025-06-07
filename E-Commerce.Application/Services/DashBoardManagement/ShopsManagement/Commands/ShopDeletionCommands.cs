@@ -1,4 +1,5 @@
 ﻿using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -35,8 +36,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                         return validationBaseResponse;
                     }
 
-                    Domain.Domains.Shop shop = await _unitOfWork.GetRepository<Domain.Domains.Shop>().GetById(request.ShopId);
-                    _unitOfWork.GetRepository<Domain.Domains.Shop>().Delete(shop);
+                    Shop shop = await _unitOfWork.GetRepository<Shop>().GetById(request.ShopId);
+                    _unitOfWork.GetRepository<Shop>().Delete(shop);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -55,7 +56,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
             {
                 try
                 {
-                    bool haveRelatedData = _unitOfWork.GetRepository<Domain.Domains.Shop>().GetByExpressionAsNoTracking(i => i.ShopId == shopId && (i.ShopItems.Any() || i.Users.Any() || i.ChildShops.Any())).Any();
+                    bool haveRelatedData = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(i => i.ShopId == shopId && (i.ShopItems.Any() || i.Users.Any() || i.ChildShops.Any())).Any();
                     if (haveRelatedData)
                     {
                         return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);

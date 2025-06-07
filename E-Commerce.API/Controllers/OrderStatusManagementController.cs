@@ -1,5 +1,5 @@
 ﻿using Adam.Generic.Generic;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.AuthenticationManagement.ActionsManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.OrderStatusesManagement.Queries;

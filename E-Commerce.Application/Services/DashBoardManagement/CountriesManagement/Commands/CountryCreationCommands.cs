@@ -1,9 +1,9 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
-using E_Commerce.Domain.Domains;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -33,10 +33,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
                 string DMSCountryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath];
-                Domain.Domains.Country country = new Domain.Domains.Country();
+                Country country = new Country();
                 try
                 {
-                    country = new Domain.Domains.Country()
+                    country = new Country()
                     {
                         Name = request.CountryModel.Name.Trim(),
                         NameAr = request.CountryModel.NameAr.Trim(),
@@ -45,7 +45,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                         CreationDate = DateTime.UtcNow,
                         IsActive = true
                     };
-                    _unitOfWork.GetRepository<Domain.Domains.Country>().Insert(country);
+                    _unitOfWork.GetRepository<Country>().Insert(country);
                     await _unitOfWork.CommitChanges();
 
                     if (request.CountryModel.FileCreationModel is not null)

@@ -1,7 +1,8 @@
 ﻿
 
 using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -26,7 +27,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Q
             {
                 try
                 {
-                    CityModel city = _unitOfWork.GetRepository<Domain.Domains.City>().GetByExpressionAsNoTracking(p => p.CityId == request.CityId).Select(s => new CityModel()
+                    CityModel city = _unitOfWork.GetRepository<City>().GetByExpressionAsNoTracking(p => p.CityId == request.CityId).Select(s => new CityModel()
                     {
                         CityId = s.CityId,
                         CountryId = s.CountryId,

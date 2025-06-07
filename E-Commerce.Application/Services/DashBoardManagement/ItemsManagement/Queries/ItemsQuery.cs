@@ -1,11 +1,14 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Caching;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Queries
 {
@@ -18,9 +21,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
             public string? SearchText { get; set; }
             public int? CategoryId { get; set; }
 
-            public string ItemPathDMS = "Items";
-
-
             public Query(int pageNumber, int pageSize, string? searchText = null, int? categoryId = null)
             {
                 PageNumber = pageNumber;
@@ -30,13 +30,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator) : IRequestHandler<Query, BaseResponse<List<ItemModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<ItemModel>>>
         {
             public async Task<BaseResponse<List<ItemModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    List<ItemModel> items = _unitOfWork.GetRepository<Domain.Domains.Item>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText) || p.Category.Name.Contains(request.SearchText) || p.Category.NameAr.Contains(request.SearchText)) && (!request.CategoryId.HasValue || p.CategoryId == request.CategoryId.Value)).Select(s => new ItemModel()
+                    List<ItemModel> items = _unitOfWork.GetRepository<Item>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText) || p.Category.Name.Contains(request.SearchText) || p.Category.NameAr.Contains(request.SearchText)) && (!request.CategoryId.HasValue || p.CategoryId == request.CategoryId.Value)).Select(s => new ItemModel()
                     {
                         ItemId = s.ItemId,
                         Name = s.Name,
@@ -47,11 +47,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
                         Descreption = s.Descreption,
                         Image = s.Image,
                         IsBlock = s.IsBlock,
+                        Images = new List<string>()
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
 
                     if (items.Any(p => !string.IsNullOrEmpty(p.Image)))
                     {
-                        List<string> filePaths = items.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{request.ItemPathDMS}\\{s.ItemId}"; }).ToList();
+                        string DMSItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSItemPath];
+
+                        List<string> filePaths = items.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{DMSItemPath}\\{s.ItemId}"; }).ToList();
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {
@@ -61,7 +64,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
                         {
                             foreach (ItemModel item in items.Where(p => !string.IsNullOrEmpty(p.Image)))
                             {
-                                item.Image = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == item.Image).FileContent;
+                                item.Images.Add(responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == item.Image).FileContent);
                             }
                         }
                     }

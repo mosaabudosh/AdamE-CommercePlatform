@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -29,7 +30,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
             {
                 try
                 {
-                    DiscountModel discountModel = _unitOfWork.GetRepository<Domain.Domains.Discount>().GetByExpressionAsNoTracking(p => p.DiscountId == request.DiscountId).Select(s => new DiscountModel()
+                    DiscountModel discountModel = _unitOfWork.GetRepository<Discount>().GetByExpressionAsNoTracking(p => p.DiscountId == request.DiscountId).Select(s => new DiscountModel()
                     {
                         DiscountId = request.DiscountId,
                         Name = s.Name,
