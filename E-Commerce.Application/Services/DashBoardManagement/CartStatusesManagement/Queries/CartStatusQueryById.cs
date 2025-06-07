@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -29,7 +30,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartStatusesManage
             {
                 try
                 {
-                    CartStatusModel cartStatus = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(p => p.CartStatusId == request.CartStatusId).Select(p => new CartStatusModel()
+                    CartStatusModel cartStatus = _unitOfWork.GetRepository<CartStatus>().GetByExpressionAsNoTracking(p => p.CartStatusId == request.CartStatusId).Select(p => new CartStatusModel()
                     {
                         CartStatusId = p.CartStatusId,
                         Name = p.Name,

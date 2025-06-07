@@ -1,9 +1,9 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
-using E_Commerce.Domain.Domains;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -34,7 +34,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
             {
                 try
                 {
-                    CountryModel countryModel = _unitOfWork.GetRepository<Domain.Domains.Country>().GetByExpressionAsNoTracking(p => p.CountryId == request.CountryId).Select(s => new CountryModel()
+                    CountryModel countryModel = _unitOfWork.GetRepository<Country>().GetByExpressionAsNoTracking(p => p.CountryId == request.CountryId).Select(s => new CountryModel()
                     {
                         CountryId = s.CountryId,
                         Name = s.Name,

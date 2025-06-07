@@ -1,4 +1,5 @@
 ﻿using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -34,8 +35,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartStatusesManage
                     {
                         return validationBaseResponse;
                     }
-                    Domain.Domains.CartStatus cartStatus = await _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetById(request.CartStatusId);
-                    _unitOfWork.GetRepository<Domain.Domains.CartStatus>().Delete(cartStatus);
+                    CartStatus cartStatus = await _unitOfWork.GetRepository<CartStatus>().GetById(request.CartStatusId);
+                    _unitOfWork.GetRepository<CartStatus>().Delete(cartStatus);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -54,7 +55,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartStatusesManage
             {
                 try
                 {
-                    bool haveUserActions = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(i => i.CartStatusId == cartStatusId && i.Carts.Any()).Any();
+                    bool haveUserActions = _unitOfWork.GetRepository<CartStatus>().GetByExpressionAsNoTracking(i => i.CartStatusId == cartStatusId && i.Carts.Any()).Any();
                     if (haveUserActions)
                     {
                         return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);

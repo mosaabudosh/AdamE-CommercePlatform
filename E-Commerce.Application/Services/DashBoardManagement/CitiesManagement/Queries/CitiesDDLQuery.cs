@@ -2,6 +2,7 @@
 
 using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -19,7 +20,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Q
             {
                 try
                 {
-                    List<DDLDataSource> cities = _unitOfWork.GetRepository<Domain.Domains.City>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> cities = _unitOfWork.GetRepository<City>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
                     {
                         Value = p.CityId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

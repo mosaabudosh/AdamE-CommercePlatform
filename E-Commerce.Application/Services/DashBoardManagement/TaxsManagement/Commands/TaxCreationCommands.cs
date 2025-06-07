@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.TaxsManagement.Com
             {
                 try
                 {
-                    Domain.Domains.Tax tax = new Domain.Domains.Tax()
+                    Tax tax = new Tax()
                     {
                         Name = request.TaxModel.Name.Trim(),
                         NameAr = !string.IsNullOrEmpty(request.TaxModel.NameAr) ? request.TaxModel.NameAr.Trim() : request.TaxModel.Name.Trim(),
@@ -45,7 +46,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.TaxsManagement.Com
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Tax>().Insert(tax);
+                    _unitOfWork.GetRepository<Tax>().Insert(tax);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }
@@ -60,11 +61,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.TaxsManagement.Com
                 }
             }
 
-            private BaseResponse ValidateCreation(Domain.Domains.Tax tax)
+            private BaseResponse ValidateCreation(Tax tax)
             {
                 try
                 {
-                    Domain.Domains.Tax existingRecord = _unitOfWork.GetRepository<Domain.Domains.Tax>().GetByExpressionAsNoTracking(x => x.Name == tax.Name || x.NameAr == tax.NameAr).FirstOrDefault();
+                    Tax existingRecord = _unitOfWork.GetRepository<Tax>().GetByExpressionAsNoTracking(x => x.Name == tax.Name || x.NameAr == tax.NameAr).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

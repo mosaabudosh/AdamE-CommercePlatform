@@ -1,5 +1,5 @@
 ﻿using Adam.Generic.Generic;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DashBoardManagement.CountriesManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.CountriesManagement.Queries;
 using Generic.Response;

@@ -1,9 +1,9 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
-using E_Commerce.Domain.Domains;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,10 +30,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
                 string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
-                Domain.Domains.Category category = new Domain.Domains.Category();
+                Category category = new Category();
                 try
                 {
-                    category = new Domain.Domains.Category()
+                    category = new Category()
                     {
                         Name = request.CategoryModel.Name.Trim(),
                         NameAr = request.CategoryModel.NameAr.Trim(),
@@ -51,7 +51,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Category>().Insert(category);
+                    _unitOfWork.GetRepository<Category>().Insert(category);
                     await _unitOfWork.CommitChanges();
 
                     if (request.CategoryModel.FileCreationModel is not null)
@@ -93,11 +93,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                 }
             }
 
-            private BaseResponse ValidateCreation(Domain.Domains.Category category)
+            private BaseResponse ValidateCreation(Category category)
             {
                 try
                 {
-                    Domain.Domains.Category existingRecord = _unitOfWork.GetRepository<Domain.Domains.Category>().GetByExpressionAsNoTracking(x => x.Name == category.Name || x.NameAr == category.NameAr || x.Code == category.Code).FirstOrDefault();
+                    Category existingRecord = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(x => x.Name == category.Name || x.NameAr == category.NameAr || x.Code == category.Code).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

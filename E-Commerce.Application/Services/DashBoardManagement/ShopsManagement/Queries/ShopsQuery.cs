@@ -1,7 +1,8 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -38,7 +39,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
             {
                 try
                 {
-                    List<ShopModel> shops = _unitOfWork.GetRepository<Domain.Domains.Shop>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.CommercialName.Contains(request.SearchText) || p.Descreption.Contains(request.SearchText) || p.About.Contains(request.SearchText)) && (!request.CityId.HasValue || p.CityId == request.CityId.Value) && (!request.ParentShopId.HasValue || p.ParentShopId == request.ParentShopId.Value)).Select(s => new ShopModel()
+                    List<ShopModel> shops = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.CommercialName.Contains(request.SearchText) || p.Descreption.Contains(request.SearchText) || p.About.Contains(request.SearchText)) && (!request.CityId.HasValue || p.CityId == request.CityId.Value) && (!request.ParentShopId.HasValue || p.ParentShopId == request.ParentShopId.Value)).Select(s => new ShopModel()
                     {
                         ShopId = s.ShopId,
                         ParentShopId = s.ParentShopId,

@@ -1,6 +1,7 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Domain.Domains;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -33,8 +34,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Co
                     Cart cart = new Cart()
                     {
                         CartStatusId = request.CartModel.CartStatusId,
-                        TempCustomerId = request.CartModel.TempCustomerId,
-                        UserId = request.CartModel.UserId,
+                        CustomerId = request.CartModel.CustomerId,
                         CreationDate = DateTime.UtcNow,
                         CreationUserId = _userAccessor.GetCurrentUserId(),
                         IsActive = true,

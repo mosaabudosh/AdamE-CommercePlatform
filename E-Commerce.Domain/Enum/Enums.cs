@@ -128,7 +128,9 @@ namespace E_Commerce.Domain.Enum
             AddressAr = 20,
             MobileNumber = 21,
             Website = 22,
-            Email = 23
+            Email = 23,
+            DMSCustomerPath = 24,
+            DMSItemPath = 25
         }
 
         public enum PlatformSettingsCode
@@ -155,7 +157,9 @@ namespace E_Commerce.Domain.Enum
             AddressAr,
             MobileNumber,
             Website,
-            Email
+            Email,
+            DMSCustomerPath,
+            DMSItemPath
         }
 
         public enum Screens
@@ -182,7 +186,10 @@ namespace E_Commerce.Domain.Enum
             NotificationStatuses = 20,
             NotificationTypes = 21,
             ShopItems = 22,
-            OrderStatuses = 23
+            OrderStatuses = 23,
+            PaymentMethod = 24,
+            UnitGroup = 25,
+            ShopItemStatus = 26
         }
 
         public enum MenuType
@@ -196,6 +203,13 @@ namespace E_Commerce.Domain.Enum
         {
             Read = 1,
             UnRead = 2
+        }
+
+        public enum ShopItemStatuses
+        {
+            Entered = 1,
+            Approved = 2,
+            Rejected = 3
         }
     }
 }

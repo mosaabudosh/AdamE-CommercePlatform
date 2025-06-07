@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.Enum;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -38,7 +39,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Q
             {
                 try
                 {
-                    List<CityModel> cities = _unitOfWork.GetRepository<Domain.Domains.City>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText) || p.Country.Name.Contains(request.SearchText) || p.Country.NameAr.Contains(request.SearchText)) && (!request.CountryId.HasValue || p.CountryId == request.CountryId.Value)).Select(p => new CityModel()
+                    List<CityModel> cities = _unitOfWork.GetRepository<City>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText) || p.Country.Name.Contains(request.SearchText) || p.Country.NameAr.Contains(request.SearchText)) && (!request.CountryId.HasValue || p.CountryId == request.CountryId.Value)).Select(p => new CityModel()
                     {
                         CityId = p.CityId,
                         Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

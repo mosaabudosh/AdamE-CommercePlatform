@@ -1,8 +1,9 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -34,7 +35,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                 string DMSCountryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath];
                 try
                 {
-                    Domain.Domains.Country country = await _unitOfWork.GetRepository<Domain.Domains.Country>().GetById(request.CountryModel.CountryId);
+                    Country country = await _unitOfWork.GetRepository<Country>().GetById(request.CountryModel.CountryId);
                     country.Name = request.CountryModel.Name.Trim();
                     country.NameAr = request.CountryModel.NameAr.Trim();
                     country.Banner = request.CountryModel.Banner;

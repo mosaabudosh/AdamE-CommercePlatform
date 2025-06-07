@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -35,7 +36,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.TaxsManagement.Que
             {
                 try
                 {
-                    List<TaxModel> taxs = _unitOfWork.GetRepository<Domain.Domains.Tax>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(s => new TaxModel()
+                    List<TaxModel> taxs = _unitOfWork.GetRepository<Tax>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(s => new TaxModel()
                     {
                         TaxId = s.TaxId,
                         Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,

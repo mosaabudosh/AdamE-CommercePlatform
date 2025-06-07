@@ -1,6 +1,6 @@
 ﻿using Adam.Generic.Generic;
 using E_Commerce.API.Model.ReportModel;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Model.Settings;
 using E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Queries;

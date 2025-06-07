@@ -3,6 +3,7 @@ using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -40,8 +41,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                         return validationBaseResponse;
                     }
 
-                    Domain.Domains.Category category = await _unitOfWork.GetRepository<Domain.Domains.Category>().GetById(request.CategoryId);
-                    _unitOfWork.GetRepository<Domain.Domains.Category>().Delete(category);
+                    Category category = await _unitOfWork.GetRepository<Category>().GetById(request.CategoryId);
+                    _unitOfWork.GetRepository<Category>().Delete(category);
 
                     if (!string.IsNullOrEmpty(category.Image))
                     {
@@ -71,7 +72,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             {
                 try
                 {
-                    bool haveRelatedData = _unitOfWork.GetRepository<Domain.Domains.Category>().GetByExpressionAsNoTracking(i => i.CategoryId == categoryId && (i.Items.Any() || i.ParentCategoryId == categoryId)).Any();
+                    bool haveRelatedData = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(i => i.CategoryId == categoryId && (i.Items.Any() || i.ParentCategoryId == categoryId)).Any();
                     if (haveRelatedData)
                     {
                         return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);

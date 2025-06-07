@@ -1,9 +1,9 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
-using E_Commerce.Domain.Domains;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -31,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                 string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
                 try
                 {
-                    Domain.Domains.Category exisitCategory = await _unitOfWork.GetRepository<Domain.Domains.Category>().GetById(request.CategoryModel.CategoryId);
+                    Category exisitCategory = await _unitOfWork.GetRepository<Category>().GetById(request.CategoryModel.CategoryId);
 
                     exisitCategory.Name = request.CategoryModel.Name.Trim();
                     exisitCategory.NameAr = request.CategoryModel.NameAr.Trim();
@@ -87,11 +87,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                 }
             }
 
-            private BaseResponse ValidateUpdation(Domain.Domains.Category category)
+            private BaseResponse ValidateUpdation(Category category)
             {
                 try
                 {
-                    Domain.Domains.Category existingRecord = _unitOfWork.GetRepository<Domain.Domains.Category>().GetByExpressionAsNoTracking(x => (x.Name == category.Name || x.NameAr == category.NameAr) && x.CategoryId != category.CategoryId).FirstOrDefault();
+                    Category existingRecord = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(x => (x.Name == category.Name || x.NameAr == category.NameAr) && x.CategoryId != category.CategoryId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

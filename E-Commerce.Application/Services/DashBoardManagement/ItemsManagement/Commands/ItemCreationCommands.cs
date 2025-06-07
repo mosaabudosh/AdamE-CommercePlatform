@@ -1,12 +1,15 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Caching;
+using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
 using static Adam.Generic.Constants.Constants;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Commands
 {
@@ -15,22 +18,19 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
         public class Command : IRequest<BaseResponse>
         {
             public ItemModel ItemModel { get; set; }
-
-            public string ItemPathDMS = "Items";
-
             public Command(ItemModel itemModel)
             {
                 ItemModel = itemModel;
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    Domain.Domains.Item item = new Domain.Domains.Item()
+                    Item item = new Item()
                     {
                         Name = request.ItemModel.Name.Trim(),
                         NameAr = request.ItemModel.NameAr.Trim(),
@@ -48,17 +48,18 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                     {
                         return validationBaseResponse;
                     }
-                    _unitOfWork.GetRepository<Domain.Domains.Item>().Insert(item);
+                    _unitOfWork.GetRepository<Item>().Insert(item);
                     await _unitOfWork.CommitChanges();
-                    if (request.ItemModel.FileCreationModel is not null)
+                    if (request.ItemModel.FileCreationModels is not null && request.ItemModel.FileCreationModels.Any())
                     {
+                        string DMSItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSItemPath];
+
                         FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                         {
                             FolderName = $"{item.ItemId}",
-                            FolderPath = $"{request.ItemPathDMS}",
-                            FileCreationModels = new List<FileCreationModel>(),
+                            FolderPath = $"{DMSItemPath}",
+                            FileCreationModels = request.ItemModel.FileCreationModels
                         };
-                        folderAndFileCreationModel.FileCreationModels.Add(request.ItemModel.FileCreationModel);
                         BaseResponse createFolderAndOneFileResponse = await _mediator.Send(new CreateFolderAndOneFileCommands.Command(folderAndFileCreationModel));
                         if (!createFolderAndOneFileResponse.IsSuccess)
                         {
@@ -79,11 +80,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                 }
             }
 
-            private BaseResponse ValidateCreation(Domain.Domains.Item item)
+            private BaseResponse ValidateCreation(Item item)
             {
                 try
                 {
-                    Domain.Domains.Item existingRecord = _unitOfWork.GetRepository<Domain.Domains.Item>().GetByExpressionAsNoTracking(x => x.Name == item.Name || x.NameAr == item.NameAr || x.Code == item.Code).FirstOrDefault();
+                    Item existingRecord = _unitOfWork.GetRepository<Item>().GetByExpressionAsNoTracking(x => x.Name == item.Name || x.NameAr == item.NameAr || x.Code == item.Code).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

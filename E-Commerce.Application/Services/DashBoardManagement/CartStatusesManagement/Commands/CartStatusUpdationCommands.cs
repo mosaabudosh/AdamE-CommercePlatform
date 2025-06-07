@@ -1,5 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
-using E_Commerce.Application.Model;
+using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -30,7 +31,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartStatusesManage
             {
                 try
                 {
-                    Domain.Domains.CartStatus exisitCartStatus = await _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetById(request.CartStatusModel.CartStatusId);
+                    CartStatus exisitCartStatus = await _unitOfWork.GetRepository<CartStatus>().GetById(request.CartStatusModel.CartStatusId);
 
                     exisitCartStatus.Name = request.CartStatusModel.Name.Trim();
                     exisitCartStatus.NameAr = request.CartStatusModel.NameAr.Trim();
@@ -57,11 +58,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartStatusesManage
                 }
             }
 
-            private BaseResponse ValidateUpdation(Domain.Domains.CartStatus cartStatus)
+            private BaseResponse ValidateUpdation(CartStatus cartStatus)
             {
                 try
                 {
-                    Domain.Domains.CartStatus existingRecord = _unitOfWork.GetRepository<Domain.Domains.CartStatus>().GetByExpressionAsNoTracking(x => (x.Name == cartStatus.Name || x.NameAr == cartStatus.NameAr) && x.CartStatusId != cartStatus.CartStatusId).FirstOrDefault();
+                    CartStatus existingRecord = _unitOfWork.GetRepository<CartStatus>().GetByExpressionAsNoTracking(x => (x.Name == cartStatus.Name || x.NameAr == cartStatus.NameAr) && x.CartStatusId != cartStatus.CartStatusId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

@@ -1,11 +1,13 @@
-﻿
-using E_Commerce.Domain.Domains;
+﻿using E_Commerce.Domain.Domains.Authentication;
 using E_Commerce.Domain.Domains.Authorisation;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.Domains.DMS;
 using E_Commerce.Domain.Domains.Notification;
 using E_Commerce.Domain.Domains.Settings;
 using E_Commerce.Infrastructure.Data.Configuration;
+using E_Commerce.Infrastructure.Data.Configuration.Authentication;
 using E_Commerce.Infrastructure.Data.Configuration.Authorisation;
+using E_Commerce.Infrastructure.Data.Configuration.DashBoard;
 using E_Commerce.Infrastructure.Data.Configuration.DMS;
 using E_Commerce.Infrastructure.Data.Configuration.Notification;
 using E_Commerce.Infrastructure.Data.Configuration.Settings;
@@ -16,7 +18,7 @@ using File = E_Commerce.Domain.Domains.DMS.File;
 
 namespace E_Commerce.Infrastructure.Data.Context
 {
-	public class E_CommerceContext : DbContext
+    public class E_CommerceContext : DbContext
 	{
         public IConfiguration Configuration { get; }
 
@@ -36,7 +38,7 @@ namespace E_Commerce.Infrastructure.Data.Context
 			modelBuilder.ApplyConfiguration(new RoleScreenEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new RoleScreenActionEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new ScreenEntityConfiguration());
-			modelBuilder.ApplyConfiguration(new TempCustomerEntityConfiguration());
+			modelBuilder.ApplyConfiguration(new CustomerEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new UserRoleEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new UserTypeEntityConfiguration());
@@ -67,6 +69,12 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new NotificationTypeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationTypeRoleEntityConfiguration());
             modelBuilder.ApplyConfiguration(new DiscountEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentMethodEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UnitGroupEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UnitEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UserLoginEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerLoginEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ShopItemStatusEntityConfiguration());
         }
         #endregion
 
@@ -77,7 +85,7 @@ namespace E_Commerce.Infrastructure.Data.Context
 		public DbSet<RoleScreen> RoleScreens { get; set; }
 		public DbSet<RoleScreenAction> RoleScreenActions { get; set; }
 		public DbSet<Screen> Screens { get; set; }
-		public DbSet<TempCustomer> TempCustomers { get; set; }
+		public DbSet<Customer> Customers { get; set; }
 		public DbSet<User> Users { get; set; }
 		public DbSet<UserRole> UserRoles { get; set; }
 		public DbSet<UserType> UserTypes { get; set; }
@@ -108,7 +116,13 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<NotificationType> NotificationTypes { get; set; }
         public DbSet<NotificationTypeRole> NotificationTypeRoles { get; set; }
         public DbSet<Discount> Discounts { get; set; }
-        #endregion
+        public DbSet<UnitGroup> UnitGroups { get; set; }
+        public DbSet<Unit> Units { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<UserLogin> UserLogins { get; set; }
+        public DbSet<CustomerLogin> CustomerLogins { get; set; }
+        public DbSet<ShopItemStatus> ShopItemStatuses { get; set; }
 
+        #endregion
     }
 }

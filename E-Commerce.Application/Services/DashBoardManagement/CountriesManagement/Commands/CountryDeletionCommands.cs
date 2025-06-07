@@ -1,7 +1,7 @@
 ﻿using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
-using E_Commerce.Domain.Domains;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -32,8 +32,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
             {
                 try
                 {
-                    Domain.Domains.Country country = await _unitOfWork.GetRepository<Domain.Domains.Country>().GetById(request.CountryId);
-                    _unitOfWork.GetRepository<Domain.Domains.Country>().Delete(country);
+                    Country country = await _unitOfWork.GetRepository<Country>().GetById(request.CountryId);
+                    _unitOfWork.GetRepository<Country>().Delete(country);
                     if (!string.IsNullOrEmpty(country.Banner))
                     {
                         string DMSCountryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath];

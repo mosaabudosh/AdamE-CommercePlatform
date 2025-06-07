@@ -2,6 +2,7 @@
 
 using Adam.Generic.Models;
 using E_Commerce.Application.Authentication.Interfaces;
+using E_Commerce.Domain.Domains.Authentication;
 using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -27,7 +28,7 @@ namespace E_Commerce.Application.Authentication.Security
             _signingConfigurations = signingConfigurations;
             _configuration = configuration;
         }
-        public UserLogin BuildTokens(UserLogin userLogin)
+        public UserLogin BuildUserTokens(UserLogin userLogin)
         {
             try
             {
@@ -42,8 +43,8 @@ namespace E_Commerce.Application.Authentication.Security
                     tokenSize = _configuration.GetSection("AuthenticationOption").GetSection("RefreshTokenSizeByt").Exists() ? Convert.ToInt32(_configuration.GetSection("AuthenticationOption").GetSection("RefreshTokenSizeByt").Value) : tokenSize;
                 }
                 userLogin.RefreshTokenExpirationDate = DateTime.Now.AddMinutes(refreshTokenExpirationMinutes).Ticks;
-                userLogin.AccessToken = GenerateToken(userLogin.User, DateTime.Now.AddDays(accessTokenValidDays));
-                userLogin.RefreshToken = GenerateToken(userLogin.User, DateTime.Now.AddMinutes(refreshTokenExpirationMinutes), true);
+                userLogin.AccessToken = GenerateToken(userLogin.User,null, DateTime.Now.AddDays(accessTokenValidDays));
+                userLogin.RefreshToken = GenerateToken(userLogin.User,null, DateTime.Now.AddMinutes(refreshTokenExpirationMinutes), true);
                 return userLogin;
             }
             catch (Exception ex)
@@ -51,7 +52,33 @@ namespace E_Commerce.Application.Authentication.Security
                 throw new Exception(ex.Message);
             }
         }
-        private string GenerateToken(User user, DateTime tokenExpiration, bool isRefresh = false)
+
+        public CustomerLogin BuildCustomerTokens(CustomerLogin customerLogin)
+        {
+            try
+            {
+                int refreshTokenExpirationMinutes = 5;
+                int accessTokenValidDays = 1;
+                int tokenSize = 256;
+
+                if (_configuration.GetSection("AuthenticationOption").Exists())
+                {
+                    refreshTokenExpirationMinutes = _configuration.GetSection("AuthenticationOption").GetSection("RefreshTokenExpirationMinutes").Exists() ? Convert.ToInt32(_configuration.GetSection("AuthenticationOption").GetSection("RefreshTokenExpirationMinutes").Value) : refreshTokenExpirationMinutes;
+                    accessTokenValidDays = _configuration.GetSection("AuthenticationOption").GetSection("AccessTokenValidDays").Exists() ? Convert.ToInt32(_configuration.GetSection("AuthenticationOption").GetSection("AccessTokenValidDays").Value) : accessTokenValidDays;
+                    tokenSize = _configuration.GetSection("AuthenticationOption").GetSection("RefreshTokenSizeByt").Exists() ? Convert.ToInt32(_configuration.GetSection("AuthenticationOption").GetSection("RefreshTokenSizeByt").Value) : tokenSize;
+                }
+                customerLogin.RefreshTokenExpirationDate = DateTime.Now.AddMinutes(refreshTokenExpirationMinutes).Ticks;
+                customerLogin.AccessToken = GenerateToken(null,customerLogin.Customer, DateTime.Now.AddDays(accessTokenValidDays));
+                customerLogin.RefreshToken = GenerateToken(null,customerLogin.Customer, DateTime.Now.AddMinutes(refreshTokenExpirationMinutes), true);
+                return customerLogin;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private string GenerateToken(User? user, Customer? customer, DateTime tokenExpiration, bool isRefresh = false)
         {
             try
             {
@@ -65,18 +92,33 @@ namespace E_Commerce.Application.Authentication.Security
                 }
                 else
                 {
-                    claims = new List<Claim>
+                    if(user is not null)
                     {
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                        new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                        new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                        claims = new List<Claim>
+                        {
+                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                            new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                            new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
 
-                    };
-                    if (user.UserRoles != null && user.UserRoles.Any(p => p.Role != null))
-                    {
-                        claims.AddRange(user.UserRoles.Where(p => p.Role != null).Select(s => new Claim(ClaimTypes.Role, s.Role.Name)).ToList());
+                        };
+                        if (user.UserRoles != null && user.UserRoles.Any(p => p.Role != null))
+                        {
+                            claims.AddRange(user.UserRoles.Where(p => p.Role != null).Select(s => new Claim(ClaimTypes.Role, s.Role.Name)).ToList());
+                        }
                     }
+                    if (customer is not null)
+                    {
+                        claims = new List<Claim>
+                        {
+                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, customer.CustomerId.ToString()),
+                            new Claim(ClaimTypes.Name, $"{customer.FirstName} {customer.LastName}"),
+                            new Claim(JwtRegisteredClaimNames.Sub, customer.CustomerId.ToString()),
+
+                        };
+                    }
+
                 }
                 SecurityTokenDescriptor securityTokenDescriptor = new SecurityTokenDescriptor
                 {
