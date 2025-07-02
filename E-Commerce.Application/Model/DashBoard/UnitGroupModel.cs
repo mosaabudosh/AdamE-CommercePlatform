@@ -11,5 +11,7 @@ namespace E_Commerce.Application.Model.DashBoard
         public int UnitGroupId { get; set; }
         public string Name { get; set; }
         public string NameAr { get; set; }
+        public List<UnitModel>? UnitModels { get; set; }
+
     }
 }

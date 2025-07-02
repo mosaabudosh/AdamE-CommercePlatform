@@ -1,7 +1,6 @@
 ﻿using Adam.Generic.Generic;
 using E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Queries;
-using E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Commands;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Http;

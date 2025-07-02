@@ -35,7 +35,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     Value = PlatformTheme.NormalMode,
                     UserId = userId ,
                     CreationUserId = userId,
-                    CreationDate = DateTime.UtcNow,
+                    CreationDate = new DateTime(2025,1,1),
                     IsActive = true
                 },
                 new UserSetting()
@@ -45,7 +45,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     Value = Convert.ToInt32(Enums.Languages.English).ToString(),
                     UserId = userId ,
                     CreationUserId = userId,
-                    CreationDate = DateTime.UtcNow,
+                    CreationDate = new DateTime(2025,1,1),
                     IsActive = true
                 },
                 new UserSetting()
@@ -55,7 +55,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     Value = Convert.ToInt32(Enums.Screens.Welcome).ToString(),
                     UserId = userId ,
                     CreationUserId = userId,
-                    CreationDate = DateTime.UtcNow,
+                    CreationDate = new DateTime(2025,1,1),
                     IsActive = true
                 },
                 new UserSetting()
@@ -65,7 +65,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     Value = Convert.ToInt32(Enums.MenuType.Open).ToString(),
                     UserId = userId ,
                     CreationUserId = userId,
-                    CreationDate = DateTime.UtcNow,
+                    CreationDate = new DateTime(2025, 1, 1),
                     IsActive = true
                 },
             });

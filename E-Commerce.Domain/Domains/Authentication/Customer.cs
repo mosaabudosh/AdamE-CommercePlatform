@@ -18,6 +18,7 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public int UserTypeId { get; set; }
         public int GenderId { get; set; }
         public int CityId { get; set; }
+        public string? OTPCode { get; set; }
 
         public virtual List<Cart> Carts { get; set; }
         public virtual List<Order> Orders { get; set; }

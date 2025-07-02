@@ -1,5 +1,8 @@
-﻿using Adam.Logging.Interfaces;
+﻿using Adam.Generic.Generic;
+using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
 using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -10,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsManagement.Queries
 {
@@ -24,7 +28,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsMana
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Query, BaseResponse<PaymentMethodModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<PaymentMethodModel>>
         {
             public async Task<BaseResponse<PaymentMethodModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -38,6 +42,23 @@ namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsMana
                         Code = s.Code,
                         Icon =s.Icon,
                     }).FirstOrDefault();
+
+                    if (!string.IsNullOrEmpty(paymentMethod.Icon))
+                    {
+                        string DMSPaymentMethodPath = _cachingPlatformSettings[PlatformSettingsCode.DMSPaymentMethodPath];
+                        string folderPath = $"{DMSPaymentMethodPath}\\_{paymentMethod.PaymentMethodId}";
+
+                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
+                        if (!responseGetFileCreationModels.IsSuccess)
+                        {
+                            return new BaseResponse<PaymentMethodModel>(false, responseGetFileCreationModels.Message);
+                        }
+                        if (responseGetFileCreationModels.DataObject.Any())
+                        {
+                            paymentMethod.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                        }
+                    }
+
                     return new BaseResponse<PaymentMethodModel>(true, string.Empty, string.Empty, paymentMethod);
                 }
                 catch (Exception ex)

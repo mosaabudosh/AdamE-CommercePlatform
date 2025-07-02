@@ -11,8 +11,8 @@
   "profiles": {
     "E-Commerce.API": {
       "commandName": "Project",
-      "dotnetRunMessages": false,
-      "launchBrowser": false,
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5065",
       "environmentVariables": {

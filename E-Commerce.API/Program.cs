@@ -4,6 +4,7 @@ using Adam.Generic.Models;
 using Adam.Logging;
 using E_Commerce.API;
 using E_Commerce.API.Middleware;
+using E_Commerce.API.SwaggerConfiguration;
 using E_Commerce.Application.Authentication.Security;
 using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.AppSettings;
@@ -17,8 +18,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using PdfSharp.Charting;
+using System.Reflection;
 
 try
 {
@@ -107,13 +110,50 @@ try
         };
     });
 
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "AdamE-Commerce-Platform APIs", Version = "v1" });
+        c.DocumentFilter<SpecificControllerFilter>();
+        c.OperationFilter<AddRequiredHeaderParameter>();
+
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Description = "Please enter your token with this format: ''Bearer YOUR_TOKEN''",
+            Type = SecuritySchemeType.ApiKey,
+            BearerFormat = "JWT",
+            Scheme = "bearer"
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+       {
+           {
+               new OpenApiSecurityScheme
+               {
+                   Reference = new OpenApiReference
+                   {
+                       Id = "Bearer",
+                       Type = ReferenceType.SecurityScheme
+                   }
+               },
+               new List<string>()
+           }
+       });
+    });
+
+
     WebApplication app = builder.Build();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(c =>
+        {
+            c.DefaultModelsExpandDepth(-1);
+        });
     }
     app.UseCors("Policy");
 

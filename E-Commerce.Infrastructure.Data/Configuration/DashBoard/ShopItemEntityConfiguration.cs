@@ -13,7 +13,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.DashBoard
 
             #region Foreignkeys
             builder.HasOne(e => e.Tax).WithMany(e => e.ShopItems).HasForeignKey(f => f.TaxId);
-            builder.HasOne(e => e.Item).WithOne(e => e.ShopItem).HasForeignKey<ShopItem>(f => f.ItemId);
+            builder.HasOne(e => e.Item).WithMany(e => e.ShopItems).HasForeignKey(f => f.ItemId);
             builder.HasOne(e => e.UnitGroup).WithMany(e => e.ShopItems).HasForeignKey(f => f.UnitGroupId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(e => e.ShopItemStatus).WithMany(e => e.ShopItems).HasForeignKey(f => f.ShopItemStatusId).OnDelete(DeleteBehavior.Restrict);
             #endregion

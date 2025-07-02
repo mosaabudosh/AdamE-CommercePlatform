@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Adam.Generic.Generic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace E_Commerce.Application.Model.DashBoard
         public string NameAr { get; set; }
         public string? Code { get; set; }
         public string? Icon { get; set; }
+        public FileCreationModel? FileCreationModel { get; set; }
     }
 }

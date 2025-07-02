@@ -206,7 +206,6 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Value = ((int)MenuType.Open).ToString(),
                     DataTypeId = (int)PlatformSettingsDataTypes.Integer
                 },
-
                 new PlatformSetting()
                 {
                     PlatformSettingId = (int)PlatformSettings.LicenceNumber,
@@ -325,6 +324,18 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     Value = "Items",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DMSPaymentMethodPath,
+                    Name = "DMS Payment Method Path" ,
+                    NameAr = "مسار طرق الدفع DMS",
+                    Code = "DMSPaymentMethodPath",
+                    Group = "DMS",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "PaymentMethods",
                     DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
             });

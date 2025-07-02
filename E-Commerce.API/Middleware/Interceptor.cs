@@ -30,7 +30,7 @@ namespace E_Commerce.API.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            string url = context.Request.Path.ToString();
+           string url = context.Request.Path.ToString();
             try
             {
                 int timeZoneOffset = 0;

@@ -12,4 +12,8 @@ namespace Adam.Generic.Enum
         Word = 2,
         Pdf = 3,
     }
+    public enum ConnectionType
+    {
+        SQL = 1
+    }
 }

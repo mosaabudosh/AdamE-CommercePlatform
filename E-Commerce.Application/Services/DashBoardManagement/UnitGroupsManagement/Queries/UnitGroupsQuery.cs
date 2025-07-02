@@ -39,8 +39,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.UnitGroupsManageme
                     List<UnitGroupModel> units = _unitOfWork.GetRepository<UnitGroup>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(s => new UnitGroupModel()
                     {
                         UnitGroupId = s.UnitGroupId,
-                        Name = s.Name,
-                        NameAr = s.NameAr,
+                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
+                        UnitModels = s.Units.Select(u => new UnitModel()
+                        {
+                            Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? u.Name : u.NameAr,
+                            UnitId = u.UnitId,
+                            UnitGroupId = u.UnitGroupId,
+                            Value = u.Value
+                        }).ToList()
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
                     return new BaseResponse<List<UnitGroupModel>>(true, string.Empty, string.Empty, units);
                 }
