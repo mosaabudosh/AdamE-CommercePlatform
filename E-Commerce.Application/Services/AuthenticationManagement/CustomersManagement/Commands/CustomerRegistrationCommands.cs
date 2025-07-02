@@ -21,7 +21,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
 {
     public class CustomerRegistrationCommands
     {
-        public class Command : IRequest<BaseResponse>
+        public class Command : IRequest<BaseResponse<CustomerRegisterModel>>
         {
             public CustomerModel CustomerModel { get; set; }
             public Command(CustomerModel customerModel)
@@ -29,22 +29,33 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                 CustomerModel = customerModel;
             }
 
-            public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, IAuthenticationService _authenticationService, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
+            public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, IAuthenticationService _authenticationService, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse<CustomerRegisterModel>>
             {
-                public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
+                public async Task<BaseResponse<CustomerRegisterModel>> Handle(Command request, CancellationToken cancellationToken)
                 {
                     try
                     {
+                        CustomerRegisterModel customerRegisterModel = new CustomerRegisterModel();
                         string DMSCustomerPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCustomerPath];
 
-                        IQueryable<Customer> usersQueryable = _unitOfWork.GetRepository<Customer>().GetByExpression(x => x.UserName == request.CustomerModel.UserName, x => x.OrderBy(z => z.UserName));
-                        if (usersQueryable.Any())
+                        IQueryable<Customer> customersQueryable = _unitOfWork.GetRepository<Customer>().GetByExpression(x => x.UserName == request.CustomerModel.UserName, x => x.OrderBy(z => z.UserName));
+
+                        if (customersQueryable.Any())
                         {
-                            return new BaseResponse(false, string.Empty, Adam.Generic.Constants.Constants.ErrorCode.AlreadyExsist);
+                            Customer exsistCustomer = await _unitOfWork.GetRepository<Customer>().FirstOrDefaultAsync(customersQueryable);
+                            customerRegisterModel = new CustomerRegisterModel()
+                            {
+                                CustomerId = exsistCustomer.CustomerId,
+                                Email = exsistCustomer.Email,
+                                UserName = exsistCustomer.UserName,
+                            };
+                            return new BaseResponse<CustomerRegisterModel>(false, string.Empty, Adam.Generic.Constants.Constants.ErrorCode.AlreadyExsist, customerRegisterModel);
                         }
-                        Customer user = new Customer()
+
+
+                        Customer customer = new Customer()
                         {
-                            UserName = request.CustomerModel.UserName,
+                            UserName = request.CustomerModel.Email,
                             FirstName = request.CustomerModel.FirstName,
                             FirstNameAr = request.CustomerModel.FirstNameAr,
                             SecondName = request.CustomerModel.SecondName,
@@ -57,25 +68,38 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                             Adresse = request.CustomerModel.Adresse,
                             CityId = request.CustomerModel.CityId,
                             DateOfBirth = request.CustomerModel.DateOfBirth,
+                            UserTypeId = (int)Enums.UserTypes.Customer,
                             IsBlock = request.CustomerModel.IsBlock.HasValue ? request.CustomerModel.IsBlock.Value : false,
                             ProfileImage = !string.IsNullOrEmpty(request.CustomerModel.ProfileImage) ? request.CustomerModel.ProfileImage.Trim() : null,
                             CreationUserId = _userAccessor.GetCurrentUserId(),
                             CreationDate = DateTime.UtcNow,
                             IsActive = true
                         };
-                        byte[] passwordHash, passwordSalt;
-                        _authenticationService.HashPassword(request.CustomerModel.Password, out passwordHash, out passwordSalt);
-                        user.PasswordHash = passwordHash;
-                        user.PasswordSalt = passwordSalt;
-                  
-                        _unitOfWork.GetRepository<Customer>().Insert(user);
-                        await _unitOfWork.CommitChanges();
+                        if (!string.IsNullOrEmpty(request.CustomerModel.Password))
+                        {
+                            byte[] passwordHash, passwordSalt;
+                            _authenticationService.HashPassword(request.CustomerModel.Password, out passwordHash, out passwordSalt);
+                            customer.PasswordHash = passwordHash;
+                            customer.PasswordSalt = passwordSalt;
+                        }
+                        else
+                        {
+                            customer.OTPCode = await _mediator.Send(new GenerateOTPCodeCommands.Command());
+                            customerRegisterModel = new CustomerRegisterModel()
+                            {
+                                CustomerId = customer.CustomerId,
+                                Email = customer.Email,
+                                UserName = customer.UserName,
+                            };
+                        }
 
+                        _unitOfWork.GetRepository<Customer>().Insert(customer);
+                        await _unitOfWork.CommitChanges();
                         if (request.CustomerModel.FileCreationModel is not null)
                         {
                             FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                             {
-                                FolderName = $"{user.CustomerId}",
+                                FolderName = $"{customer.CustomerId}",
                                 FolderPath = $"{DMSCustomerPath}",
                                 FileCreationModels = new List<FileCreationModel>()
                             };
@@ -83,11 +107,13 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                             BaseResponse createFolderAndOneFileResponse = await _mediator.Send(new CreateFolderAndOneFileCommands.Command(folderAndFileCreationModel));
                             if (!createFolderAndOneFileResponse.IsSuccess)
                             {
-                                return createFolderAndOneFileResponse;
+                                return new BaseResponse<CustomerRegisterModel>(false, createFolderAndOneFileResponse.Message,createFolderAndOneFileResponse.ErrorCode,null);
                             }
                         }
 
-                        return new BaseResponse(true, string.Empty);
+                        customerRegisterModel.CustomerId = customer.CustomerId;
+
+                        return new BaseResponse<CustomerRegisterModel>(true, string.Empty, customerRegisterModel);
                     }
                     catch (Exception ex)
                     {
@@ -96,11 +122,11 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                             ex = ex.InnerException;
                         }
                         await _exceptionService.LogErrorAsync(ex, "CustomerRegistrationCommands", _userAccessor.GetCurrentUserId(), request);
-                        return new BaseResponse(false, ex.Message);
+                        return new BaseResponse<CustomerRegisterModel>(false, ex.Message);
                     }
                 }
-            }
 
+            }
         }
     }
 }

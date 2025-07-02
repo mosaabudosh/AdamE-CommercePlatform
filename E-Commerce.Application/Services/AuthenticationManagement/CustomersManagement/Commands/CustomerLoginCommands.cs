@@ -86,6 +86,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                             RefreshToken = customerLogin.RefreshToken,
                             GenderId = customer.GenderId,
                             ProfileImage = customer.ProfileImage,
+                            CityId = customer.CityId,
                         };
                         if (!string.IsNullOrEmpty(customerModel.ProfileImage))
                         {

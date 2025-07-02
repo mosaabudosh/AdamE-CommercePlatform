@@ -39,6 +39,7 @@
     <Folder Include="Services\NotificationManagement\NotificationTypeRoleManagement\Queries\" />
     <Folder Include="Services\NotificationManagement\Notification\Commands\" />
     <Folder Include="Services\NotificationManagement\Notification\Queries\" />
+    <Folder Include="StoredProcedure\Scripts\" />
   </ItemGroup>
 
 </Project>

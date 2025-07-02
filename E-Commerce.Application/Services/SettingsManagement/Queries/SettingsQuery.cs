@@ -3,6 +3,7 @@ using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.Settings;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.Domains.Settings;
 using E_Commerce.Domain.Enum;
 using E_Commerce.Domain.IHttpServices;
@@ -15,7 +16,17 @@ namespace E_Commerce.Application.Services.SettingsManagement.Queries
 {
     public class SettingsQuery
     {
-        public class Query : IRequest<BaseResponse<List<SettingsModel>>> { }
+        public class Query : IRequest<BaseResponse<List<SettingsModel>>> 
+        {
+            public int PageNumber { get; set; }
+            public int PageSize { get; set; }
+
+            public Query(int pageNumber, int pageSize)
+            {
+                PageNumber = pageNumber;
+                PageSize = pageSize;
+            }
+        }
 
         public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<SettingsModel>>>
         {
@@ -34,7 +45,7 @@ namespace E_Commerce.Application.Services.SettingsManagement.Queries
                          IsVisible = s.IsVisible,
                          Value = s.Value,
                          NameAr = s.NameAr
-                    }).ToList();
+                    }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
 
                     //if (platformSettings.Any(p => p.DataTypeId == (int)Enums.PlatformSettingsDataTypes.File && !string.IsNullOrEmpty(p.Value)))
                     //{

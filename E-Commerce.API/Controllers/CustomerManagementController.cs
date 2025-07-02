@@ -33,6 +33,38 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost]
+        [Route("re-registration")]
+        public async Task<ActionResult<BaseResponse>> ReRegistration([FromBody] CustomerRegisterModel customerRegisterModel)
+        {
+            try
+            {
+                return await _mediator.Send(new ReRegistrationCustomerCommands.Command(customerRegisterModel));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(ReRegistration), UserAccessor.GetCurrentUserId(), customerRegisterModel);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("verify-customer")]
+        public async Task<ActionResult<BaseResponse>> VerifyCustomer([FromBody] CustomerRegisterModel customerRegisterModel)
+        {
+            try
+            {
+                return await _mediator.Send(new VerifyCustomerVerificationCodeCommands.Command(customerRegisterModel));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(VerifyCustomer), UserAccessor.GetCurrentUserId(), customerRegisterModel);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
         [Route("login")]
         [HttpPost]
         public async Task<ActionResult<BaseResponse<CustomerModel>>> Login(LoginModel loginModel)

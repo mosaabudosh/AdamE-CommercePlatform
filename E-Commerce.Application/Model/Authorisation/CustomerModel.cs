@@ -16,7 +16,7 @@ namespace E_Commerce.Application.Model.Authorisation
         public string? FirstNameAr { get; set; }
         public string? SecondNameAr { get; set; }
         public string? LastNameAr { get; set; }
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
         public string Email { get; set; }
         public string MobileNumber { get; set; }
         public string? Password { get; set; }

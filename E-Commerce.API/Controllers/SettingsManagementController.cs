@@ -19,11 +19,11 @@ namespace E_Commerce.API.Controllers
     {
         [Route("settings")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<SettingsModel>>>> GetSettings()
+        public async Task<ActionResult<BaseResponse<List<SettingsModel>>>> GetSettings(int pageNumber, int pageSize)
         {
             try
             {
-                return await _mediator.Send(new SettingsQuery.Query());
+                return await _mediator.Send(new SettingsQuery.Query(pageNumber, pageSize));
             }
             catch (Exception ex)
             {

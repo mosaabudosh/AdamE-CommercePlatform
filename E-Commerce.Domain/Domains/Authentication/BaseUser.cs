@@ -18,8 +18,8 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public string? UserName { get; set; }
         public string? Email { get; set; }
         public string? MobileNumber { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
+        public byte[]? PasswordHash { get; set; }
+        public byte[]? PasswordSalt { get; set; }
 
         public virtual Gender Gender { get; set; }
         public virtual City City { get; set; }

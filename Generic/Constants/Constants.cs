@@ -16,6 +16,7 @@ namespace Adam.Generic.Constants
             public const string InvalidUserNameOrPassword = "InvalidUserNameOrPassword";
             public const string InvalidRefreshToken = "InvalidRefreshToken";
             public const string InvalidUser = "InvalidUser";
+            public const string Invalid = "Invalid";
         }
 
         public static class Languages

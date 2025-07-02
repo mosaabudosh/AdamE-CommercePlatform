@@ -13,7 +13,7 @@
         public int? UnitGroupId { get; set; }
 
         public virtual Category Category { get; set; }
-        public virtual ShopItem ShopItem { get; set; }
+        public virtual List<ShopItem> ShopItems { get; set; }
         public virtual UnitGroup UnitGroup { get; set; }
 
     }
