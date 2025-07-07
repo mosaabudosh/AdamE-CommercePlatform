@@ -9,7 +9,7 @@ namespace E_Commerce.Application.Model.DashBoard
 {
     public class CartModel
     {
-        public Guid CartId { get; set; }
+        public Guid? CartId { get; set; }
         public Guid CustomerId { get; set; }
         public int CartStatusId { get; set; }
         public string? Customer { get; set; }
@@ -20,7 +20,7 @@ namespace E_Commerce.Application.Model.DashBoard
 
     public class CartDetailModel
     {
-        public Guid CartDetailId { get; set; }
+        public Guid? CartDetailId { get; set; }
         public decimal Quantity { get; set; }
         public decimal? Discount { get; set; }
         public decimal Tax { get; set; }

@@ -15,7 +15,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemStatusesMa
 {
     public class ShopItemStatusesDDLQuery
     {
-        public record Query() : IRequest<BaseResponse<List<DDLDataSource>>> { }
+        public class Query : IRequest<BaseResponse<List<DDLDataSource>>>
+        {
+            public string? SearchText { get; set; }
+            public Query(string? searchText = null)
+            {
+                SearchText = searchText;
+            }
+        }
 
         public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Query, BaseResponse<List<DDLDataSource>>>
         {
@@ -23,7 +30,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemStatusesMa
             {
                 try
                 {
-                    List<DDLDataSource> shopItemStatuses = _unitOfWork.GetRepository<ShopItemStatus>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> shopItemStatuses = _unitOfWork.GetRepository<ShopItemStatus>().GetByExpressionAsNoTracking(p => p.IsActive && (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText))).Select(p => new DDLDataSource()
                     {
                         Value = p.ShopItemStatusId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

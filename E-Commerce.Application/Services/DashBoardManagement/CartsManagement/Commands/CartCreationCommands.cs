@@ -16,7 +16,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Co
 {
     public class CartCreationCommands
     {
-        public class Command : IRequest<BaseResponse>
+        public class Command : IRequest<BaseResponse<CartModel>>
         {
             public CartModel CartModel { get; set; }
             public Command(CartModel cartModel)
@@ -25,9 +25,9 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Co
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Command, BaseResponse<CartModel>>
         {
-            public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<BaseResponse<CartModel>> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
@@ -53,7 +53,23 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Co
 
                     _unitOfWork.GetRepository<Cart>().Insert(cart);
                     await _unitOfWork.CommitChanges();
-                    return new BaseResponse(true);
+
+                    CartModel cartModel = new CartModel()
+                    {
+                        CartId = cart.CartId,
+                        CartStatusId = cart.CartStatusId,
+                        CustomerId = cart.CustomerId,
+                        CartDetailModels = cart.CartDetails.Select(s => new CartDetailModel()
+                        {
+                            CartDetailId = s.CartDetailId,
+                            ShopItemId = s.ShopItemId,
+                            Discount = s.Discount,
+                            Price = s.Price,
+                            Tax = s.Tax,
+                            Quantity = s.Quantity,
+                        }).ToList()
+                    };
+                    return new BaseResponse<CartModel>(true,string.Empty, cartModel);
                 }
                 catch (Exception ex)
                 {
@@ -62,7 +78,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Co
                         ex = ex.InnerException;
                     }
                     await _exceptionService.LogErrorAsync(ex, "CartCreationCommands", _userAccessor.GetCurrentUserId());
-                    return new BaseResponse(false, ex.Message);
+                    return new BaseResponse<CartModel>(false, ex.Message);
                 }
             }
 

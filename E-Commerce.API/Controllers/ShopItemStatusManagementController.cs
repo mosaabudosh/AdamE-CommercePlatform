@@ -15,7 +15,7 @@ namespace E_Commerce.API.Controllers
     {
         [Route("shop-item-statuses")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<ShopItemStatusModel>>>> GetShopItemStatuss(int pageNumber, int pageSize, string? searchText = null)
+        public async Task<ActionResult<BaseResponse<List<ShopItemStatusModel>>>> GetShopItemStatuses(int pageNumber, int pageSize, string? searchText = null)
         {
             try
             {
@@ -23,27 +23,27 @@ namespace E_Commerce.API.Controllers
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItemStatuss), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText);
+                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItemStatuses), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText);
                 return new BaseResponse<List<ShopItemStatusModel>>(false, ex.Message);
             }
         }
 
         [Route("shop-item-statuses-count")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<int>>> GetShopItemStatussCount(string? searchText = null)
+        public async Task<ActionResult<BaseResponse<int>>> GetShopItemStatusesCount(string? searchText = null)
         {
             try
             {
-                BaseResponse<List<ShopItemStatusModel>> taxsResponse = await _mediator.Send(new ShopItemStatusesQuery.Query(0, int.MaxValue, searchText));
-                if (!taxsResponse.IsSuccess)
+                BaseResponse<List<ShopItemStatusModel>> ShopItemStatusesResponse = await _mediator.Send(new ShopItemStatusesQuery.Query(0, int.MaxValue, searchText));
+                if (!ShopItemStatusesResponse.IsSuccess)
                 {
-                    return new BaseResponse<int>(false, taxsResponse.Message, taxsResponse.ErrorCode);
+                    return new BaseResponse<int>(false, ShopItemStatusesResponse.Message, ShopItemStatusesResponse.ErrorCode);
                 }
-                return new BaseResponse<int>(true, string.Empty, taxsResponse.DataObject.Count());
+                return new BaseResponse<int>(true, string.Empty, ShopItemStatusesResponse.DataObject.Count());
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItemStatussCount), UserAccessor.GetCurrentUserId());
+                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItemStatusesCount), UserAccessor.GetCurrentUserId());
                 return new BaseResponse<int>(false, ex.Message);
             }
         }
@@ -65,15 +65,15 @@ namespace E_Commerce.API.Controllers
 
         [Route("shop-item-statuses-ddl")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetShopItemStatussDDl()
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetShopItemStatusesDDl(string? searchText = null)
         {
             try
             {
-                return await _mediator.Send(new ShopItemStatusesDDLQuery.Query());
+                return await _mediator.Send(new ShopItemStatusesDDLQuery.Query(searchText));
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItemStatussDDl), UserAccessor.GetCurrentUserId());
+                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItemStatusesDDl), UserAccessor.GetCurrentUserId(),searchText);
                 return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
             }
         }
