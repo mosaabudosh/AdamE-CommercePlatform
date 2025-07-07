@@ -75,6 +75,7 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new UserLoginEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerLoginEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ShopItemStatusEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerFavoriteEntityConfiguration());
         }
         #endregion
 
@@ -122,7 +123,7 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<UserLogin> UserLogins { get; set; }
         public DbSet<CustomerLogin> CustomerLogins { get; set; }
         public DbSet<ShopItemStatus> ShopItemStatuses { get; set; }
-
+        public DbSet<CustomerFavorite> CustomerFavorites { get; set; }
         #endregion
     }
 }

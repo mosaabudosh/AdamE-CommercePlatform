@@ -15,7 +15,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
 {
     public class CategoriesDDLQuery
     {
-        public record Query() : IRequest<BaseResponse<List<DDLDataSource>>> { }
+        public class Query : IRequest<BaseResponse<List<DDLDataSource>>>
+        {
+            public string? SearchText { get; set; }
+            public Query(string? searchText = null)
+            {
+                SearchText = searchText;
+            }
+        }
 
         public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Query, BaseResponse<List<DDLDataSource>>>
         {
@@ -23,12 +30,12 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             {
                 try
                 {
-                    List<DDLDataSource> cities = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> categories = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => p.IsActive && (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText))).Select(p => new DDLDataSource()
                     {
                         Value = p.CategoryId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
                     }).ToList();
-                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, cities);
+                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, categories);
                 }
                 catch (Exception ex)
                 {

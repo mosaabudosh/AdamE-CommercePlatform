@@ -1,4 +1,6 @@
-﻿namespace E_Commerce.Domain.Domains.DashBoard
+﻿using E_Commerce.Domain.Domains.Authentication;
+
+namespace E_Commerce.Domain.Domains.DashBoard
 {
     public class ShopItem : SharedBase
     {
@@ -23,5 +25,6 @@
         public virtual OrderDetail OrderDetail { get; set; }
         public virtual UnitGroup UnitGroup { get; set; }
         public virtual ShopItemStatus ShopItemStatus { get; set; }
+        public virtual List<CustomerFavorite> CustomerFavorites { get; set; }
     }
 }
