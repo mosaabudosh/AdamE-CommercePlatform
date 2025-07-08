@@ -55,7 +55,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsMana
             {
                 try
                 {
-                    bool haveRelatedData = _unitOfWork.GetRepository<PaymentMethod>().GetByExpressionAsNoTracking(i => i.PaymentMethodId == paymentMethodId).Any();
+                    bool haveRelatedData = _unitOfWork.GetRepository<PaymentMethod>().GetByExpressionAsNoTracking(i => i.PaymentMethodId == paymentMethodId && i.Orders.Any()).Any();
                     if (haveRelatedData)
                     {
                         return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);

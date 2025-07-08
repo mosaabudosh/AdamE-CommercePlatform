@@ -14,6 +14,7 @@ namespace E_Commerce.Application.Model.DashBoard
         public string NameAr { get; set; }
         public string? Code { get; set; }
         public string? Icon { get; set; }
+        public bool IsActive { get; set; }
         public FileCreationModel? FileCreationModel { get; set; }
     }
 }
