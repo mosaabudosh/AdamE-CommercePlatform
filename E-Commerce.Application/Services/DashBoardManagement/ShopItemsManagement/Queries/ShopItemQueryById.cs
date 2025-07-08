@@ -1,5 +1,9 @@
-﻿using Adam.Logging.Interfaces;
+﻿using Adam.Generic.Generic;
+using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
+using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
 using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -10,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagement.Queries
 {
@@ -24,7 +29,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Query, BaseResponse<ShopItemModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<ShopItemModel>>
         {
             public async Task<BaseResponse<ShopItemModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -50,6 +55,41 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         Tax = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Tax.Name : s.Tax.NameAr,
                         UnitGroup = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.UnitGroup.Name : s.UnitGroup.NameAr
                     }).FirstOrDefault();
+
+                    string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];
+                    string folderPath = $"{DMSShopItemPath}\\{shopItem.ShopItemId}";
+                    BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
+                    if (!responseGetFileCreationModels.IsSuccess)
+                    {
+                        return new BaseResponse<ShopItemModel>(false, responseGetFileCreationModels.Message);
+                    }
+                    if (responseGetFileCreationModels.DataObject.Any())
+                    {
+                        shopItem.FileCreationModels = responseGetFileCreationModels.DataObject;
+                    }
+
+                    List<ShopItem> shopItems = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(p => p.ShopItemId != shopItem.ShopItemId).ToList();
+                    foreach (ShopItem item in shopItems)
+                    {
+                        item.Image = item.ShopItemId.ToString();
+                        await _unitOfWork.CommitChanges();
+                        FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
+                        {
+                            FolderName = $"{item.ShopItemId}",
+                            FolderPath = $"{DMSShopItemPath}",
+                            FileCreationModels = responseGetFileCreationModels.DataObject.Select(s => new FileCreationModel()
+                            {
+                                FileContent = s.FileContent,
+                                FileName = s.FileName,
+                                FileType = s.FileType                                
+                            }).ToList()
+                        };
+                        BaseResponse createFolderAndOneFileResponse = await _mediator.Send(new CreateFolderAndOneFileCommands.Command(folderAndFileCreationModel));
+                        if (!createFolderAndOneFileResponse.IsSuccess)
+                        {
+                            await _exceptionService.LogErrorAsync(createFolderAndOneFileResponse.Message, "CreateFolderAndOneFileCommands", _userAccessor.GetCurrentUserId());
+                        }
+                    }
                     return new BaseResponse<ShopItemModel>(true, string.Empty, string.Empty, shopItem);
                 }
                 catch (Exception ex)

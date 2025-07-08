@@ -41,20 +41,17 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
                         IsBlock = s.IsBlock,
                         Category = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Category.Name : s.Category.NameAr,
                     }).FirstOrDefault();
-                    string DMSItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSItemPath];
 
-                    if (!string.IsNullOrEmpty(item.Image))
+                    string DMSItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSItemPath];
+                    string folderPath = $"{DMSItemPath}\\{item.ItemId}";
+                    BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
+                    if (!responseGetFileCreationModels.IsSuccess)
                     {
-                        string folderPath = $"{DMSItemPath}\\{item.ItemId}";
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<ItemModel>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
-                        {
-                            item.FileCreationModels = responseGetFileCreationModels.DataObject;
-                        }
+                        return new BaseResponse<ItemModel>(false, responseGetFileCreationModels.Message);
+                    }
+                    if (responseGetFileCreationModels.DataObject.Any())
+                    {
+                        item.FileCreationModels = responseGetFileCreationModels.DataObject;
                     }
 
                     return new BaseResponse<ItemModel>(true, string.Empty, string.Empty, item);

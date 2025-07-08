@@ -58,8 +58,7 @@ namespace E_Commerce.Infrastructure.Data.Repository
         public async Task CommitChanges()
         {
             await _e_CommerceContext.SaveChangesAsync();
-        }
-
+        } 
         #endregion
     }
 }

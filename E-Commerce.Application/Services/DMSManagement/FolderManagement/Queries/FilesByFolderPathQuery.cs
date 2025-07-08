@@ -56,7 +56,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries
                         folder.Files.ForEach(async file =>
                         {
                             string fileType = fileTypes.FirstOrDefault(p => p.FileTypeId == file.FileTypeId).Extension;
-                            byte[] fileInByte = System.IO.File.ReadAllBytes($"{file.Path}\\{file.Name}.{fileType}");
+                            byte[] fileInByte = System.IO.File.Exists($"{file.Path}\\{file.Name}.{fileType}") ? System.IO.File.ReadAllBytes($"{file.Path}\\{file.Name}.{fileType}") : [];
                             files.Add(new FileCreationModel()
                             {
                                 FileType = fileType,

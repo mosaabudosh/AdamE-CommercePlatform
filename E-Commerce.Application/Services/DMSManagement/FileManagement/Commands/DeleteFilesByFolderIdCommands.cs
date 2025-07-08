@@ -35,6 +35,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FileManagement.Commands
                     if (files.Any())
                     {
                         _unitOfWork.GetRepository<File>().RemoveRange(files);
+                        await _unitOfWork.CommitChanges();
                     }
                     return new BaseResponse(true);
                 }
@@ -47,6 +48,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FileManagement.Commands
                     await _exceptionService.LogErrorAsync(ex, "DeleteFilesByFolderIdCommands", _userAccessor.GetCurrentUserId(), request);
                     return new BaseResponse(false, ex.Message);
                 }
+                
             }
 
         }

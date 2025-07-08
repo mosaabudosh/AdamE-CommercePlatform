@@ -25,9 +25,12 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries
         public class Query : IRequest<BaseResponse<List<FileCreationModel>>>
         {
             public List<string> FilePaths { get; set; }
-            public Query(List<string> filePaths)
+            public bool? IncludeConfiguration { get; set; }
+
+            public Query(List<string> filePaths , bool? includeConfiguration = true)
             {
                 FilePaths = filePaths;
+                IncludeConfiguration = includeConfiguration;
             }
         }
         public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<FileCreationModel>>>
@@ -37,8 +40,11 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries
                 try
                 {
                     string pathFromFolderConfiguration = _cachingPlatformSettings[PlatformSettingsCode.DMSRootFolderPath];
-
-                    request.FilePaths = request.FilePaths.Select(s => { return $"{pathFromFolderConfiguration}{s}"; }).ToList();
+                    if (request.IncludeConfiguration.HasValue && request.IncludeConfiguration.Value) 
+                    {
+                        request.FilePaths = request.FilePaths.Select(s => { return $"{pathFromFolderConfiguration}{s}"; }).ToList();
+                    }
+                   
                     IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpression(x => request.FilePaths.Contains(x.Path),
                     includedEntities: new List<System.Linq.Expressions.Expression<Func<File, object>>>()
                     {
@@ -52,7 +58,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries
                         files.ForEach(async file =>
                         {
                             string filePath = $"{file.Path}\\{file.Name}.{file.FileType.Extension}";
-                            byte[] fileInByte = System.IO.File.ReadAllBytes(filePath);
+                            byte[] fileInByte = System.IO.File.Exists(filePath) ? System.IO.File.ReadAllBytes(filePath) : [];
                             int startIndex = file.Path.IndexOf(pathFromFolderConfiguration) + pathFromFolderConfiguration.Length;
                             int pathLength = file.Path.Length;
                             int length = pathLength - startIndex;

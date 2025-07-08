@@ -53,7 +53,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                     if (request.ItemModel.FileCreationModels is not null && request.ItemModel.FileCreationModels.Any())
                     {
                         string DMSItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSItemPath];
-
+                        item.Image = item.ItemId.ToString();
+                        await _unitOfWork.CommitChanges();
                         FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                         {
                             FolderName = $"{item.ItemId}",

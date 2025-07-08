@@ -28,7 +28,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries
             {
                 try
                 {
-                    IQueryable<Folder> foldersQuery = _unitOfWork.GetRepository<Folder>().GetByExpression(x => x.Path.Contains(request.FolderPath));
+                    IQueryable<Folder> foldersQuery = _unitOfWork.GetRepository<Folder>().GetByExpression(x => x.Path == request.FolderPath,includedEntities:new List<System.Linq.Expressions.Expression<Func<Folder, object>>> { z => z.Files});
                     List<Folder> folders = await _unitOfWork.GetRepository<Folder>().ToListAsync(foldersQuery);
                     return new BaseResponse<List<Folder>>(true, string.Empty, folders);
                 }

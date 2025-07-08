@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using File = E_Commerce.Domain.Domains.DMS.File;
 
 namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands
 {
@@ -40,6 +41,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Command
                     }
                     IQueryable<Folder> folders = _unitOfWork.GetRepository<Folder>().GetByExpression(z => z.FolderId == request.FolderId);
                     Folder folder = await _unitOfWork.GetRepository<Folder>().FirstOrDefaultAsync(folders);
+
                     _unitOfWork.GetRepository<Folder>().Delete(folder);
 
                     if (request.IsCommit)
