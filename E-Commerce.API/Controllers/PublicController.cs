@@ -3,6 +3,7 @@ using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Model.Store;
 using E_Commerce.Application.Services.DashBoardManagement.CategoriesManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Queries;
+using E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Queries;
 using E_Commerce.Application.Services.Gender.Queries;
@@ -111,6 +112,21 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetStoreDashboardProducts), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText, categoryIds, shopIds, isLoadImage);
                 return new BaseResponse<List<DashboardProductModel>>(false, ex.Message);
+            }
+        }
+
+        [Route("dashboard-payment-methods")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<PaymentMethodModel>>>> GetPaymentMethods()
+        {
+            try
+            {
+                return await _mediator.Send(new PaymentMethodsQuery.Query(0,int.MaxValue));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetPaymentMethods), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<PaymentMethodModel>>(false, ex.Message);
             }
         }
     }

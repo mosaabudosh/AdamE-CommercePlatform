@@ -44,7 +44,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsMana
                         PaymentMethodId = s.PaymentMethodId,
                         Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
                         Code = s.Code,
-                        Icon = s.Icon
+                        Icon = s.Icon,
+                        IsActive = s.IsActive
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
 
                     if (paymentMethods.Any(p => !string.IsNullOrEmpty(p.Icon)))

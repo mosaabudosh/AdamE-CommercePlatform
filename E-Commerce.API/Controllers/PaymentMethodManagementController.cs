@@ -107,5 +107,20 @@ namespace E_Commerce.API.Controllers
                 return new BaseResponse(false, ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("update-payment-method-activation/{paymentMethodId}")]
+        public async Task<ActionResult<BaseResponse>> UpdatePaymentMethodActivation(int paymentMethodId)
+        {
+            try
+            {
+                return await _mediator.Send(new UpdatePaymentMethodActivationCommands.Command(paymentMethodId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(UpdatePaymentMethodActivation), UserAccessor.GetCurrentUserId(), paymentMethodId);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
     }
 }
