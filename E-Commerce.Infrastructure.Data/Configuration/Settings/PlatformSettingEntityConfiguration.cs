@@ -338,6 +338,18 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Value = "PaymentMethods",
                     DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DMSShopItemPath,
+                    Name = "DMS Shop Item Path" ,
+                    NameAr = "مسار عنصر متجر DMS",
+                    Code = "DMSShopItemPath",
+                    Group = "DMS",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "ShopItems",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
             });
             #endregion
 

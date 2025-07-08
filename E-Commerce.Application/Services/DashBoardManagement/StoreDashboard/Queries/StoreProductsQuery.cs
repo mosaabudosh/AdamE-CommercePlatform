@@ -22,27 +22,30 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
             public int PageSize { get; set; }
             public string? SearchText { get; set; }
             public string? CategoryIds { get; set; }
+            public string? ShopIds { get; set; }
+            public bool? IsLoadImage { get; set; }
 
-            public Query(int pageNumber, int pageSize, string? searchText = null, string? categoryIds = null)
+            public Query(int pageNumber, int pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
                 SearchText = searchText;
                 CategoryIds = categoryIds;
+                ShopIds = shopIds;
+                IsLoadImage = isLoadImage;
             }
         }
 
-        public class Handler(IUserAccessor _userAccessor, IExceptionService _exceptionService, IConfiguration _configuration) : IRequestHandler<Query, BaseResponse<List<DashboardProductModel>>>
+        public class Handler(IUserAccessor _userAccessor, IExceptionService _exceptionService, IConfiguration _configuration, IMediator _mediator) : IRequestHandler<Query, BaseResponse<List<DashboardProductModel>>>
         {
             public async Task<BaseResponse<List<DashboardProductModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    IEnumerable<DashboardProductModel> dashboardProductModels;
+                    IEnumerable<DashboardProductModel> dashboardProductModels = new List<DashboardProductModel>();
                     using (DatabaseEngine databaseEngine = new DatabaseEngine(_configuration.GetConnectionString("DefaultConnection")))
                     {
                         DapperParameters dapperParameters = new DapperParameters();
-
                         dapperParameters.AddParameter(ReportParameter.PageNumber, request.PageNumber + 1);
                         dapperParameters.AddParameter(ReportParameter.PageSize, request.PageSize);
                         if (!string.IsNullOrEmpty(request.SearchText))
@@ -53,15 +56,21 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
                         {
                             dapperParameters.AddParameter("CategoryIds", request.CategoryIds);
                         }
+                        if (!string.IsNullOrEmpty(request.ShopIds))
+                        {
+                            dapperParameters.AddParameter("ShopIds", request.ShopIds);
+                        }
+                        if (request.IsLoadImage.HasValue && request.IsLoadImage.Value)
+                        {
+                            dapperParameters.AddParameter("IsLoadImage", request.IsLoadImage.Value);
+                        }
                         dashboardProductModels = databaseEngine.ExecuteDapperSp<DashboardProductModel>(StoredProcedures.StoreProducts, dapperParameters);
                     }
                     if (dashboardProductModels is null)
                     {
                         return new BaseResponse<List<DashboardProductModel>>(false, "There is an implementation error on the database.");
                     }
-
-
-                    return new BaseResponse<List<DashboardProductModel>>(true, string.Empty, string.Empty, dashboardProductModels.ToList());
+                    return await _mediator.Send(new FilxDashboardProductData.Query(dashboardProductModels.ToList()));
                 }
                 catch (Exception ex)
                 {

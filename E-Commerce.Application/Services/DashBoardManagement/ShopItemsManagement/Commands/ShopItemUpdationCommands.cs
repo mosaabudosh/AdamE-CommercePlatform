@@ -1,5 +1,8 @@
-﻿using Adam.Logging.Interfaces;
+﻿using Adam.Generic.Generic;
+using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
 using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -11,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Adam.Generic.Constants.Constants;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagement.Commands
 {
@@ -25,7 +29,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -35,7 +39,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
 
                     exisitShopItem.TaxId = request.ShopItemModel.TaxId;
                     exisitShopItem.Cost = request.ShopItemModel.Cost;
-                    exisitShopItem.Image = request.ShopItemModel.Image;
                     exisitShopItem.ItemId = request.ShopItemModel.ItemId;
                     exisitShopItem.InStocks = request.ShopItemModel.InStocks;
                     exisitShopItem.ShopId = request.ShopItemModel.ShopId;
@@ -53,6 +56,25 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         return validationBaseResponse;
                     }
 
+                    string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];
+
+                    FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
+                    {
+                        FolderName = $"{exisitShopItem.ShopItemId}",
+                        FolderPath = $"{DMSShopItemPath}",
+                        FileCreationModels = request.ShopItemModel.FileCreationModels,
+                    };
+
+                    BaseResponse createFolderAndOneFileResponse = await _mediator.Send(new CreateFolderAndOneFileCommands.Command(folderAndFileCreationModel));
+                    if (!createFolderAndOneFileResponse.IsSuccess)
+                    {
+                        return createFolderAndOneFileResponse;
+                    }
+                    if (request.ShopItemModel.FileCreationModels is not null && request.ShopItemModel.FileCreationModels.Any())
+                    {
+                        exisitShopItem.Image = exisitShopItem.ShopItemId.ToString();
+                    }
+                    _unitOfWork.GetRepository<ShopItem>().Update(exisitShopItem);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

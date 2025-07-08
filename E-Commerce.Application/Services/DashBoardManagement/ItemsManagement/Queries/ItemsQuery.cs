@@ -64,7 +64,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
                         {
                             foreach (ItemModel item in items.Where(p => !string.IsNullOrEmpty(p.Image)))
                             {
-                                item.Images.Add(responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == item.Image).FileContent);
+                                item.Images.AddRange(responseGetFileCreationModels.DataObject.Where(p => p.FolderName == item.ItemId.ToString()).Select(s => s.FileContent));
                             }
                         }
                     }

@@ -131,7 +131,8 @@ namespace E_Commerce.Domain.Enum
             Email = 23,
             DMSCustomerPath = 24,
             DMSItemPath = 25,
-            DMSPaymentMethodPath = 26
+            DMSPaymentMethodPath = 26,
+            DMSShopItemPath = 27,
         }
 
         public enum PlatformSettingsCode
@@ -161,7 +162,8 @@ namespace E_Commerce.Domain.Enum
             Email,
             DMSCustomerPath,
             DMSItemPath,
-            DMSPaymentMethodPath 
+            DMSPaymentMethodPath,
+            DMSShopItemPath
         }
 
         public enum Screens

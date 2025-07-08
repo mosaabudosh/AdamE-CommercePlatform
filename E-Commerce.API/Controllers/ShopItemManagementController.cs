@@ -15,26 +15,26 @@ namespace E_Commerce.API.Controllers
     {
         [Route("shop-items")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<ShopItemModel>>>> GetShopItems(int pageNumber, int pageSize, string? searchText = null)
+        public async Task<ActionResult<BaseResponse<List<ShopItemModel>>>> GetShopItems(int pageNumber, int pageSize, string? searchText = null, int? shopId = null, int? categoryId = null)
         {
             try
             {
-                return await _mediator.Send(new ShopItemsQuery.Query(pageNumber, pageSize, searchText));
+                return await _mediator.Send(new ShopItemsQuery.Query(pageNumber, pageSize, searchText, shopId, categoryId));
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItems), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText);
+                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItems), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText, shopId, categoryId);
                 return new BaseResponse<List<ShopItemModel>>(false, ex.Message);
             }
         }
 
         [Route("shop-items-count")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<int>>> GetShopItemsCount(string? searchText = null)
+        public async Task<ActionResult<BaseResponse<int>>> GetShopItemsCount(string? searchText = null, int? shopId = null, int? categoryId = null)
         {
             try
             {
-                BaseResponse<List<ShopItemModel>> shopItemsResponse = await _mediator.Send(new ShopItemsQuery.Query(0, int.MaxValue, searchText));
+                BaseResponse<List<ShopItemModel>> shopItemsResponse = await _mediator.Send(new ShopItemsQuery.Query(0, int.MaxValue, searchText, shopId, categoryId));
                 if (!shopItemsResponse.IsSuccess)
                 {
                     return new BaseResponse<int>(false, shopItemsResponse.Message, shopItemsResponse.ErrorCode);
@@ -43,7 +43,7 @@ namespace E_Commerce.API.Controllers
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItemsCount), UserAccessor.GetCurrentUserId());
+                await ExceptionService.LogErrorAsync(ex, nameof(GetShopItemsCount), UserAccessor.GetCurrentUserId(),searchText, shopId, categoryId);
                 return new BaseResponse<int>(false, ex.Message);
             }
         }

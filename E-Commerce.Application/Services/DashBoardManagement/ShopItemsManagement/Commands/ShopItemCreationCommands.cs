@@ -1,5 +1,8 @@
-﻿using Adam.Logging.Interfaces;
+﻿using Adam.Generic.Generic;
+using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
 using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -11,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Adam.Generic.Constants.Constants;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagement.Commands
 {
@@ -25,7 +29,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -39,7 +43,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         UnitGroupId = request.ShopItemModel.UnitGroupId,
                         Cost = request.ShopItemModel.Cost,
                         ProfitRate = request.ShopItemModel.ProfitRate,
-                        Image = request.ShopItemModel.Image,
+                        Image = request.ShopItemModel.ShopItemId.ToString(),
                         InStocks = request.ShopItemModel.InStocks,
                         ItemId = request.ShopItemModel.ItemId,
                         OutOfStocks = request.ShopItemModel.OutOfStocks,
@@ -55,6 +59,25 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                     }
                     _unitOfWork.GetRepository<ShopItem>().Insert(shopItem);
                     await _unitOfWork.CommitChanges();
+
+                    if (request.ShopItemModel.FileCreationModels is not null && request.ShopItemModel.FileCreationModels.Any())
+                    {
+                        string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];
+                        shopItem.Image = shopItem.ShopItemId.ToString();
+                        await _unitOfWork.CommitChanges();
+                        FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
+                        {
+                            FolderName = $"{shopItem.ShopItemId}",
+                            FolderPath = $"{DMSShopItemPath}",
+                            FileCreationModels = request.ShopItemModel.FileCreationModels
+                        };
+                        BaseResponse createFolderAndOneFileResponse = await _mediator.Send(new CreateFolderAndOneFileCommands.Command(folderAndFileCreationModel));
+                        if (!createFolderAndOneFileResponse.IsSuccess)
+                        {
+                            return createFolderAndOneFileResponse;
+                        }
+                    }
+
                     return new BaseResponse(true);
                 }
                 catch (Exception ex)

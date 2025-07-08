@@ -34,7 +34,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
 
                     exisitItem.Name = request.ItemModel.Name.Trim();
                     exisitItem.NameAr = request.ItemModel.NameAr.Trim();
-                    exisitItem.Image = request.ItemModel.Image?.Trim();
                     exisitItem.Code = request.ItemModel.Code.Trim();
                     exisitItem.CategoryId = request.ItemModel.CategoryId;
                     exisitItem.Descreption = request.ItemModel.Descreption.Trim();
@@ -61,6 +60,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
                     {
                         return createFolderAndOneFileResponse;
                     }
+                    if (request.ItemModel.FileCreationModels is not null && request.ItemModel.FileCreationModels.Any())
+                    {
+                        exisitItem.Image = exisitItem.ItemId.ToString();
+                    }
 
                     await _unitOfWork.CommitChanges();
 
@@ -81,7 +84,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Co
             {
                 try
                 {
-                    Item existingRecord = _unitOfWork.GetRepository<Item>().GetByExpressionAsNoTracking(x => (x.Name == item.Name || x.NameAr == item.NameAr) && x.ItemId != item.ItemId).FirstOrDefault();
+                    Item existingRecord = _unitOfWork.GetRepository<Item>().GetByExpressionAsNoTracking(x => x.Name == item.Name && x.NameAr == item.NameAr && x.Code == item.Code && x.ItemId != item.ItemId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

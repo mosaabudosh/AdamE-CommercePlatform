@@ -49,22 +49,31 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Command
                     {
                         return new BaseResponse(false, oldfolders.Message);
                     }
-                    if (request.FolderAndFileCreationModel.FileCreationModels.Any())
+                    if (request.FolderAndFileCreationModel.FileCreationModels.Any() && oldfolders.DataObject.Any())
                     {
-                        if (oldfolders.DataObject.Any())
+                        foreach (Folder oldFolder in oldfolders.DataObject)
                         {
-                            oldfolders.DataObject.ForEach(async oldFolder =>
+                            if (oldFolder.Name == folder.Name)
                             {
-                                if (oldFolder.Name == folder.Name)
-                                {
-                                    BaseResponse responseDelete = await _mediator.Send(new DeleteFolderCommands.Command(oldFolder.FolderId));
-                                }
-                            });
+                                BaseResponse responseDelete = await _mediator.Send(new DeleteFolderCommands.Command(oldFolder.FolderId));
+                                //if (oldFolder.Files.Any())
+                                //{
+                                //    _unitOfWork.GetRepository<File>().RemoveRange(oldFolder.Files);
+                                //}
+                                //_unitOfWork.GetRepository<Folder>().Delete(oldFolder);
+                                //await _unitOfWork.CommitChanges();
+                                //BaseResponse deletePhsiycalFolderCommandsResponse = await _mediator.Send(new DeletePhsiycalFolderCommands.Command(oldFolder.Path));
+                                //if (!deletePhsiycalFolderCommandsResponse.IsSuccess)
+                                //{
+                                //    throw new Exception(deletePhsiycalFolderCommandsResponse.Message);
+                                //}
+                            }
                         }
+                  
                     }
 
                     IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpression(x => x.Path.Contains(folderPath),
-                   includedEntities: new List<System.Linq.Expressions.Expression<Func<File, object>>>() { z => z.Folder });
+                    includedEntities: new List<System.Linq.Expressions.Expression<Func<File, object>>>() { z => z.Folder });
                     List<File> oldfiles = await _unitOfWork.GetRepository<File>().ToListAsync(filesQuery);
                     if (oldfiles.Any())
                     {
