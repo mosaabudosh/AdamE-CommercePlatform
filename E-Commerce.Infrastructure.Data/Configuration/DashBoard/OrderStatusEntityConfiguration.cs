@@ -22,6 +22,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.DashBoard
                 new OrderStatus(){ OrderStatusId = (int)OrderStatuses.Delivered, Name = "Delivered" , NameAr = "تم التوصيل "},
                 new OrderStatus(){ OrderStatusId = (int)OrderStatuses.Canceled, Name = "Canceled" , NameAr = "ملغي"},
                 new OrderStatus(){ OrderStatusId = (int)OrderStatuses.Rejected, Name = "Rejected" , NameAr = "مرفوض"},
+                new OrderStatus(){ OrderStatusId = (int)OrderStatuses.Refund, Name = "Refund" , NameAr = "استرداد"},
             });
             #endregion
 

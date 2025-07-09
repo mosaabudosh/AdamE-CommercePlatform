@@ -2,7 +2,7 @@
 {
     public class OrderDetail : SharedBase
     {
-        public int OrderDetailId { get; set; }
+        public Guid OrderDetailId { get; set; }
         public double Quantity { get; set; }
         public decimal Discount { get; set; }
         public decimal Tax { get; set; }

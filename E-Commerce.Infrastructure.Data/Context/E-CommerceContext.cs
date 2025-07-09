@@ -76,6 +76,8 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new CustomerLoginEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ShopItemStatusEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerFavoriteEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ColorGroupEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ColorEntityConfiguration());
         }
         #endregion
 
@@ -124,6 +126,8 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<CustomerLogin> CustomerLogins { get; set; }
         public DbSet<ShopItemStatus> ShopItemStatuses { get; set; }
         public DbSet<CustomerFavorite> CustomerFavorites { get; set; }
+        public DbSet<ColorGroup> ColorGroups { get; set; }
+        public DbSet<Color> Colors { get; set; }
         #endregion
     }
 }
