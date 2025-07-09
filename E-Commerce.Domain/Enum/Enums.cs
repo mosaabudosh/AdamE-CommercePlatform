@@ -68,8 +68,9 @@ namespace E_Commerce.Domain.Enum
 			InDelivery = 4,
 			Delivered = 5,
 			Canceled = 6,
-			Rejected = 7
-		}
+			Rejected = 7,
+            Refund = 8
+        }
 
         public enum FileTypes
         {
@@ -192,8 +193,9 @@ namespace E_Commerce.Domain.Enum
             ShopItems = 22,
             OrderStatuses = 23,
             PaymentMethod = 24,
-            UnitGroup = 25,
-            ShopItemStatus = 26
+            SizeGroup = 25,
+            ShopItemStatus = 26,
+            ColorsGroup = 27
         }
 
         public enum MenuType

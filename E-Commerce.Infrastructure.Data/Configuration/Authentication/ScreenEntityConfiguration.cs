@@ -336,10 +336,10 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                 },
                 new Screen()
                 {
-                    ScreenId = (int)Enums.Screens.UnitGroup,
-                    Name = "Unit Groups",
-                    NameAr = "مجموعة الوحدات",
-                    Url = "unit-groups",
+                    ScreenId = (int)Enums.Screens.SizeGroup,
+                    Name = "Size Groups",
+                    NameAr = "مجموعة الاحجام",
+                    Url = "size-groups",
                     Icon = "pi pi-list",
                     ModuleId = (int)Modules.Lookup,
                     IsInMenue = true,
@@ -353,6 +353,19 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     Name = "Shop Item Statuses",
                     NameAr = "حالات السلعة في المتجر",
                     Url = "shop-item-statuses",
+                    Icon = "pi pi-list",
+                    ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.ColorsGroup,
+                    Name = "Colors Group",
+                    NameAr = "مجموعة الألوان",
+                    Url = "color-group",
                     Icon = "pi pi-list",
                     ModuleId = (int)Modules.Lookup,
                     IsInMenue = true,
