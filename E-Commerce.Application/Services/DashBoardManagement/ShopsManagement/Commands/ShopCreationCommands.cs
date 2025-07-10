@@ -36,7 +36,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                         Name = request.ShopModel.Name.Trim(),
                         Code = request.ShopModel.Code.Trim(),
                         Descreption = request.ShopModel.Descreption?.Trim(),
-                        Logo = request.ShopModel.Logo?.Trim(),
                         PhoneNumber = request.ShopModel.PhoneNumber.Trim(),
                         PersonConcateName = request.ShopModel.PersonConcateName.Trim(),
                         ParentShopId = request.ShopModel.ParentShopId,
@@ -57,8 +56,12 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                     {
                         return validationBaseResponse;
                     }
+                    _unitOfWork.GetRepository<Shop>().Insert(shop);
+                    await _unitOfWork.CommitChanges();
+
                     if (request.ShopModel.FileCreationModel is not null)
                     {
+                        shop.Logo = shop.ShopId.ToString();
                         FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                         {
                             FolderName = $"{shop.ShopId}",
@@ -71,9 +74,9 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                         {
                             return createFolderAndOneFileResponse;
                         }
+                        await _unitOfWork.CommitChanges();
                     }
-                    _unitOfWork.GetRepository<Shop>().Insert(shop);
-                    await _unitOfWork.CommitChanges();
+
                     return new BaseResponse(true);
                 }
                 catch (Exception ex)

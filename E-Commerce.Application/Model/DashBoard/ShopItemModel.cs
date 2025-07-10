@@ -20,12 +20,16 @@ namespace E_Commerce.Application.Model.DashBoard
         public Guid? ItemId { get; set; }
         public int ShopId { get; set; }
         public int UnitGroupId { get; set; }
+        public int? ColorGroupId { get; set; }
+        public int? DefaultUnitId { get; set; }
+        public int? DefaultColorId { get; set; }
         public int ShopItemStatusId { get; set; }
         public string? Tax { get; set; }
         public string? ItemName { get; set; }
         public string? Shop { get; set; }
         public string? UnitGroup { get; set; }
         public string? ShopItemStatus { get; set; }
+        public int? DiscountId { get; set; }
         public List<string>? Images { get; set; }
         public List<FileCreationModel>? FileCreationModels { get; set; }
     }

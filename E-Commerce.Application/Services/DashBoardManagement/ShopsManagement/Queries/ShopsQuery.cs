@@ -72,7 +72,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
                         {
                             foreach (ShopModel shop in shops.Where(p => !string.IsNullOrEmpty(p.Logo)))
                             {
-                                shop.Logo = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == shop.Logo).FileContent;
+                                shop.Logo = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FolderName == shop.ShopId.ToString())?.FileContent;
                             }
                         }
                     }

@@ -49,11 +49,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         OutOfStocks = s.OutOfStocks,
                         Price = s.Price,
                         ProfitRate = s.ProfitRate,
-                        ItemName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Item.Name : s.Item.NameAr,
-                        Shop = s.Shop.Name,
-                        ShopItemStatus = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.ShopItemStatus.Name : s.ShopItemStatus.NameAr,
-                        Tax = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Tax.Name : s.Tax.NameAr,
-                        UnitGroup = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.UnitGroup.Name : s.UnitGroup.NameAr
+                        ColorGroupId = s.ColorGroupId,
+                        DefaultUnitId = s.DefaultUnitId,
+                        DefaultColorId = s.DefaultColorId,
+                        DiscountId = s.DiscountId                        
                     }).FirstOrDefault();
 
                     string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];
@@ -68,28 +67,28 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         shopItem.FileCreationModels = responseGetFileCreationModels.DataObject;
                     }
 
-                    List<ShopItem> shopItems = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(p => p.ShopItemId != shopItem.ShopItemId).ToList();
-                    foreach (ShopItem item in shopItems)
-                    {
-                        item.Image = item.ShopItemId.ToString();
-                        await _unitOfWork.CommitChanges();
-                        FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
-                        {
-                            FolderName = $"{item.ShopItemId}",
-                            FolderPath = $"{DMSShopItemPath}",
-                            FileCreationModels = responseGetFileCreationModels.DataObject.Select(s => new FileCreationModel()
-                            {
-                                FileContent = s.FileContent,
-                                FileName = s.FileName,
-                                FileType = s.FileType                                
-                            }).ToList()
-                        };
-                        BaseResponse createFolderAndOneFileResponse = await _mediator.Send(new CreateFolderAndOneFileCommands.Command(folderAndFileCreationModel));
-                        if (!createFolderAndOneFileResponse.IsSuccess)
-                        {
-                            await _exceptionService.LogErrorAsync(createFolderAndOneFileResponse.Message, "CreateFolderAndOneFileCommands", _userAccessor.GetCurrentUserId());
-                        }
-                    }
+                    //List<ShopItem> shopItems = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(p => p.ShopItemId != shopItem.ShopItemId && string.IsNullOrEmpty(p.Image )).ToList();
+                    //foreach (ShopItem item in shopItems)
+                    //{
+                    //    item.Image = item.ShopItemId.ToString();
+                    //    await _unitOfWork.CommitChanges();
+                    //    FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
+                    //    {
+                    //        FolderName = $"{item.ShopItemId}",
+                    //        FolderPath = $"{DMSShopItemPath}",
+                    //        FileCreationModels = responseGetFileCreationModels.DataObject.Select(s => new FileCreationModel()
+                    //        {
+                    //            FileContent = s.FileContent,
+                    //            FileName = s.FileName,
+                    //            FileType = s.FileType                                
+                    //        }).ToList()
+                    //    };
+                    //    BaseResponse createFolderAndOneFileResponse = await _mediator.Send(new CreateFolderAndOneFileCommands.Command(folderAndFileCreationModel));
+                    //    if (!createFolderAndOneFileResponse.IsSuccess)
+                    //    {
+                    //        await _exceptionService.LogErrorAsync(createFolderAndOneFileResponse.Message, "CreateFolderAndOneFileCommands", _userAccessor.GetCurrentUserId());
+                    //    }
+                    //}
                     return new BaseResponse<ShopItemModel>(true, string.Empty, string.Empty, shopItem);
                 }
                 catch (Exception ex)

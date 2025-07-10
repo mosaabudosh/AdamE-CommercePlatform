@@ -47,6 +47,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                     exisitShopItem.ProfitRate = request.ShopItemModel.ProfitRate;
                     exisitShopItem.ShopItemStatusId = request.ShopItemModel.ShopItemStatusId;
                     exisitShopItem.UnitGroupId = request.ShopItemModel.UnitGroupId;
+                    exisitShopItem.ColorGroupId = request.ShopItemModel.ColorGroupId;
+                    exisitShopItem.DefaultColorId = request.ShopItemModel.DefaultColorId;
+                    exisitShopItem.DefaultUnitId = request.ShopItemModel.DefaultUnitId;
+                    exisitShopItem.DiscountId = request.ShopItemModel.DiscountId;
+
                     exisitShopItem.LastUpdatedDate = DateTime.UtcNow;
                     exisitShopItem.LastUpdateUserId = _userAccessor.GetCurrentUserId();
 

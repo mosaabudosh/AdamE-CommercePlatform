@@ -23,12 +23,20 @@ namespace E_Commerce.Application.Services.DashBoardManagement.UnitGroupsManageme
             {
                 try
                 {
-                    List<DDLDataSource> taxs = _unitOfWork.GetRepository<UnitGroup>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> unitGroups = _unitOfWork.GetRepository<UnitGroup>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
                     {
                         Value = p.UnitGroupId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Attributes = new
+                        {
+                            UnitModels = p.Units.Where(u => u.IsActive).Select(s => new DDLDataSource()
+                            {
+                                Value = s.UnitId,
+                                Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
+                            })
+                        }
                     }).ToList();
-                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, taxs);
+                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, unitGroups);
                 }
                 catch (Exception ex)
                 {

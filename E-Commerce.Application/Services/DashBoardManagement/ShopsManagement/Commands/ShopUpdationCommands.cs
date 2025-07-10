@@ -36,7 +36,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                     exisitShop.Name = request.ShopModel.Name.Trim();
                     exisitShop.Code = request.ShopModel.Code.Trim();
                     exisitShop.Descreption = request.ShopModel.Descreption?.Trim();
-                    exisitShop.Logo = request.ShopModel.Logo?.Trim();
+                    exisitShop.Logo = request.ShopModel.FileCreationModel is not null ? request.ShopModel.ShopId.ToString() : null;
                     exisitShop.PhoneNumber = request.ShopModel.PhoneNumber.Trim();
                     exisitShop.PersonConcateName = request.ShopModel.PersonConcateName.Trim();
                     exisitShop.ParentShopId = request.ShopModel.ParentShopId;
