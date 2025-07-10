@@ -15,5 +15,8 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public int ColorGroupId { get; set; }
 
         public virtual ColorGroup ColorGroup { get; set; }
+        public virtual List<OrderDetail> OrderDetails { get; set; }
+        public virtual List<ShopItem> ShopItems { get; set; }
+
     }
 }

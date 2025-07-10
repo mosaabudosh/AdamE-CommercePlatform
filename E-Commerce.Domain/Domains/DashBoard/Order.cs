@@ -8,6 +8,7 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public Guid CustomerId { get; set; }
         public int OrderStatusId { get; set; }
         public int? PaymentMethodId { get; set; }
+        public string? DiscountCode { get; set; }
 
         public virtual OrderStatus OrderStatus { get; set; }
         public virtual Customer Customer { get; set; }

@@ -15,5 +15,6 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public int UnitGroupId { get; set; }
 
         public virtual UnitGroup UnitGroup { get; set; }
+        public virtual List<ShopItem> ShopItems { get; set; }
     }
 }

@@ -19,5 +19,8 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public decimal Value { get; set; }
         public decimal? FirstValueUse { get; set; }
         public bool IsDeleted { get; set; }
+
+        public virtual List<ShopItem> ShopItems { get; set; }
+
     }
 }

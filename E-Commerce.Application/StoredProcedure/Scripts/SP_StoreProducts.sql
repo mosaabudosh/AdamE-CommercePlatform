@@ -1,13 +1,13 @@
 USE [Adam-E-Commerce-DB]
 GO
-/****** Object:  StoredProcedure [dbo].[SP_StoreProducts]    Script Date: 7/8/2025 10:48:33 AM ******/
+/****** Object:  StoredProcedure [dbo].[SP_StoreProducts]    Script Date: 7/10/2025 3:21:13 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 
 
-Create or ALTER PROCEDURE [dbo].[SP_StoreProducts]
+ALTER   PROCEDURE [dbo].[SP_StoreProducts]
 	@PageNumber int = null,
 	@PageSize int = null,
 	@SearchText nvarchar(100) = null,
@@ -43,23 +43,29 @@ BEGIN
 		ISNULL(i.Descreption, ' - ') as Descreption ,
 		si.Price,
 		c.Name as Category,
-		si.InStocks as Quantity,
+		1 as Quantity,
 		3 as Rating,
 		0 as IsInFavorite,
 		s.Name as Shope,
 		s.ShopId,
 		0 as Discount,
 		t.Value as Tax,
-		null as SelectedUnitId,
+		si.DefaultUnitId as SelectedUnitId,
 		(
 			case when @IsLoadImage is not null and @IsLoadImage = 1 
 			then (select STRING_AGG(Path,';') from Files where FolderId = fo.FolderId) 
 			else null 
 			end
 		) as ImagesPaths,
-		u.UnitId as UnitId,
-		u.Name as UnitName,
-		si.UnitGroupId
+		si.UnitGroupId,
+		si.ColorGroupId,
+		(
+			case when @IsLoadImage is not null and @IsLoadImage = 1 
+			then s.Logo 
+			else null 
+			end
+		) as ShopeLogo,
+		si.DefaultColorId as SelectedColorId
 
 	from ShopItems as si left outer join
 	Items as i on si.ItemId = i.ItemId left outer join
@@ -68,7 +74,7 @@ BEGIN
 	Taxs as t on si.TaxId = t.TaxId left outer join
 	Folders as fo on convert(varchar(38), si.ShopItemId) = fo.Name left outer join
 	UnitGroups as ug on si.UnitGroupId = ug.UnitGroupId left outer join
-	Units as u on ug.UnitGroupId = u.UnitGroupId
+	ColorGroups as cg on si.ColorGroupId = cg.ColorGroupId 
 
 	where si.ShopItemStatusId = 1 
 	and 
@@ -92,6 +98,7 @@ BEGIN
 		or @ShopIds = '' 
 		or s.ShopId in (select ShopId from @ShopeIds)
 	)
+	and si.InStocks > 0
 
 	order by Category
 	OFFSET (@PageNumber-1) * @PageSize rows
@@ -99,9 +106,6 @@ BEGIN
 	) 
 
 	select 
-	
-	top 100
-
 		si.ShopItemId,
 		si.Name,
 		si.NameAr,
@@ -117,19 +121,17 @@ BEGIN
 		si.Discount,
 		si.Tax,
 		si.SelectedUnitId,
+		si.SelectedColorId,
 		si.UnitGroupId,
+		si.ColorGroupId,
 		si.ImagesPaths,
-		(case when count(si.UnitId) = 0 
-			  then '' 
-			  else STRING_AGG(si.UnitId,';') 
-			  end 
-		) as UnitIds,
-		(case when count(si.UnitName) = 0 
-			  then '' 
-			  else STRING_AGG(si.UnitName,';') 
-			  end 
-		) as UnitNames,
-		null as UnitModels
+		(select STRING_AGG(Units.UnitId,';')  from Units where Units.UnitGroupId = si.UnitGroupId) as UnitIds,
+		(select STRING_AGG(Units.Name,';')  from Units where Units.UnitGroupId = si.UnitGroupId) as UnitNames,
+		null as UnitModels,
+		(select STRING_AGG(Colors.ColorId,';')  from Colors where Colors.ColorGroupId = si.ColorGroupId) as ColorIds,
+		(select STRING_AGG(Colors.Name,';')  from Colors where Colors.ColorGroupId = si.ColorGroupId) as Colors,
+		null as ColorModels,
+		si.ShopeLogo
 
 	from ShopItemData as si
 
@@ -151,5 +153,8 @@ BEGIN
 	si.Tax,
 	si.SelectedUnitId,
 	si.UnitGroupId,
-	si.ImagesPaths
+	si.ImagesPaths,
+	si.ColorGroupId,
+	si.ShopeLogo,
+	si.SelectedColorId
 END

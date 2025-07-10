@@ -12,6 +12,8 @@ namespace E_Commerce.Application.Model.DashBoard
         public Guid CustomerId { get; set; }
         public int OrderStatusId { get; set; }
         public int? PaymentMethodId { get; set; }
+        public string? OrderStatus { get; set; }
+        public string? PaymentMethod { get; set; }
         public List<OrderDetailModel> OrderDetails { get; set; }
 
     }
@@ -25,5 +27,7 @@ namespace E_Commerce.Application.Model.DashBoard
         public decimal Price { get; set; }
         public Guid? OrderId { get; set; }
         public Guid ShopItemId { get; set; }
+        public string? ItemName { get; set; }
+        public string? Shope { get; set; }
     }
 }

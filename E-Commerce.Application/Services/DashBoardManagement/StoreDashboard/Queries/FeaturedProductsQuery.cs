@@ -62,7 +62,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
                     {
                         return new BaseResponse<List<DashboardProductModel>>(false, "There is an implementation error on the database.");
                     }
-                    return await _mediator.Send(new FilxDashboardProductData.Query(dashboardProductModels.ToList()));
+                    return await _mediator.Send(new FillDashboardProductData.Query(dashboardProductModels.ToList()));
                 }
                 catch (Exception ex)
                 {

@@ -9,9 +9,12 @@
         public decimal Price { get; set; }
         public Guid OrderId { get; set; }
         public Guid ShopItemId { get; set; }
+        public int? ColorId { get; set; }
 
 
         public virtual Order Order { get; set; }
         public virtual ShopItem ShopItem { get; set; }
+        public virtual Color Color { get; set; }
+
     }
 }

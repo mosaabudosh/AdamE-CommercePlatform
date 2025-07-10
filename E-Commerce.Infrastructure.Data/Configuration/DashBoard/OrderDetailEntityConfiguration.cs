@@ -14,6 +14,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.DashBoard
             #region Foreignkeys
             builder.HasOne(e => e.Order).WithMany(e => e.OrderDetails).HasForeignKey(f => f.OrderId);
             builder.HasOne(e => e.ShopItem).WithOne(e => e.OrderDetail).HasForeignKey<OrderDetail>(f => f.ShopItemId);
+            builder.HasOne(e => e.Color).WithMany(e => e.OrderDetails).HasForeignKey(f => f.ColorId);
             #endregion
         }
     }
