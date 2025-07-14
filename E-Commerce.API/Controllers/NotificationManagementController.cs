@@ -1,0 +1,64 @@
+﻿using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Application.Model.Notification;
+using E_Commerce.Application.Services.AuthenticationManagement.ActionsManagement.Queries;
+using E_Commerce.Application.Services.NotificationManagement.Notification.Commands;
+using E_Commerce.Application.Services.NotificationManagement.Notification.Queries;
+using E_Commerce.Application.Services.NotificationManagement.NotificationStatusManagement.Commands;
+using Generic.Response;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace E_Commerce.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class NotificationManagementController(IMediator _mediator) : BaseController
+    {
+
+        [HttpGet]
+        [Route("notification-count-by-customer-id/{customerId}")]
+        public async Task<ActionResult<BaseResponse<int>>> GetNotificationCountByCustomerId(Guid customerId)
+        {
+            try
+            {
+                return await _mediator.Send(new NotificationCountQueryByCustomerId.Query(customerId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetNotificationCountByCustomerId), UserAccessor.GetCurrentUserId(), customerId);
+                return new BaseResponse<int>(false, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("notifications-by-customer-id/{customerId}")]
+        public async Task<ActionResult<BaseResponse<List<NotificationModel>>>> GetNotificationsByCustomerId(Guid customerId)
+        {
+            try
+            {
+                return await _mediator.Send(new NotificationsQueryByCustomerId.Query(customerId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetNotificationsByCustomerId), UserAccessor.GetCurrentUserId(), customerId);
+                return new BaseResponse<List<NotificationModel>>(false, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("notifications-modification")]
+        public async Task<ActionResult<BaseResponse>> UpdateNotifications([FromBody] List<NotificationUpdationModel> notificationUpdationModels)
+        {
+            try
+            {
+                return await _mediator.Send(new NotificationUpdationCommands.Command(notificationUpdationModels));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(UpdateNotifications), UserAccessor.GetCurrentUserId(), notificationUpdationModels);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+    }
+}

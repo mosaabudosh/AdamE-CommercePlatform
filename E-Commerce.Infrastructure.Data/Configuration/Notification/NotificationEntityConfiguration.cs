@@ -19,13 +19,13 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Notification
             #region Foreign keys      
             builder.HasOne(i => i.NotificationStatus).WithMany(i => i.Notifications).HasForeignKey(k => k.NotificationStatusId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(i => i.NotificationType).WithMany(i => i.Notifications).HasForeignKey(k => k.NotificationTypeId).OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne(i => i.User).WithMany(i => i.Notifications).HasForeignKey(k => k.UserId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(i => i.Customer).WithMany(i => i.Notifications).HasForeignKey(k => k.CustomerId).OnDelete(DeleteBehavior.Restrict);
             #endregion
 
             #region Ignore
             builder.Ignore(p => p.DeletedDate);
             builder.Ignore(p => p.DeletedUserId);
-            builder.Ignore(x => x.LastUpdateUserId);
-            builder.Ignore(x => x.LastUpdatedDate);
             #endregion
         }
     }

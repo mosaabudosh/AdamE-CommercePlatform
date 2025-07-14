@@ -23,9 +23,9 @@ namespace E_Commerce.Domain.Domains.DashBoard
 
         public virtual Tax Tax { get; set; }
         public virtual Item Item { get; set; }
-        public virtual CartDetail CartDetail { get; set; }
+        public virtual List<CartDetail> CartDetails { get; set; }
         public virtual Shop Shop { get; set; }
-        public virtual OrderDetail OrderDetail { get; set; }
+        public virtual List<OrderDetail> OrderDetails { get; set; }
         public virtual UnitGroup UnitGroup { get; set; }
         public virtual ShopItemStatus ShopItemStatus { get; set; }
         public virtual List<CustomerFavorite> CustomerFavorites { get; set; }

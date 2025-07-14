@@ -23,10 +23,9 @@ namespace E_Commerce.Application.ServicesRegistration
         {
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddSingleton<ITokenHandler, TokenHandler>();
-           
+            services.AddSignalR();
             Assembly assembly = Assembly.GetExecutingAssembly();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly));
-
             IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
             CachingPlatformSettings cachingPlatformSettings = new CachingPlatformSettings(unitOfWork);
             services.AddSingleton(cachingPlatformSettings);

@@ -210,6 +210,11 @@ namespace E_Commerce.Domain.Enum
             Read = 1,
             UnRead = 2
         }
+        public enum NotificationTypes
+        {
+            CreateOrder = 1,
+            ChangeOrderStatus = 2
+        }
 
         public enum ShopItemStatuses
         {
