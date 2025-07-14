@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace E_Commerce.Application.Model.DashBoard
@@ -14,7 +15,9 @@ namespace E_Commerce.Application.Model.DashBoard
         public int? PaymentMethodId { get; set; }
         public string? OrderStatus { get; set; }
         public string? PaymentMethod { get; set; }
-        public List<OrderDetailModel> OrderDetails { get; set; }
+        public List<OrderDetailModel>? OrderDetails { get; set; }
+        [JsonIgnore]
+        public List<NotificationModel>? Notifications { get; set; }
 
     }
 

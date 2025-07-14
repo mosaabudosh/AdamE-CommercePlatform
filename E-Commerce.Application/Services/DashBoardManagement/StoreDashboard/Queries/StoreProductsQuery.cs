@@ -24,8 +24,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
             public string? CategoryIds { get; set; }
             public string? ShopIds { get; set; }
             public bool? IsLoadImage { get; set; }
+            public decimal? FromPrice { get; set; }
+            public decimal? ToPrice { get; set; }
 
-            public Query(int pageNumber, int pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true)
+
+            public Query(int pageNumber, int pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true, decimal? fromPrice = null, decimal? toPrice = null)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
@@ -33,6 +36,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
                 CategoryIds = categoryIds;
                 ShopIds = shopIds;
                 IsLoadImage = isLoadImage;
+                FromPrice = fromPrice;
+                ToPrice = toPrice;
             }
         }
 
@@ -63,6 +68,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
                         if (request.IsLoadImage.HasValue && request.IsLoadImage.Value)
                         {
                             dapperParameters.AddParameter("IsLoadImage", request.IsLoadImage.Value);
+                        }
+                        if (request.FromPrice.HasValue)
+                        {
+                            dapperParameters.AddParameter("FromPrice", request.FromPrice.Value);
+                        }
+                        if (request.ToPrice.HasValue)
+                        {
+                            dapperParameters.AddParameter("ToPrice", request.ToPrice.Value);
                         }
                         dashboardProductModels = databaseEngine.ExecuteDapperSp<DashboardProductModel>(StoredProcedures.StoreProducts, dapperParameters);
                     }

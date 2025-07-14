@@ -55,7 +55,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             {
                 try
                 {
-                    bool haveRelatedData = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(i => i.ShopItemId == shopItemId && (i.CartDetail != null || i.CustomerFavorites.Any() || i.OrderDetail != null )).Any();
+                    bool haveRelatedData = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(i => i.ShopItemId == shopItemId && (i.CartDetails != null || i.CustomerFavorites.Any() || i.OrderDetails != null )).Any();
                     if (haveRelatedData)
                     {
                         return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);

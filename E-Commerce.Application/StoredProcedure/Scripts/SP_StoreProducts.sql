@@ -1,6 +1,6 @@
 USE [Adam-E-Commerce-DB]
 GO
-/****** Object:  StoredProcedure [dbo].[SP_StoreProducts]    Script Date: 7/10/2025 3:21:13 PM ******/
+/****** Object:  StoredProcedure [dbo].[SP_StoreProducts]    Script Date: 7/14/2025 4:59:37 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -13,7 +13,9 @@ ALTER   PROCEDURE [dbo].[SP_StoreProducts]
 	@SearchText nvarchar(100) = null,
 	@CategoryIds nvarchar(100) = null,
 	@ShopIds nvarchar(100) = null,
-	@IsLoadImage bit = null
+	@IsLoadImage bit = null,
+	@FromPrice decimal = null,
+	@ToPrice decimal = null
 
 AS
 BEGIN
@@ -65,7 +67,8 @@ BEGIN
 			else null 
 			end
 		) as ShopeLogo,
-		si.DefaultColorId as SelectedColorId
+		si.DefaultColorId as SelectedColorId,
+		i.CategoryId
 
 	from ShopItems as si left outer join
 	Items as i on si.ItemId = i.ItemId left outer join
@@ -76,7 +79,7 @@ BEGIN
 	UnitGroups as ug on si.UnitGroupId = ug.UnitGroupId left outer join
 	ColorGroups as cg on si.ColorGroupId = cg.ColorGroupId 
 
-	where si.ShopItemStatusId = 1 
+	where si.ShopItemStatusId <> 1 
 	and 
 	(
 		@SearchText is null 
@@ -99,6 +102,9 @@ BEGIN
 		or s.ShopId in (select ShopId from @ShopeIds)
 	)
 	and si.InStocks > 0
+	and (@FromPrice is null or si.Price >= @FromPrice)
+	and (@ToPrice is null or si.Price <= @ToPrice)
+
 
 	order by Category
 	OFFSET (@PageNumber-1) * @PageSize rows
@@ -131,7 +137,8 @@ BEGIN
 		(select STRING_AGG(Colors.ColorId,';')  from Colors where Colors.ColorGroupId = si.ColorGroupId) as ColorIds,
 		(select STRING_AGG(Colors.Name,';')  from Colors where Colors.ColorGroupId = si.ColorGroupId) as Colors,
 		null as ColorModels,
-		si.ShopeLogo
+		si.ShopeLogo,
+		si.CategoryId
 
 	from ShopItemData as si
 
@@ -156,5 +163,6 @@ BEGIN
 	si.ImagesPaths,
 	si.ColorGroupId,
 	si.ShopeLogo,
-	si.SelectedColorId
+	si.SelectedColorId,
+	si.CategoryId
 END

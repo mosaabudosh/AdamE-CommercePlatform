@@ -86,15 +86,15 @@ namespace E_Commerce.API.Controllers
         [AllowAnonymous]
         [Route("dashboard-featured-products")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<DashboardProductModel>>>> GetDashboardFeaturedProducts(int? pageNumber, int? pageSize, bool? isLoadImage = true)
+        public async Task<ActionResult<BaseResponse<List<DashboardProductModel>>>> GetDashboardFeaturedProducts(int? pageNumber, int? pageSize,string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true, decimal? fromPrice = null, decimal? toPrice = null)
         {
             try
             {
-                return await _mediator.Send(new FeaturedProductsQuery.Query(pageNumber.HasValue ? pageNumber.Value : 0, pageSize.HasValue ? pageSize.Value : int.MaxValue, isLoadImage));
+                return await _mediator.Send(new FeaturedProductsQuery.Query(pageNumber.HasValue ? pageNumber.Value : 0, pageSize.HasValue ? pageSize.Value : int.MaxValue, searchText, categoryIds, shopIds, isLoadImage, fromPrice, toPrice));
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetDashboardFeaturedProducts), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, isLoadImage);
+                await ExceptionService.LogErrorAsync(ex, nameof(GetDashboardFeaturedProducts), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText, categoryIds, shopIds, isLoadImage, fromPrice, toPrice);
                 return new BaseResponse<List<DashboardProductModel>>(false, ex.Message);
             }
         }
@@ -102,15 +102,15 @@ namespace E_Commerce.API.Controllers
         [AllowAnonymous]
         [Route("store-dashboard-products")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<DashboardProductModel>>>> GetStoreDashboardProducts(int? pageNumber, int? pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true)
+        public async Task<ActionResult<BaseResponse<List<DashboardProductModel>>>> GetStoreDashboardProducts(int? pageNumber, int? pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true,decimal? fromPrice = null,decimal? toPrice = null)
         {
             try
             {
-                return await _mediator.Send(new StoreProductsQuery.Query(pageNumber.HasValue ? pageNumber.Value : 0, pageSize.HasValue ? pageSize.Value : int.MaxValue, searchText, categoryIds, shopIds, isLoadImage));
+                return await _mediator.Send(new StoreProductsQuery.Query(pageNumber.HasValue ? pageNumber.Value : 0, pageSize.HasValue ? pageSize.Value : int.MaxValue, searchText, categoryIds, shopIds, isLoadImage, fromPrice, toPrice));
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetStoreDashboardProducts), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText, categoryIds, shopIds, isLoadImage);
+                await ExceptionService.LogErrorAsync(ex, nameof(GetStoreDashboardProducts), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText, categoryIds, shopIds, isLoadImage, fromPrice, toPrice);
                 return new BaseResponse<List<DashboardProductModel>>(false, ex.Message);
             }
         }

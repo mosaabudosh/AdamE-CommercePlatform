@@ -40,9 +40,9 @@ namespace E_Commerce.Application.Model.Store
         public string? ImagesPaths { get; set; }
         public string? ShopeLogoPath { get; set; }
         public string? ShopeLogo { get; set; }
+        public int? CategoryId { get; set; }
         public List<string>? Images { get; set; }
         public List<DDLDataSource>? UnitModels { get; set; }
         public List<DDLDataSource>? ColorModels { get; set; }
-
     }
 }

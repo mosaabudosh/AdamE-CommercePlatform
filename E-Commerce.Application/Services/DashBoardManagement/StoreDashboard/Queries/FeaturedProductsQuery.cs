@@ -30,13 +30,24 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
         {
             public int PageNumber { get; set; }
             public int PageSize { get; set; }
+            public string? SearchText { get; set; }
+            public string? CategoryIds { get; set; }
+            public string? ShopIds { get; set; }
             public bool? IsLoadImage { get; set; }
+            public decimal? FromPrice { get; set; }
+            public decimal? ToPrice { get; set; }
 
-            public Query(int pageNumber, int pageSize, bool? isLoadImage = true)
+
+            public Query(int pageNumber, int pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true, decimal? fromPrice = null, decimal? toPrice = null)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
+                SearchText = searchText;
+                CategoryIds = categoryIds;
+                ShopIds = shopIds;
                 IsLoadImage = isLoadImage;
+                FromPrice = fromPrice;
+                ToPrice = toPrice;
             }
         }
 
@@ -52,9 +63,29 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
                         DapperParameters dapperParameters = new DapperParameters();
                         dapperParameters.AddParameter(ReportParameter.PageNumber, request.PageNumber + 1);
                         dapperParameters.AddParameter(ReportParameter.PageSize, request.PageSize);
+                        if (!string.IsNullOrEmpty(request.SearchText))
+                        {
+                            dapperParameters.AddParameter(ReportParameter.SearchText, request.SearchText);
+                        }
+                        if (!string.IsNullOrEmpty(request.CategoryIds))
+                        {
+                            dapperParameters.AddParameter("CategoryIds", request.CategoryIds);
+                        }
+                        if (!string.IsNullOrEmpty(request.ShopIds))
+                        {
+                            dapperParameters.AddParameter("ShopIds", request.ShopIds);
+                        }
                         if (request.IsLoadImage.HasValue && request.IsLoadImage.Value)
                         {
                             dapperParameters.AddParameter("IsLoadImage", request.IsLoadImage.Value);
+                        }
+                        if (request.FromPrice.HasValue)
+                        {
+                            dapperParameters.AddParameter("FromPrice", request.FromPrice.Value);
+                        }
+                        if (request.ToPrice.HasValue)
+                        {
+                            dapperParameters.AddParameter("ToPrice", request.ToPrice.Value);
                         }
                         dashboardProductModels = databaseEngine.ExecuteDapperSp<DashboardProductModel>(StoredProcedures.FeaturedProducts, dapperParameters);
                     }

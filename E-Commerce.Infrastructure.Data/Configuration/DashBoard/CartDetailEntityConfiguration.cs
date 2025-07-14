@@ -12,7 +12,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.DashBoard
             builder.HasKey(e => e.CartDetailId);
 
             #region Foreignkeys
-            builder.HasOne(e => e.ShopItem).WithOne(e => e.CartDetail).HasForeignKey<CartDetail>(f => f.ShopItemId);
+            builder.HasOne(e => e.ShopItem).WithMany(e => e.CartDetails).HasForeignKey(f => f.ShopItemId);
             #endregion
 
             #region NotMapped

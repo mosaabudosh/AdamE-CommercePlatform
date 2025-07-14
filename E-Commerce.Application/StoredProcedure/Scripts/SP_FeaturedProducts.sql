@@ -10,13 +10,32 @@ GO
 ALTER PROCEDURE [dbo].[SP_FeaturedProducts]
 	@PageNumber int = null,
 	@PageSize int = null,
-	@IsLoadImage bit = null
+	@SearchText nvarchar(100) = null,
+	@CategoryIds nvarchar(100) = null,
+	@ShopIds nvarchar(100) = null,
+	@IsLoadImage bit = null,
+	@FromPrice decimal = null,
+	@ToPrice decimal = null
 
 AS
 BEGIN
 
 	set @PageSize = ISNULL(@PageSize, 2147483647)
 	set @PageNumber = ISNULL(@PageNumber, 1)
+
+		declare @CategoriesIds table (CategoryId nvarchar(20))
+	if(@CategoryIds <> '' or @CategoryIds is not null)
+	begin
+		insert into @CategoriesIds
+		select * from string_split(@CategoryIds, ';')
+	end
+
+	declare @ShopeIds table (ShopId nvarchar(20))
+	if(@ShopIds <> '' or @ShopIds is not null)
+	begin
+		insert into @ShopeIds
+		select * from string_split(@ShopIds, ';')
+	end
 
 	;with ShopItemData as (
 	select 
@@ -50,7 +69,8 @@ BEGIN
 			else null 
 			end
 		) as ShopeLogo,
-		si.DefaultColorId as SelectedColorId
+		si.DefaultColorId as SelectedColorId,
+		i.CategoryId
 
 	from ShopItems as si left outer join
 	Items as i on si.ItemId = i.ItemId left outer join
@@ -61,8 +81,35 @@ BEGIN
 	UnitGroups as ug on si.UnitGroupId = ug.UnitGroupId left outer join
 	ColorGroups as cg on si.ColorGroupId = cg.ColorGroupId 
 
-	where si.ShopItemStatusId = 1
+	
+	where si.ShopItemStatusId <> 1 
+	and 
+	(
+		@SearchText is null 
+		or @SearchText = '' 
+		or i.Name like '%@' + @SearchText + '%' 
+		or i.Code like '%@' + @SearchText + '%' 
+		or c.Name like '%@' + @SearchText + '%'
+		or s.Name like '%@' + @SearchText + '%'
+	)
+	and 
+	(
+		@CategoryIds is null 
+		or @CategoryIds = '' 
+		or c.CategoryId in (select CategoryId from @CategoriesIds)
+	)
+	and 
+	(
+		@ShopIds is null 
+		or @ShopIds = '' 
+		or s.ShopId in (select ShopId from @ShopeIds)
+	)
 	and si.InStocks > 0
+	and (@FromPrice is null or si.Price >= @FromPrice)
+	and (@ToPrice is null or si.Price <= @ToPrice)
+
+
+
 
 	order by Category
 	OFFSET (@PageNumber-1) * @PageSize rows
@@ -95,7 +142,8 @@ BEGIN
 		(select STRING_AGG(Colors.ColorId,';')  from Colors where Colors.ColorGroupId = si.ColorGroupId) as ColorIds,
 		(select STRING_AGG(Colors.Name,';')  from Colors where Colors.ColorGroupId = si.ColorGroupId) as Colors,
 		null as ColorModels,
-		si.ShopeLogo
+		si.ShopeLogo,
+		si.CategoryId
 
 	from ShopItemData as si
 	group by 
@@ -118,6 +166,7 @@ BEGIN
 	si.ImagesPaths,
 	si.ColorGroupId,
 	si.ShopeLogo,
-	si.SelectedColorId
+	si.SelectedColorId,
+	si.CategoryId
 
 END

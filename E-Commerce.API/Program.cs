@@ -8,6 +8,7 @@ using E_Commerce.API.SwaggerConfiguration;
 using E_Commerce.Application.Authentication.Security;
 using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.AppSettings;
+using E_Commerce.Application.Services.NotificationManagement;
 using E_Commerce.Application.ServicesRegistration;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -164,6 +165,8 @@ try
     app.UseMiddleware<Interceptor>(builder.Configuration, userAccessor, appSettings);
 
     app.MapControllers();
+    
+    app.MapHub<NotificationHub>("/hubs/notification");
 
     app.Run();
 }
