@@ -1,7 +1,9 @@
-﻿using E_Commerce.API.Model;
+﻿using Adam.Generic.Generic;
+using E_Commerce.API.Model;
 using E_Commerce.API.Model.ReportModel;
 using E_Commerce.Application.Model.Authorisation;
 using E_Commerce.Application.Model.Settings;
+using E_Commerce.Application.Services.AuthenticationManagement.CustomersManagement.Queries;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Commands;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Queries;
 using Generic.Response;
@@ -244,5 +246,19 @@ namespace E_Commerce.API.Controllers
             }
         }
 
+        [Route("users-ddl")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetUsersDDL()
+        {
+            try
+            {
+                return await _mediator.Send(new UsersDDLQuery.Query());
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetUsersDDL), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
+            }
+        }
     }
 }

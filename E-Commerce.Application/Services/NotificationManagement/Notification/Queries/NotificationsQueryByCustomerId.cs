@@ -40,7 +40,11 @@ namespace E_Commerce.Application.Services.NotificationManagement.Notification.Qu
                         Subject = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Subject : s.SubjectAr,
                         NotificationStatusId = s.NotificationStatusId,
                         NotificationTypeId = s.NotificationTypeId,
-                        Tooltip = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Tooltip : s.TooltipAr
+                        Tooltip = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Tooltip : s.TooltipAr,
+                        CreationDate = s.CreationDate,
+                        DescriptionAr = s.DescriptionAr,
+                        SubjectAr = s.SubjectAr,
+                        TooltipAr = s.TooltipAr,
                     }).OrderByDescending(p => p.NotificationStatusId).ToList();
                     return new BaseResponse<List<NotificationModel>>(true, string.Empty, string.Empty, notifications);
                 }

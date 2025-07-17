@@ -47,6 +47,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                         CityId = s.CityId,
                         UserTypeId = s.UserTypeId,
                         ProfileImage = s.ProfileImage,
+                        ShopId = s.ShopId,
                         Gender = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Gender.Name : s.Gender.NameAr,
                         Age = s.DateOfBirth.HasValue ? string.Format("( {0} ) {1}", (DateTime.UtcNow.Year - s.DateOfBirth.Value.Year).ToString(), _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? "Year" : "سنة") : string.Empty
                     }).SingleOrDefault();

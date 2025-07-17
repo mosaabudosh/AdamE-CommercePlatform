@@ -3,6 +3,7 @@ using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.Authorisation;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
 using E_Commerce.Domain.Domains.Authorisation;
+using E_Commerce.Domain.Enum;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -33,7 +34,7 @@ namespace E_Commerce.Application.Services.NotificationManagement.Notification.Qu
             {
                 try
                 {
-                    int notificationCount = _unitOfWork.GetRepository<Domain.Domains.Notification.Notification>().GetByExpression(p => p.CustomerId == request.CustomerId).Count();
+                    int notificationCount = _unitOfWork.GetRepository<Domain.Domains.Notification.Notification>().GetByExpression(p => p.CustomerId == request.CustomerId && p.NotificationStatusId == (int)Enums.NotificationStatuses.UnRead).Count();
                     return new BaseResponse<int>(true, string.Empty, string.Empty, notificationCount);
                 }
                 catch (Exception ex)

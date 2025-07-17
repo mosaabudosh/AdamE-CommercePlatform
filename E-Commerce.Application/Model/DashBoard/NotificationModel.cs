@@ -23,5 +23,7 @@ namespace E_Commerce.Application.Model.DashBoard
         public int NotificationTypeId { get; set; }
         public string? NotificationStatus { get; set; }
         public string? NotificationType { get; set; }
+        public string? Customer { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }

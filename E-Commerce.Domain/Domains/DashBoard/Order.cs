@@ -14,6 +14,8 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public virtual Customer Customer { get; set; }
         public virtual List<OrderDetail> OrderDetails { get; set; }
         public virtual PaymentMethod PaymentMethod { get; set; }
-
+        public virtual User CreationUser { get; set; }
+        public virtual User LastUpdateUser { get; set; }
+        public virtual User DeletedUser { get; set; }
     }
 }

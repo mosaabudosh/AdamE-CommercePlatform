@@ -46,6 +46,37 @@ namespace E_Commerce.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("notification-count-by-user-id/{userId}")]
+        public async Task<ActionResult<BaseResponse<int>>> GetNotificationCountByUserId(Guid userId)
+        {
+            try
+            {
+                return await _mediator.Send(new NotificationCountQueryByUserId.Query(userId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetNotificationCountByUserId), UserAccessor.GetCurrentUserId(), userId);
+                return new BaseResponse<int>(false, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("notifications-by-user-id/{userId}")]
+        public async Task<ActionResult<BaseResponse<List<NotificationModel>>>> GetNotificationsByUserId(Guid userId)
+        {
+            try
+            {
+                return await _mediator.Send(new NotificationsQueryByUserId.Query(userId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetNotificationsByUserId), UserAccessor.GetCurrentUserId(), userId);
+                return new BaseResponse<List<NotificationModel>>(false, ex.Message);
+            }
+        }
+
+
         [HttpPost]
         [Route("notifications-modification")]
         public async Task<ActionResult<BaseResponse>> UpdateNotifications([FromBody] List<NotificationUpdationModel> notificationUpdationModels)
