@@ -25,5 +25,8 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public virtual List<User> LastUpdateUsers { get; set; }
         public virtual List<UserSetting> UserSettings { get; set; }
         public virtual List<Domains.Notification.Notification> Notifications { set; get; }
+        public virtual List<Order> CreationUserOrders { get; set; }
+        public virtual List<Order> LastUpdateUsersOrders { get; set; }
+        public virtual List<Order> DeletedUsersOrders { get; set; }
     }
 }

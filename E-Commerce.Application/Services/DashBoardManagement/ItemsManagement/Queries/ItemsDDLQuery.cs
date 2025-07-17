@@ -27,6 +27,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
                     {
                         ValueGuid = p.ItemId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Attributes = new { Code = p.Code}
                     }).ToList();
                     return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, items);
                 }

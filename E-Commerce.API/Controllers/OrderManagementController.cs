@@ -58,8 +58,42 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("orders-by-customer-id/{customerId}")]
+        [HttpPost]
+        [Route("modification-order-status")]
+        public async Task<ActionResult<BaseResponse>> ModificationOrderStatus([FromBody] UpdateOrderStatusModel updateOrderStatusModel)
+        {
+            try
+            {
+                BaseResponse<List<NotificationModel>> responseUpdateOrderStatus = await _mediator.Send(new OrderUpdateOrderStatusCommands.Command(updateOrderStatusModel));
+                if (!responseUpdateOrderStatus.IsSuccess)
+                {
+                    return new BaseResponse(false, responseUpdateOrderStatus.Message, responseUpdateOrderStatus.ErrorCode);
+                }
+                foreach (NotificationModel notification in responseUpdateOrderStatus.DataObject)
+                {
+                    if (notification.UserId.HasValue)
+                    {
+                        await _notificationHub.Clients.Group($"{notification.UserId.Value.ToString()}").SendAsync($"{notification.UserId.Value.ToString()}", notification.Subject);
+
+                    }
+                    else if (notification.CustomerId.HasValue)
+                    {
+                        await _notificationHub.Clients.Group($"{notification.CustomerId.Value.ToString()}").SendAsync($"{notification.CustomerId.Value.ToString()}", notification.Subject);
+                    }
+                }
+
+                return new BaseResponse(true);
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(ModificationOrderStatus), UserAccessor.GetCurrentUserId(), updateOrderStatusModel);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+
         [HttpGet]
+        [Route("orders-by-customer-id/{customerId}")]
         public async Task<ActionResult<BaseResponse<List<OrderModel>>>> GetOrdersByCustomerId(Guid customerId)
         {
             try
@@ -70,6 +104,41 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetOrdersByCustomerId), UserAccessor.GetCurrentUserId(), customerId);
                 return new BaseResponse<List<OrderModel>>(false, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("orders")]
+        public async Task<ActionResult<BaseResponse<List<OrderModel>>>> GetOrders(Guid? customerId = null, Guid? itemId = null, Guid? userId = null, int? categoryId = null, int? orderStatusId = null)
+        {
+            try
+            {
+                return await _mediator.Send(new OrdersQuery.Query(customerId, itemId, userId, categoryId, orderStatusId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetOrders), UserAccessor.GetCurrentUserId(), customerId, itemId, userId, categoryId, orderStatusId);
+                return new BaseResponse<List<OrderModel>>(false, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("orders-count")]
+        public async Task<ActionResult<BaseResponse<int>>> GetOrdersCount(Guid? customerId = null, Guid? itemId = null, Guid? userId = null, int? categoryId = null, int? orderStatusId = null)
+        {
+            try
+            {
+                BaseResponse<List<OrderModel>> responseOrdersQuery = await _mediator.Send(new OrdersQuery.Query(customerId, itemId, userId, categoryId, orderStatusId));
+                if (!responseOrdersQuery.IsSuccess)
+                {
+                    return new BaseResponse<int>(false, responseOrdersQuery.Message, responseOrdersQuery.ErrorCode, 0);
+                }
+                return new BaseResponse<int>(false, string.Empty,responseOrdersQuery.DataObject.Count());
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetOrdersCount), UserAccessor.GetCurrentUserId(), customerId, itemId, userId, categoryId, orderStatusId);
+                return new BaseResponse<int>(false, ex.Message);
             }
         }
 

@@ -1,5 +1,7 @@
 ﻿using Adam.Logging.Interfaces;
+using E_Commerce.Application.Model.Authorisation;
 using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Application.Services.AuthenticationManagement.CustomersManagement.Queries;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Queries;
 using E_Commerce.Application.Services.NotificationManagement;
 using E_Commerce.Application.Services.NotificationManagement.Notification.Commands;
@@ -42,7 +44,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                         CustomerId = request.OrderModel.CustomerId,
                         OrderStatusId = request.OrderModel.OrderStatusId,
                         PaymentMethodId = request.OrderModel.PaymentMethodId,
-                        CreationUserId = _userAccessor.GetCurrentUserId(),
                         CreationDate = DateTime.UtcNow,
                         IsActive = true,
                         OrderDetails = request.OrderModel.OrderDetails.Select(s => new OrderDetail()
@@ -52,7 +53,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                             Price = s.Price,
                             Quantity = s.Quantity,
                             Tax = s.Tax,
-                            CreationUserId = _userAccessor.GetCurrentUserId(),
                             CreationDate = DateTime.UtcNow,
                             IsActive = true
                         }).ToList(),
@@ -63,6 +63,12 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
 
                     List<NotificationModel> notificationModels = new List<NotificationModel>();
 
+                    BaseResponse<CustomerModel> responseCustomer = await _mediator.Send(new GetCustomerByIdQuery.Query(request.OrderModel.CustomerId));
+                    if (!responseCustomer.IsSuccess)
+                    {
+                        return new BaseResponse<OrderModel>(false, responseCustomer.Message, responseCustomer.ErrorCode, null);
+                    }
+
                     BaseResponse<List<Guid>> responseUsersByShopItemId = await _mediator.Send(new GetUsersByShopItemIdQuery.Query(request.OrderModel.OrderDetails.FirstOrDefault().ShopItemId));
                     if (!responseUsersByShopItemId.IsSuccess)
                     {
@@ -72,16 +78,16 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                     notificationModels.AddRange(responseUsersByShopItemId.DataObject.Select(s => 
                     new NotificationModel()
                     {
-                        Subject = "Send Order",
-                        SubjectAr = "إرسال الطلب",
-                        Description = "Purchase order has been sent",
-                        DescriptionAr = "تم ارسال طلب الشراء ",
+                        Subject = "Received Order",
+                        SubjectAr = "استلام الطلب",
+                        Description = $"Received order from customer",
+                        DescriptionAr = $"تم استلام الطلب من العميل",
                         NotificationCode = NotificationTypes.CreateOrder.ToString(),
                         NotificationStatusId = (int)Enums.NotificationStatuses.UnRead,
                         NotificationTypeId = (int)Enums.NotificationTypes.CreateOrder,
-                        Tooltip = "Send Order",
-                        TooltipAr = "إرسال الطلب",
-                        UserId = s
+                        Tooltip = "Received Order",
+                        TooltipAr = "استلام الطلب",
+                        UserId = s,
                     }).ToList());
 
                     notificationModels.Add(new NotificationModel()

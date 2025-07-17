@@ -15,6 +15,10 @@ namespace E_Commerce.Application.Model.DashBoard
         public int? PaymentMethodId { get; set; }
         public string? OrderStatus { get; set; }
         public string? PaymentMethod { get; set; }
+        public string? Customer { get; set; }
+        public string? UpdateByUser { get; set; }
+        public DateTime? OrderDate { get; set; }
+
         public List<OrderDetailModel>? OrderDetails { get; set; }
         [JsonIgnore]
         public List<NotificationModel>? Notifications { get; set; }

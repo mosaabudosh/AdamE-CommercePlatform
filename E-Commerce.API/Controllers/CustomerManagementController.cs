@@ -1,9 +1,11 @@
-﻿using E_Commerce.API.Model;
+﻿using Adam.Generic.Generic;
+using E_Commerce.API.Model;
 using E_Commerce.Application.Model.Authorisation;
 using E_Commerce.Application.Services.AuthenticationManagement.CustomersManagement.Commands;
 using E_Commerce.Application.Services.AuthenticationManagement.CustomersManagement.Queries;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Commands;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Queries;
+using E_Commerce.Application.Services.DashBoardManagement.CountriesManagement.Queries;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -219,6 +221,21 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(UpdateCustomerLockUnlock), UserAccessor.GetCurrentUserId(), customerLockUnlockModel);
                 return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [Route("customer-ddl")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetCustomersDDL()
+        {
+            try
+            {
+                return await _mediator.Send(new CustomersDDLQuery.Query());
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetCustomersDDL), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
             }
         }
 
