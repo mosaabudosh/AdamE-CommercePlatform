@@ -51,6 +51,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                     exisitShopItem.DefaultColorId = request.ShopItemModel.DefaultColorId;
                     exisitShopItem.DefaultUnitId = request.ShopItemModel.DefaultUnitId;
                     exisitShopItem.DiscountId = request.ShopItemModel.DiscountId;
+                    exisitShopItem.IsFeatured = request.ShopItemModel.IsFeatured;
 
                     exisitShopItem.LastUpdatedDate = DateTime.UtcNow;
                     exisitShopItem.LastUpdateUserId = _userAccessor.GetCurrentUserId();

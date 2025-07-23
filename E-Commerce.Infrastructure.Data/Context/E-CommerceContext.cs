@@ -78,6 +78,8 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new CustomerFavoriteEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ColorGroupEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ColorEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ShopRatingEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ShopItemRatingEntityConfiguration());
         }
         #endregion
 
@@ -128,6 +130,8 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<CustomerFavorite> CustomerFavorites { get; set; }
         public DbSet<ColorGroup> ColorGroups { get; set; }
         public DbSet<Color> Colors { get; set; }
+        public DbSet<ShopRating> ShopRatings { get; set; }
+        public DbSet<ShopItemRating> ShopItemRatings { get; set; }
         #endregion
     }
 }

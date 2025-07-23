@@ -25,5 +25,7 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public virtual List<CustomerLogin> CustomerLogins { get; set; }
         public virtual List<CustomerFavorite> CustomerFavorites { get; set; }
         public virtual List<Domains.Notification.Notification> Notifications { set; get; }
+        public virtual List<ShopRating> ShopRatings { get; set; }
+        public virtual List<ShopItemRating> ShopItemRatings { get; set; }
     }
 }

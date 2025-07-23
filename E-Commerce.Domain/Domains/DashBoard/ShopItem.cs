@@ -20,6 +20,8 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public int? DefaultUnitId { get; set; }
         public int? DefaultColorId { get; set; }
         public int? DiscountId { get; set; }
+        public bool IsFeatured { get; set; }
+
 
         public virtual Tax Tax { get; set; }
         public virtual Item Item { get; set; }
@@ -33,5 +35,6 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public virtual Color Color { get; set; }
         public virtual Unit Unit { get; set; }
         public virtual Discount Discount { get; set; }
+        public virtual List<ShopItemRating> ShopItemRatings { get; set; }
     }
 }

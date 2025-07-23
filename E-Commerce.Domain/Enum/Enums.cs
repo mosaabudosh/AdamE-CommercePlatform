@@ -134,6 +134,9 @@ namespace E_Commerce.Domain.Enum
             DMSItemPath = 25,
             DMSPaymentMethodPath = 26,
             DMSShopItemPath = 27,
+            DMSShopPath = 28,
+            NumberOfFeaturedItemsInDashBoared = 29,
+            NumberOfCategoriesInDashBoared = 30
         }
 
         public enum PlatformSettingsCode
@@ -164,7 +167,10 @@ namespace E_Commerce.Domain.Enum
             DMSCustomerPath,
             DMSItemPath,
             DMSPaymentMethodPath,
-            DMSShopItemPath
+            DMSShopItemPath,
+            DMSShopPath,
+            NumberOfFeaturedItemsInDashBoared,
+            NumberOfCategoriesInDashBoared
         }
 
         public enum Screens

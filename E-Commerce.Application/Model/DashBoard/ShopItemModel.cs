@@ -30,6 +30,7 @@ namespace E_Commerce.Application.Model.DashBoard
         public string? UnitGroup { get; set; }
         public string? ShopItemStatus { get; set; }
         public int? DiscountId { get; set; }
+        public bool IsFeatured { get; set; }
         public List<string>? Images { get; set; }
         public List<FileCreationModel>? FileCreationModels { get; set; }
     }

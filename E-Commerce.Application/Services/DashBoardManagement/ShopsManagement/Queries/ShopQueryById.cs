@@ -1,5 +1,6 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
 using E_Commerce.Domain.Domains.DashBoard;
@@ -7,6 +8,7 @@ using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Queries
 {
@@ -15,15 +17,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
         public class Query : IRequest<BaseResponse<ShopModel>>
         {
             public int ShopId { get; set; }
-
-            public string ShopPathDMS = "Shops";
             public Query(int shopId)
             {
                 ShopId = shopId;
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator) : IRequestHandler<Query, BaseResponse<ShopModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<ShopModel>>
         {
             public async Task<BaseResponse<ShopModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -52,7 +52,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
 
                     if (!string.IsNullOrEmpty(shop.Logo))
                     {
-                        string folderPath = $"{request.ShopPathDMS}\\{shop.ShopId}";
+                        string DMSShopPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopPath];
+                        string folderPath = $"{DMSShopPath}\\{shop.ShopId}";
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

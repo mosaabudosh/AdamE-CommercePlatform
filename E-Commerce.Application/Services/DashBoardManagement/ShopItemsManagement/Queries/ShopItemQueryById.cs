@@ -52,7 +52,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         ColorGroupId = s.ColorGroupId,
                         DefaultUnitId = s.DefaultUnitId,
                         DefaultColorId = s.DefaultColorId,
-                        DiscountId = s.DiscountId                        
+                        DiscountId = s.DiscountId,
+                        IsFeatured = s.IsFeatured
                     }).FirstOrDefault();
 
                     string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];

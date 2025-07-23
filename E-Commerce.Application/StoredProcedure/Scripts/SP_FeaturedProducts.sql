@@ -1,6 +1,6 @@
 USE [Adam-E-Commerce-DB]
 GO
-/****** Object:  StoredProcedure [dbo].[SP_FeaturedProducts]    Script Date: 7/8/2025 1:55:18 PM ******/
+/****** Object:  StoredProcedure [dbo].[SP_FeaturedProducts]    Script Date: 7/22/2025 4:31:04 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -83,6 +83,7 @@ BEGIN
 
 	
 	where si.ShopItemStatusId <> 1 
+	and si.IsFeatured = 1
 	and 
 	(
 		@SearchText is null 

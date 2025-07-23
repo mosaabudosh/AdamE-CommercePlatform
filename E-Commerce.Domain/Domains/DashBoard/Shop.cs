@@ -20,12 +20,13 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public string Code { get; set; }
         public int? CityId { get; set; }
         public int? ParentShopId { get; set; }
-
+        public decimal? Rating { get; set; }
 
         public virtual City City { get; set; }
         public virtual Shop ParentShop { get; set; }
         public virtual List<Shop> ChildShops { get; set; }
         public virtual List<User> Users { get; set; }
         public virtual List<ShopItem> ShopItems { get; set; }
+        public virtual List<ShopRating> ShopRatings { get; set; }
     }
 }

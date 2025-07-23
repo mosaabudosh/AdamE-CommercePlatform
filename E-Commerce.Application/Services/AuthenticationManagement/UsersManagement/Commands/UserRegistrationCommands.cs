@@ -29,10 +29,10 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
             {
                 public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
                 {
+                    string DMSUserPath = _cachingPlatformSettings[PlatformSettingsCode.DMSUserPath];
+
                     try
                     {
-                        string DMSUserPath = _cachingPlatformSettings[PlatformSettingsCode.DMSUserPath];
-
                         IQueryable<User> usersQueryable = _unitOfWork.GetRepository<User>().GetByExpression(x => x.UserName == request.UserModel.UserName, x => x.OrderBy(z => z.UserName));
                         if (usersQueryable.Any())
                         {
@@ -114,6 +114,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
 
                         if (request.UserModel.FileCreationModel is not null)
                         {
+                            request.UserModel.UserId = user.UserId.ToString();
                             FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                             {
                                 FolderName = $"{user.UserId}",
@@ -132,6 +133,16 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                     }
                     catch (Exception ex)
                     {
+                        if (request.UserModel.FileCreationModel is not null && !string.IsNullOrEmpty(request.UserModel.UserId))
+                        {
+                            string folderPath = $"{DMSUserPath}\\{request.UserModel.UserId}";
+                            BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath));
+                            if (!responseGetFileCreationModels.IsSuccess)
+                            {
+                                return responseGetFileCreationModels;
+                            }
+                        }
+
                         while (ex.InnerException is not null)
                         {
                             ex = ex.InnerException;

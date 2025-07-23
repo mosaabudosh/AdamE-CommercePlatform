@@ -1,5 +1,6 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
 using E_Commerce.Domain.Domains.DashBoard;
@@ -8,6 +9,7 @@ using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
 using static Adam.Generic.Constants.Constants;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Commands
 {
@@ -16,16 +18,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
         public class Command : IRequest<BaseResponse>
         {
             public ShopModel ShopModel { get; set; }
-
-            public string ShopPathDMS = "Shops";
-
             public Command(ShopModel shopModel)
             {
                 ShopModel = shopModel;
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -56,10 +55,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                     {
                         return validationBaseResponse;
                     }
+                    string DMSShopPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopPath];
                     FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                     {
                         FolderName = $"{exisitShop.ShopId}",
-                        FolderPath = $"{request.ShopPathDMS}",
+                        FolderPath = $"{DMSShopPath}",
                         FileCreationModels = new List<FileCreationModel>(),
                     };
                     if (request.ShopModel.FileCreationModel is not null)
