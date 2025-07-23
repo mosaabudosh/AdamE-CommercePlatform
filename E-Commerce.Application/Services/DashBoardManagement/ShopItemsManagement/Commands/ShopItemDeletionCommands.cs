@@ -1,4 +1,6 @@
 ﻿using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
+using E_Commerce.Application.Services.DMSManagement.FolderManagement.Commands;
 using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Adam.Generic.Constants.Constants;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagement.Commands
 {
@@ -24,7 +27,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -37,6 +40,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                     }
                     ShopItem shopItem = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(p => p.ShopItemId == request.ShopItemId).SingleOrDefault();
                     _unitOfWork.GetRepository<ShopItem>().Delete(shopItem);
+
+                    string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];
+                    string folderPath = $"{DMSShopItemPath}\\{shopItem.ShopItemId}";
+                    BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath));
+                    if (!responseGetFileCreationModels.IsSuccess)
+                    {
+                        return responseGetFileCreationModels;
+                    }
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

@@ -350,6 +350,42 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     Value = "ShopItems",
                     DataTypeId = (int)PlatformSettingsDataTypes.String
                 },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DMSShopPath,
+                    Name = "DMS Shop Path" ,
+                    NameAr = "مسار متجر DMS",
+                    Code = "DMSShopPath",
+                    Group = "DMS",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "Shops",
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.NumberOfFeaturedItemsInDashBoared,
+                    Name = "Number Of Featured Items In DashBoared" ,
+                    NameAr = "عدد العناصر المميزة في لوحة التحكم",
+                    Code = "NumberOfFeaturedItemsInDashBoared",
+                    Group = "DashBoared",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "20",
+                    DataTypeId = (int)PlatformSettingsDataTypes.Integer
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.NumberOfCategoriesInDashBoared,
+                    Name = "Number Of Categories In DashBoared" ,
+                    NameAr = "عدد الفئات في لوحة المعلومات",
+                    Code = "NumberOfCategoriesInDashBoared",
+                    Group = "DashBoared",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    Value = "20",
+                    DataTypeId = (int)PlatformSettingsDataTypes.Integer
+                }
             });
             #endregion
 

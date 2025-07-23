@@ -33,6 +33,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
+                string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];
                 try
                 {
                     ShopItem shopItem = new ShopItem()
@@ -48,6 +49,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         ItemId = request.ShopItemModel.ItemId,
                         OutOfStocks = request.ShopItemModel.OutOfStocks,
                         Price = request.ShopItemModel.Price,
+                        IsFeatured = request.ShopItemModel.IsFeatured,
                         CreationDate = DateTime.UtcNow,
                         CreationUserId = _userAccessor.GetCurrentUserId(),
                         IsActive = true
@@ -62,7 +64,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
 
                     if (request.ShopItemModel.FileCreationModels is not null && request.ShopItemModel.FileCreationModels.Any())
                     {
-                        string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];
+                        request.ShopItemModel.ShopItemId = shopItem.ShopItemId;
                         shopItem.Image = shopItem.ShopItemId.ToString();
                         await _unitOfWork.CommitChanges();
                         FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
@@ -82,6 +84,15 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                 }
                 catch (Exception ex)
                 {
+                    if (request.ShopItemModel.FileCreationModels is not null && request.ShopItemModel.FileCreationModels.Any() && request.ShopItemModel.ShopItemId.HasValue)
+                    {
+                        string folderPath = $"{DMSShopItemPath}\\{request.ShopItemModel.ShopItemId}";
+                        BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath));
+                        if (!responseGetFileCreationModels.IsSuccess)
+                        {
+                            return responseGetFileCreationModels;
+                        }
+                    }
                     while (ex.InnerException is not null)
                     {
                         ex = ex.InnerException;
