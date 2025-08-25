@@ -385,6 +385,61 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsVisible = true,
                     Value = "20",
                     DataTypeId = (int)PlatformSettingsDataTypes.Integer
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.GooglePlayUrl,
+                    Name = "Google Play Url" ,
+                    NameAr = "رابط متجر جوجل بلاي",
+                    Code = "GooglePlayUrl",
+                    Group = "DashBoared",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.AppStoreUrl,
+                    Name = "App Store Url" ,
+                    NameAr = "رابط متجر التطبيقات",
+                    Code = "AppStoreUrl",
+                    Group = "DashBoared",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.FacebookUrl,
+                    Name = "Facebook Url" ,
+                    NameAr = "رابط الفيسبوك",
+                    Code = "FacebookUrl",
+                    Group = "DashBoared",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.InstagramUrl,
+                    Name = "Instagram Url" ,
+                    NameAr = "رابط الانستغرام",
+                    Code = "InstagramUrl",
+                    Group = "DashBoared",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.SnapchatUrl,
+                    Name = "Snapchat Url" ,
+                    NameAr = "رابط سناب شات",
+                    Code = "SnapchatUrl",
+                    Group = "DashBoared",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 }
             });
             #endregion

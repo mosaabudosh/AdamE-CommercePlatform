@@ -17,6 +17,8 @@ namespace E_Commerce.Application.Model.DashBoard
         public string Descreption { get; set; }
         public bool? IsBlock { get; set; }
         public int? ParentCategoryId { get; set; }
+        public int? GenderId { get; set; }
         public FileCreationModel? FileCreationModel { get; set; }
+        public List<CategoryModel>? ChildCategories { get; set; }
     }
 }

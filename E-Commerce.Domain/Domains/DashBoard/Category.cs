@@ -10,9 +10,12 @@
         public string? Descreption { get; set; }
         public bool IsBlock { get; set; }
         public int? ParentCategoryId { get; set; }
+        public int? GenderId { get; set; }
 
         public virtual Category ParentCategory { get; set; }
         public virtual List<Category> ChildCategories { get; set; }
-        public virtual List<Item> Items { get; set; }
+        public virtual List<ShopItem> ShopItems { get; set; }
+        public virtual Gender Gender { get; set; }
+        public virtual List<ShopCategory> ShopCategories { get; set; }
     }
 }

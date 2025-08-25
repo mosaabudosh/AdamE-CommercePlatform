@@ -198,7 +198,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     NameAr = "العربات",
                     Url = "carts",
                     Icon = "pi pi-shopping-cart",
-                    ModuleId = (int)Modules.Lookup,
+                    ModuleId = (int)Modules.CustomerManagement,
                     IsInMenue = true,
                     CreationDate = new DateTime(2025,1,1),
                     CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
@@ -224,7 +224,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     NameAr = "طلبات",
                     Url = "orders",
                     Icon = "pi pi-briefcase",
-                    ModuleId = (int)Modules.Lookup,
+                    ModuleId = (int)Modules.CustomerManagement,
                     IsInMenue = true,
                     CreationDate = new DateTime(2025,1,1),
                     CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
@@ -277,10 +277,10 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     Url = "notification-statuses",
                     Icon = "pi pi-bars",
                     ModuleId = (int)Modules.Notification,
-                    IsInMenue = true,
+                    IsInMenue = false,
                     CreationDate = new DateTime(2025,1,1),
                     CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
-                    IsActive = true
+                    IsActive = false
                 },
                 new Screen()
                 {
@@ -368,6 +368,19 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     Url = "color-group",
                     Icon = "pi pi-list",
                     ModuleId = (int)Modules.Lookup,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Customers,
+                    Name = "Customers ",
+                    NameAr = "العملاء",
+                    Url = "customers",
+                    Icon = "pi pi-list",
+                    ModuleId = (int)Modules.CustomerManagement,
                     IsInMenue = true,
                     CreationDate = new DateTime(2025,1,1),
                     CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),

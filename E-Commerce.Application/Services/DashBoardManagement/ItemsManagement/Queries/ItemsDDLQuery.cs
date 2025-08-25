@@ -15,32 +15,32 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
 {
     public class ItemsDDLQuery
     {
-        public record Query() : IRequest<BaseResponse<List<DDLDataSource>>> { }
+        //public record Query() : IRequest<BaseResponse<List<DDLDataSource>>> { }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Query, BaseResponse<List<DDLDataSource>>>
-        {
-            public async Task<BaseResponse<List<DDLDataSource>>> Handle(Query request, CancellationToken cancellationToken)
-            {
-                try
-                {
-                    List<DDLDataSource> items = _unitOfWork.GetRepository<Item>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
-                    {
-                        ValueGuid = p.ItemId,
-                        Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
-                        Attributes = new { Code = p.Code}
-                    }).ToList();
-                    return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, items);
-                }
-                catch (Exception ex)
-                {
-                    while (ex.InnerException is not null)
-                    {
-                        ex = ex.InnerException;
-                    }
-                    await _exceptionService.LogErrorAsync(ex, "ItemsDDLQuery", _userAccessor.GetCurrentUserId());
-                    return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
-                }
-            }
-        }
+        //public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Query, BaseResponse<List<DDLDataSource>>>
+        //{
+        //    public async Task<BaseResponse<List<DDLDataSource>>> Handle(Query request, CancellationToken cancellationToken)
+        //    {
+        //        try
+        //        {
+        //            List<DDLDataSource> items = _unitOfWork.GetRepository<Item>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+        //            {
+        //                ValueGuid = p.ItemId,
+        //                Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+        //                Attributes = new { Code = p.Code}
+        //            }).ToList();
+        //            return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, items);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            while (ex.InnerException is not null)
+        //            {
+        //                ex = ex.InnerException;
+        //            }
+        //            await _exceptionService.LogErrorAsync(ex, "ItemsDDLQuery", _userAccessor.GetCurrentUserId());
+        //            return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
+        //        }
+        //    }
+        //}
     }
 }

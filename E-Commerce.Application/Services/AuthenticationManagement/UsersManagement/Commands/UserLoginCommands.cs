@@ -138,6 +138,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             Icon = s.FirstOrDefault().Screen.Module.Icon,
                             Expanded = screenId.HasValue ? screenId.Value == s.Key : false,
                             IsActive = screenId.HasValue ? screenId.Value == s.Key : false,
+                            Order = s.FirstOrDefault().Screen.Module.Order,
                             UserMenuItems = s.Select(m => new UserMenuItem()
                             {
                                 Id = m.ScreenId,
@@ -149,7 +150,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                                 ParentId = s.Key,
                                 URL = m.Screen.Url,
                             }).ToList()
-                        }).ToList();
+                        }).OrderBy(x => x.Order).ToList();
                         userMenus = userMenus.Select(sm => { sm.UserMenuItems = sm.UserMenuItems.DistinctBy(p => p.Id).ToList(); return sm; }).Distinct().ToList();
                         return userMenus;
                     }

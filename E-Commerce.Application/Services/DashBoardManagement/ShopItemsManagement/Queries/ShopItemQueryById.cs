@@ -45,7 +45,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         Cost = s.Cost,
                         Image = s.Image,
                         InStocks = s.InStocks,
-                        ItemId = s.ItemId,
                         OutOfStocks = s.OutOfStocks,
                         Price = s.Price,
                         ProfitRate = s.ProfitRate,
@@ -53,7 +52,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         DefaultUnitId = s.DefaultUnitId,
                         DefaultColorId = s.DefaultColorId,
                         DiscountId = s.DiscountId,
-                        IsFeatured = s.IsFeatured
+                        IsFeatured = s.IsFeatured,
+                        CategoryId = s.CategoryId,
+                        IsBlock = s.IsBlock,
+                        ItemName = s.Name,
+                        ShopMenuId = s.ShopMenuId,
                     }).FirstOrDefault();
 
                     string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];

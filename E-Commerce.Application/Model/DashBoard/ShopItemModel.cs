@@ -17,7 +17,6 @@ namespace E_Commerce.Application.Model.DashBoard
         public double? OutOfStocks { get; set; }
         public string? Image { get; set; }
         public int? TaxId { get; set; }
-        public Guid? ItemId { get; set; }
         public int ShopId { get; set; }
         public int UnitGroupId { get; set; }
         public int? ColorGroupId { get; set; }
@@ -31,6 +30,10 @@ namespace E_Commerce.Application.Model.DashBoard
         public string? ShopItemStatus { get; set; }
         public int? DiscountId { get; set; }
         public bool IsFeatured { get; set; }
+        public bool? IsBlock { get; set; }
+        public int? CategoryId { get; set; }
+        public int? ShopMenuId { get; set; }
+
         public List<string>? Images { get; set; }
         public List<FileCreationModel>? FileCreationModels { get; set; }
     }

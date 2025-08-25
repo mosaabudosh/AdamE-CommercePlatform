@@ -21,6 +21,8 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public int? CityId { get; set; }
         public int? ParentShopId { get; set; }
         public decimal? Rating { get; set; }
+        public string? Latitude { get; set; }
+        public string? Longitude { get; set; }
 
         public virtual City City { get; set; }
         public virtual Shop ParentShop { get; set; }
@@ -28,5 +30,7 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public virtual List<User> Users { get; set; }
         public virtual List<ShopItem> ShopItems { get; set; }
         public virtual List<ShopRating> ShopRatings { get; set; }
+        public virtual List<ShopCategory> ShopCategories { get; set; }
+        public virtual List<ShopMenu> ShopMenus { get; set; }
     }
 }

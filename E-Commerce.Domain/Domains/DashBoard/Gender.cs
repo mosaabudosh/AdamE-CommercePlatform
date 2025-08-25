@@ -10,5 +10,6 @@ namespace E_Commerce.Domain.Domains.DashBoard
 
         public virtual List<User> Users { get; set; }
         public virtual List<Customer> Customers { get; set; }
+        public virtual List<Category> Categories { get; set; }
     }
 }

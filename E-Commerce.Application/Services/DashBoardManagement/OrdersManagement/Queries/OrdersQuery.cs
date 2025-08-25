@@ -18,16 +18,16 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.Q
         public class Query : IRequest<BaseResponse<List<OrderModel>>>
         {
             public Guid? CustomerId { get; set; }
-            public Guid? ItemId { get; set; }
+            public Guid? ShopItemId { get; set; }
             public Guid? UserId { get; set; }
             public int? CategoryId { get; set; }
             public int? OrderStatusId { get; set; }
             public string? SearchText { get; set; }
 
-            public Query(Guid? customerId = null, Guid? itemId = null, Guid? userId = null, int? categoryId = null, int? orderStatusId = null, string? searchText = null)
+            public Query(Guid? customerId = null, Guid? shopItemId = null, Guid? userId = null, int? categoryId = null, int? orderStatusId = null, string? searchText = null)
             {
                 CustomerId = customerId;
-                ItemId = itemId;
+                ShopItemId = shopItemId;
                 UserId = userId;
                 CategoryId = categoryId;
                 OrderStatusId = orderStatusId;
@@ -41,7 +41,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.Q
             {
                 try
                 {
-                    List<OrderModel> orders = _unitOfWork.GetRepository<Order>().GetByExpressionAsNoTracking(p => (!request.CustomerId.HasValue || p.CustomerId == request.CustomerId) && (!request.UserId.HasValue || p.LastUpdateUserId == request.UserId) && (!request.OrderStatusId.HasValue || p.OrderStatusId == request.OrderStatusId) && (!request.ItemId.HasValue || p.OrderDetails.Any(o => o.ShopItem.ItemId == request.ItemId)) && (!request.CategoryId.HasValue || p.OrderDetails.Any(o => o.ShopItem.Item.CategoryId == request.CategoryId))).Select(s => new OrderModel()
+                    List<OrderModel> orders = _unitOfWork.GetRepository<Order>().GetByExpressionAsNoTracking(p => (!request.CustomerId.HasValue || p.CustomerId == request.CustomerId) && (!request.UserId.HasValue || p.LastUpdateUserId == request.UserId) && (!request.OrderStatusId.HasValue || p.OrderStatusId == request.OrderStatusId) && (!request.ShopItemId.HasValue || p.OrderDetails.Any(o => o.ShopItemId == request.ShopItemId)) && (!request.CategoryId.HasValue || p.OrderDetails.Any(o => o.ShopItem.CategoryId == request.CategoryId))).Select(s => new OrderModel()
                     {
                         CustomerId = s.CustomerId,
                         OrderId = s.OrderId,
@@ -61,7 +61,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.Q
                             Quantity = o.Quantity,
                             ShopItemId = o.ShopItemId,
                             Tax = o.Tax,
-                            ItemName = o.ShopItem.Item.Name,
+                            ItemName = o.ShopItem.Name,
                             Shope = o.ShopItem.Shop.Name
                         }).ToList()
                     }).ToList();

@@ -47,7 +47,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     if (!string.IsNullOrEmpty(category.Image))
                     {
                         string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
-                        string folderPath = $"{DMSCategoryPath}\\{category.Name.Trim()}";
+                        string folderPath = $"{DMSCategoryPath}\\{category.CategoryId.ToString()}";
                         BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath,false));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {
@@ -72,7 +72,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             {
                 try
                 {
-                    bool haveRelatedData = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(i => i.CategoryId == categoryId && (i.Items.Any() || i.ParentCategoryId == categoryId)).Any();
+                    bool haveRelatedData = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(i => (i.CategoryId == categoryId || i.ParentCategoryId == categoryId) && i.ShopItems.Any() ).Any();
                     if (haveRelatedData)
                     {
                         return new BaseResponse(false, string.Empty, ErrorCode.RelatedData);

@@ -46,9 +46,18 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     ModuleId = (int)Modules.Report, 
                     Name = "Reports" , 
                     NameAr = "التقارير",
-                    Order = 4, 
+                    Order = 5, 
                     IsInMenue = true,
                     Icon = "pi pi-file"                    
+                },
+                new Domain.Domains.Authorisation.Module()
+                {
+                    ModuleId = (int)Modules.CustomerManagement,
+                    Name = "Customer Management" ,
+                    NameAr = "إدارة العملاء",
+                    Order = 4,
+                    IsInMenue = true,
+                    Icon = "pi pi-briefcase"
                 },
             });
             #endregion

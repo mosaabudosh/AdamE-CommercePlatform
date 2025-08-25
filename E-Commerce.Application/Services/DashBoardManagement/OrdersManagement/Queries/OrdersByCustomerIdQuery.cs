@@ -50,7 +50,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.Q
                             Quantity = o.Quantity,
                             ShopItemId = o.ShopItemId,
                             Tax = o.Tax,
-                            ItemName = o.ShopItem.Item.Name,
+                            ItemName = o.ShopItem.Name,
                             Shope = o.ShopItem.Shop.Name
                         }).ToList()                       
                     }).ToList();                

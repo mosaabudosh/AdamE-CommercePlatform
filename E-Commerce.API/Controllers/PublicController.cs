@@ -62,7 +62,7 @@ namespace E_Commerce.API.Controllers
             }
             catch (Exception ex)
             {
-                await ExceptionService.LogErrorAsync(ex, nameof(GetDashboardCategories), UserAccessor.GetCurrentUserId(), pageNumber, pageSize,searchText);
+                await ExceptionService.LogErrorAsync(ex, nameof(GetDashboardCategories), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText);
                 return new BaseResponse<List<CategoryModel>>(false, ex.Message);
             }
         }

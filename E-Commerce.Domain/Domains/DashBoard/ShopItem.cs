@@ -5,6 +5,10 @@ namespace E_Commerce.Domain.Domains.DashBoard
     public class ShopItem : SharedBase
     {
         public Guid ShopItemId { get; set; }
+        public string Name { get; set; }
+        public string NameAr { get; set; }
+        public string Code { get; set; }
+        public string? Descreption { get; set; }
         public decimal? Cost { get; set; }
         public decimal? ProfitRate { get; set; }
         public decimal Price { get; set; }
@@ -12,7 +16,6 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public double? OutOfStocks { get; set; }
         public string? Image { get; set; }
         public int? TaxId { get; set; }
-        public Guid? ItemId { get; set; }
         public int ShopId { get; set; }
         public int UnitGroupId { get; set; }
         public int ShopItemStatusId { get; set; }
@@ -21,10 +24,11 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public int? DefaultColorId { get; set; }
         public int? DiscountId { get; set; }
         public bool IsFeatured { get; set; }
-
+        public bool IsBlock { get; set; }
+        public int CategoryId { get; set; }
+        public int? ShopMenuId { get; set; }
 
         public virtual Tax Tax { get; set; }
-        public virtual Item Item { get; set; }
         public virtual List<CartDetail> CartDetails { get; set; }
         public virtual Shop Shop { get; set; }
         public virtual List<OrderDetail> OrderDetails { get; set; }
@@ -36,5 +40,8 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public virtual Unit Unit { get; set; }
         public virtual Discount Discount { get; set; }
         public virtual List<ShopItemRating> ShopItemRatings { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual ShopMenu ShopMenu { get; set; }
+
     }
 }

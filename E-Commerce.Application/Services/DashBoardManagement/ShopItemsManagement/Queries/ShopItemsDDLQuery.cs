@@ -32,10 +32,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             {
                 try
                 {
-                    List<DDLDataSource> shopItems = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(p => p.IsActive && (!request.ShopId.HasValue || request.ShopId.Value == p.ShopId) && (string.IsNullOrEmpty(request.SearchText) || p.Item.Name.Contains(request.SearchText) || p.Item.NameAr.Contains(request.SearchText))).Select(p => new DDLDataSource()
+                    List<DDLDataSource> shopItems = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(p => p.IsActive && (!request.ShopId.HasValue || request.ShopId.Value == p.ShopId) && (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText))).Select(p => new DDLDataSource()
                     {
                         ValueGuid = p.ShopItemId,
-                        Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Item.Name : p.Item.NameAr,
+                        Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
                     }).ToList();
                     return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, shopItems);
                 }
