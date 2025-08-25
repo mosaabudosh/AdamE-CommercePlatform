@@ -47,6 +47,7 @@ namespace E_Commerce.Application.Model.Authorisation
         public string Icon { get; set; }
         public bool Expanded { get; set; }
         public bool IsActive { get; set; }
+        public int Order { get; set; }
         public List<UserMenuItem> UserMenuItems { get; set; }
     }
 

@@ -1,4 +1,5 @@
 ﻿using Adam.Generic.Generic;
+using Azure.Core;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DashBoardManagement.CategoriesManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.CategoriesManagement.Queries;
@@ -15,17 +16,47 @@ namespace E_Commerce.API.Controllers
     {
         [Route("categories")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<CategoryModel>>>> GetCategories(int pageNumber, int pageSize, string? searchText = null)
+        public async Task<ActionResult<BaseResponse<List<TreeNode<CategoryModel>>>>> GetCategories(int pageNumber, int pageSize, string? searchText = null)
         {
             try
             {
-                return await _mediator.Send(new CategoriesQuery.Query(pageNumber, pageSize, searchText));
+                BaseResponse<List<CategoryModel>> categoryModelsResponse = await _mediator.Send(new CategoriesQuery.Query(pageNumber, pageSize, searchText));
+                if (!categoryModelsResponse.IsSuccess)
+                {
+                    return new BaseResponse<List<TreeNode<CategoryModel>>>(false, categoryModelsResponse.Message, categoryModelsResponse.ErrorCode);
+                }
+                List<TreeNode<CategoryModel>> treeCategoryNodes = new List<TreeNode<CategoryModel>>();
+                foreach (CategoryModel categoryModel in categoryModelsResponse.DataObject.Where(p => string.IsNullOrEmpty(searchText) ? !p.ParentCategoryId.HasValue : true))
+                {
+                    TreeNode<CategoryModel> treeNode = new TreeNode<CategoryModel>();
+                    treeNode.Data = categoryModel;
+                    treeNode.Children = GetTreeNodes(categoryModel);
+                    treeCategoryNodes.Add(treeNode);
+                }
+                return new BaseResponse<List<TreeNode<CategoryModel>>>(true,string.Empty, treeCategoryNodes.Skip(pageNumber * pageSize).Take(pageSize).ToList());
             }
             catch (Exception ex)
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetCategories), UserAccessor.GetCurrentUserId(), pageNumber, pageSize, searchText);
-                return new BaseResponse<List<CategoryModel>>(false, ex.Message);
+                return new BaseResponse<List<TreeNode<CategoryModel>>>(false, ex.Message);
             }
+        }
+
+        public List<TreeNode<CategoryModel>> GetTreeNodes(CategoryModel categoryModel)
+        {
+            List<TreeNode<CategoryModel>> treeNodes = new List<TreeNode<CategoryModel>>();
+            if (categoryModel.ChildCategories != null)
+            {
+                categoryModel.ChildCategories = categoryModel.ChildCategories.OrderBy(p => p.CategoryId).ToList();
+                foreach (CategoryModel child in categoryModel.ChildCategories)
+                {
+                    TreeNode<CategoryModel> treeNode = new TreeNode<CategoryModel>();
+                    treeNode.Data = child;
+                    treeNode.Children = child.ChildCategories != null && child.ChildCategories.Count > 0 ? GetTreeNodes(child) : null;
+                    treeNodes.Add(treeNode);
+                }
+            }
+            return treeNodes;
         }
 
         [Route("categories-count")]
@@ -34,7 +65,7 @@ namespace E_Commerce.API.Controllers
         {
             try
             {
-                BaseResponse<List<CategoryModel>> categoriesResponse = await _mediator.Send(new CategoriesQuery.Query(0, int.MaxValue, searchText));
+                BaseResponse<List<CategoryModel>> categoriesResponse = await _mediator.Send(new CategoriesQuery.Query(0, int.MaxValue, searchText,true));
                 if (!categoriesResponse.IsSuccess)
                 {
                     return new BaseResponse<int>(false, categoriesResponse.Message, categoriesResponse.ErrorCode);

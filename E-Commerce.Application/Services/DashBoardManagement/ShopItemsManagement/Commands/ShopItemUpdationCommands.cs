@@ -39,7 +39,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
 
                     exisitShopItem.TaxId = request.ShopItemModel.TaxId;
                     exisitShopItem.Cost = request.ShopItemModel.Cost;
-                    exisitShopItem.ItemId = request.ShopItemModel.ItemId;
                     exisitShopItem.InStocks = request.ShopItemModel.InStocks;
                     exisitShopItem.ShopId = request.ShopItemModel.ShopId;
                     exisitShopItem.OutOfStocks = request.ShopItemModel.OutOfStocks;
@@ -99,7 +98,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             {
                 try
                 {
-                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => (x.ItemId == shopItem.ItemId && x.ShopId == shopItem.ShopId) && x.ShopItemId != shopItem.ShopItemId).FirstOrDefault();
+                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => (x.ShopId == shopItem.ShopId) && x.ShopItemId != shopItem.ShopItemId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

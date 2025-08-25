@@ -35,11 +35,12 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
 
                     exisitCategory.Name = request.CategoryModel.Name.Trim();
                     exisitCategory.NameAr = request.CategoryModel.NameAr.Trim();
-                    exisitCategory.Image = request.CategoryModel.Image?.Trim();
+                    exisitCategory.Image = request.CategoryModel.FileCreationModel is not null ? request.CategoryModel.Image?.Trim() : null;
                     exisitCategory.Code = request.CategoryModel.Code.Trim();
                     exisitCategory.Descreption = request.CategoryModel.Descreption.Trim();
                     exisitCategory.IsBlock = request.CategoryModel.IsBlock.HasValue ? request.CategoryModel.IsBlock.Value : false;
                     exisitCategory.ParentCategoryId = request.CategoryModel.ParentCategoryId;
+                    exisitCategory.GenderId = request.CategoryModel.GenderId;
                     exisitCategory.LastUpdateUserId = _userAccessor.GetCurrentUserId();
                     exisitCategory.LastUpdatedDate = DateTime.UtcNow;
 
@@ -52,7 +53,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
 
                     FolderAndFileCreationModel folderAndFileCreationModel = new FolderAndFileCreationModel()
                     {
-                        FolderName = $"{exisitCategory.Name.Trim()}",
+                        FolderName = $"{exisitCategory.CategoryId.ToString()}",
                         FolderPath = $"{DMSCategoryPath}",
                         FileCreationModels = new List<FileCreationModel>(),
                     };
@@ -71,7 +72,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                 {
                     if (request.CategoryModel.FileCreationModel is not null)
                     {
-                        string folderPath = $"{DMSCategoryPath}\\{request.CategoryModel.Name.Trim()}";
+                        string folderPath = $"{DMSCategoryPath}\\{request.CategoryModel.CategoryId.ToString()}";
                         BaseResponse responseGetFileCreationModels = await _mediator.Send(new DeleteFolderByPathCommands.Command(folderPath));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

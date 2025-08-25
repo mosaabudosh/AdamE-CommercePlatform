@@ -14,7 +14,6 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public string NameAr { get; set; }
 
         public virtual List<Unit> Units { get; set; }
-        public virtual List<Item> Items { get; set; }
         public virtual List<ShopItem> ShopItems { get; set; }
     }
 }

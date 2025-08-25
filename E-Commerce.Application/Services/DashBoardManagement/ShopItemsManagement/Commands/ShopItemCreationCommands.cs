@@ -46,7 +46,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         ProfitRate = request.ShopItemModel.ProfitRate,
                         Image = request.ShopItemModel.ShopItemId.ToString(),
                         InStocks = request.ShopItemModel.InStocks,
-                        ItemId = request.ShopItemModel.ItemId,
                         OutOfStocks = request.ShopItemModel.OutOfStocks,
                         Price = request.ShopItemModel.Price,
                         IsFeatured = request.ShopItemModel.IsFeatured,
@@ -106,7 +105,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             {
                 try
                 {
-                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => x.ItemId == shopItem.ItemId && x.ShopId == shopItem.ShopId).FirstOrDefault();
+                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => x.ShopId == shopItem.ShopId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

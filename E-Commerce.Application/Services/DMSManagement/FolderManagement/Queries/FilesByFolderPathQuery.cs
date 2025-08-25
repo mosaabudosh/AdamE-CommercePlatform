@@ -59,6 +59,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries
                             byte[] fileInByte = System.IO.File.Exists($"{file.Path}\\{file.Name}.{fileType}") ? System.IO.File.ReadAllBytes($"{file.Path}\\{file.Name}.{fileType}") : [];
                             files.Add(new FileCreationModel()
                             {
+                                FolderId = folder.FolderId,
                                 FileType = fileType,
                                 FileName = file.Name,
                                 FolderName = folder.Name,

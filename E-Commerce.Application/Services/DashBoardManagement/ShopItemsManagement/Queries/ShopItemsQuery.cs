@@ -43,7 +43,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             {
                 try
                 {
-                    List<ShopItemModel> shopItemModels = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Item.Name.Contains(request.SearchText) || p.Item.NameAr.Contains(request.SearchText)) && (!request.ShopId.HasValue || request.ShopId.Value == p.ShopId) && (!request.CategoryId.HasValue || !p.ItemId.HasValue || request.CategoryId.Value == p.Item.CategoryId)).Select(s => new ShopItemModel()
+                    List<ShopItemModel> shopItemModels = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)) && (!request.ShopId.HasValue || request.ShopId.Value == p.ShopId) && (!request.CategoryId.HasValue || request.CategoryId.Value == p.CategoryId)).Select(s => new ShopItemModel()
                     {
                         ShopItemId = s.ShopItemId,
                         ShopId = s.ShopId,
@@ -53,11 +53,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         Cost = s.Cost,
                         Image = s.Image,
                         InStocks = s.InStocks,
-                        ItemId = s.ItemId,
                         OutOfStocks = s.OutOfStocks,
                         Price = s.Price,
                         ProfitRate = s.ProfitRate,
-                        ItemName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Item.Name : s.Item.NameAr,
+                        ItemName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
                         Shop = s.Shop.Name,
                         ShopItemStatus = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.ShopItemStatus.Name : s.ShopItemStatus.NameAr,
                         Tax = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Tax.Name : s.Tax.NameAr,

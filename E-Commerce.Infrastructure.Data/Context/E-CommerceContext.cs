@@ -49,7 +49,7 @@ namespace E_Commerce.Infrastructure.Data.Context
 			modelBuilder.ApplyConfiguration(new CitiesEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new CountriesEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new GenderEntityConfiguration());
-			modelBuilder.ApplyConfiguration(new ItemEntityConfiguration());
+			//modelBuilder.ApplyConfiguration(new ItemEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new LanguageEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new OrderEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new OrderDetailEntityConfiguration());
@@ -80,6 +80,8 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new ColorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ShopRatingEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ShopItemRatingEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ShopCategoryEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ShopMenuEntityConfiguration());
         }
         #endregion
 
@@ -101,7 +103,6 @@ namespace E_Commerce.Infrastructure.Data.Context
 		public DbSet<City> Cities { get; set; }
 		public DbSet<Country> Countries { get; set; }
 		public DbSet<Gender> Genders { get; set; }
-		public DbSet<Item> Items { get; set; }
 		public DbSet<Language> Languages { get; set; }
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<OrderDetail> OrderDetails { get; set; }
@@ -132,6 +133,8 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<Color> Colors { get; set; }
         public DbSet<ShopRating> ShopRatings { get; set; }
         public DbSet<ShopItemRating> ShopItemRatings { get; set; }
+        public DbSet<ShopCategory> ShopCategories { get; set; }
+        public DbSet<ShopMenu> ShopMenus { get; set; }
         #endregion
     }
 }

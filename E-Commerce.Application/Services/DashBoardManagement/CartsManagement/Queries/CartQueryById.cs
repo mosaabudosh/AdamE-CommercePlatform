@@ -45,7 +45,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CartsManagement.Qu
                             Quantity = p.Quantity,
                             ShopItemId = p.ShopItemId,
                             Tax = p.Tax,
-                            ItemName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.ShopItem.Item.Name : p.ShopItem.Item.NameAr
+                            ItemName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.ShopItem.Name : p.ShopItem.NameAr
                         }).ToList()
                     }).FirstOrDefault();
                     return new BaseResponse<CartModel>(true, string.Empty, string.Empty, cartModel);

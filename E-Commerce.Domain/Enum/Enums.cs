@@ -31,8 +31,9 @@ namespace E_Commerce.Domain.Enum
 			AccssControl = 1,
 			Lookup = 2,
 			Notification = 3,
-			Report = 4
-		}
+			Report = 4,
+            CustomerManagement = 5
+        }
 
 		public enum UserTypes
 		{
@@ -136,7 +137,12 @@ namespace E_Commerce.Domain.Enum
             DMSShopItemPath = 27,
             DMSShopPath = 28,
             NumberOfFeaturedItemsInDashBoared = 29,
-            NumberOfCategoriesInDashBoared = 30
+            NumberOfCategoriesInDashBoared = 30,
+            GooglePlayUrl = 31,
+            AppStoreUrl = 32,
+            FacebookUrl = 33,
+            InstagramUrl = 34,
+            SnapchatUrl = 35
         }
 
         public enum PlatformSettingsCode
@@ -170,7 +176,12 @@ namespace E_Commerce.Domain.Enum
             DMSShopItemPath,
             DMSShopPath,
             NumberOfFeaturedItemsInDashBoared,
-            NumberOfCategoriesInDashBoared
+            NumberOfCategoriesInDashBoared,
+            GooglePlayUrl,
+            AppStoreUrl,
+            FacebookUrl,
+            InstagramUrl,
+            SnapchatUrl
         }
 
         public enum Screens
@@ -201,7 +212,8 @@ namespace E_Commerce.Domain.Enum
             PaymentMethod = 24,
             SizeGroup = 25,
             ShopItemStatus = 26,
-            ColorsGroup = 27
+            ColorsGroup = 27,
+            Customers = 28
         }
 
         public enum MenuType

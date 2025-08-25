@@ -19,12 +19,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             public int PageNumber { get; set; }
             public int PageSize { get; set; }
             public string? SearchText { get; set; }
+            public bool IsCount { get; set; }
 
-            public Query(int pageNumber, int pageSize, string? searchText = null)
+            public Query(int pageNumber, int pageSize, string? searchText = null, bool isCount = false)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
                 SearchText = searchText;
+                IsCount = isCount;
             }
         }
 
@@ -34,7 +36,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             {
                 try
                 {
-                    List<CategoryModel> categories = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(p => new CategoryModel()
+                    List<CategoryModel> categories = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)) && (request.IsCount ? !p.ParentCategoryId.HasValue : true)).Select(p => new CategoryModel()
                     {
                         CategoryId = p.CategoryId,
                         Name = p.Name,
@@ -44,12 +46,31 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                         ParentCategoryId = p.ParentCategoryId,
                         Descreption = p.Descreption,
                         IsBlock = p.IsBlock,
-                    }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
+                        GenderId = p.GenderId,
+                        ChildCategories = p.ChildCategories.Select(s => new CategoryModel()
+                        {
+                            CategoryId = s.CategoryId,
+                            Name = s.Name,
+                            NameAr = s.NameAr,
+                            Code = s.Code,
+                            Image = s.Image,
+                            ParentCategoryId = s.ParentCategoryId,
+                            Descreption = s.Descreption,
+                            IsBlock = s.IsBlock,
+                        }).ToList()
+                    }).ToList();
 
                     if (categories.Any(p => !string.IsNullOrEmpty(p.Image)))
                     {
                         string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
-                        List<string> filePaths = categories.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{DMSCategoryPath}\\{s.Name.Trim()}"; }).ToList();
+
+                        List<string> filePaths = categories.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{DMSCategoryPath}\\{s.CategoryId.ToString()}"; }).ToList();
+
+                        List<string> childFilePaths = categories.Where(p => p.ChildCategories.Any(x => !string.IsNullOrEmpty(x.Image))).SelectMany(s => s.ChildCategories.Select(s => { return $"{DMSCategoryPath}\\{s.CategoryId.ToString()}"; })).ToList();
+                        if (childFilePaths.Any())
+                        {
+                            filePaths.AddRange(childFilePaths);
+                        }
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {
@@ -60,6 +81,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                             foreach (CategoryModel category in categories.Where(p => !string.IsNullOrEmpty(p.Image)))
                             {
                                 category.Image = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == category.Image).FileContent;
+                                if(category.ChildCategories.Any(p => !string.IsNullOrEmpty(p.Image)))
+                                {
+                                    foreach (CategoryModel childCategory in category.ChildCategories.Where(p => !string.IsNullOrEmpty(p.Image)))
+                                    {
+                                        childCategory.Image = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == childCategory.Image).FileContent;
+                                    }
+                                }
                             }
                         }
                     }
