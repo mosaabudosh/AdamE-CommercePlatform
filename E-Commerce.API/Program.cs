@@ -37,9 +37,7 @@ try
         p.Filters.Add(new AuthorizeFilter(puthorizationPolicy));
     }).AddNewtonsoftJson(options => { options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; });
 
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+ 
     AppSettings appSettings = builder.Configuration.Get<AppSettings>();
     string[] origins = appSettings.origins.Split(',');
     builder.Services.AddCors(options =>
@@ -111,13 +109,15 @@ try
         };
     });
 
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "AdamE-Commerce-Platform APIs", Version = "v1" });
         c.DocumentFilter<SpecificControllerFilter>();
         c.OperationFilter<AddRequiredHeaderParameter>();
-
+        c.SchemaFilter<IgnoreRecursiveSchemaFilter>();
+        c.IgnoreObsoleteActions();
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Name = "Authorization",
@@ -148,13 +148,15 @@ try
     WebApplication app = builder.Build();
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     {
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.DefaultModelsExpandDepth(-1);
+            //c.SwaggerEndpoint("v1/swagger.json", "DemoAPI v1");
         });
+
     }
     app.UseCors("Policy");
 
@@ -167,6 +169,8 @@ try
     app.MapControllers();
     
     app.MapHub<NotificationHub>("/hubs/notification");
+
+    app.UseDeveloperExceptionPage();
 
     app.Run();
 }

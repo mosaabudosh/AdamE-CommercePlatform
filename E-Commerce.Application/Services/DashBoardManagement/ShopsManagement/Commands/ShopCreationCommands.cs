@@ -46,6 +46,9 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                         CityId = request.ShopModel.CityId,
                         CommercialName = request.ShopModel.CommercialName.Trim(),
                         IsBlock = false,
+                        Longitude = request.ShopModel.Longitude,
+                        Latitude = request.ShopModel.Latitude,
+                        IsViewInHome = request.ShopModel.IsViewInHome,
                         CreationUserId = _userAccessor.GetCurrentUserId(),
                         CreationDate = DateTime.UtcNow,
                         IsActive = true

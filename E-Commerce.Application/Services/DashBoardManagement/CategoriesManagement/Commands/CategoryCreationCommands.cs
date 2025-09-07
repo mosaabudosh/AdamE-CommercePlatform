@@ -43,6 +43,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                         IsBlock = false,
                         ParentCategoryId = request.CategoryModel.ParentCategoryId,
                         GenderId = request.CategoryModel.GenderId,
+                        IsViewInHome = request.CategoryModel.IsViewInHome ?? false,
                         CreationUserId = _userAccessor.GetCurrentUserId(),
                         CreationDate = DateTime.UtcNow,
                         IsActive = true

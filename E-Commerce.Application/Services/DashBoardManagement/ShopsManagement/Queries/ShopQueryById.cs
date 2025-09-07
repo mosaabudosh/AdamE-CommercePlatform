@@ -47,7 +47,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
                         NoOfBranch = s.NoOfBranch,
                         NoOfVendor = s.NoOfVendor,
                         PersonConcateName = s.PersonConcateName,
-                        PhoneNumber = s.PhoneNumber
+                        PhoneNumber = s.PhoneNumber,
+                        IsViewInHome = s.IsViewInHome,
+                        Latitude = s.Latitude,
+                        Longitude = s.Longitude
                     }).FirstOrDefault();
 
                     if (!string.IsNullOrEmpty(shop.Logo))

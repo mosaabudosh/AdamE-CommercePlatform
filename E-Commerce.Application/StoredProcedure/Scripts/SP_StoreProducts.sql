@@ -1,5 +1,3 @@
-USE [Adam-E-Commerce-DB]
-GO
 /****** Object:  StoredProcedure [dbo].[SP_StoreProducts]    Script Date: 7/14/2025 4:59:37 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -36,21 +34,23 @@ BEGIN
 		select * from string_split(@ShopIds, ';')
 	end
 
-	;with ShopItemData as (
+;with ShopItemData as (
 	select 
+	
 		si.ShopItemId,
-		i.Name,
-		i.NameAr,
-		i.Code,
-		ISNULL(i.Descreption, ' - ') as Descreption ,
-		si.Price,
+		si.Name,
+		si.NameAr,
+		si.Code,
+		si.Descreption,
+		(case when d.Value is null then si.Price else si.Price - (si.Price * (d.Value / 100)) end) as Price,
+		si.Price as OldPrice,
 		c.Name as Category,
 		1 as Quantity,
 		3 as Rating,
 		0 as IsInFavorite,
 		s.Name as Shope,
 		s.ShopId,
-		0 as Discount,
+		d.Value as Discount,
 		t.Value as Tax,
 		si.DefaultUnitId as SelectedUnitId,
 		(
@@ -68,24 +68,26 @@ BEGIN
 			end
 		) as ShopeLogo,
 		si.DefaultColorId as SelectedColorId,
-		i.CategoryId
+		si.CategoryId
 
 	from ShopItems as si left outer join
-	Items as i on si.ItemId = i.ItemId left outer join
-	Categories as c on i.CategoryId = c.CategoryId left outer join
+	Categories as c on si.CategoryId = c.CategoryId left outer join
 	Shops as s on si.ShopId = s.ShopId left outer join
 	Taxs as t on si.TaxId = t.TaxId left outer join
 	Folders as fo on convert(varchar(38), si.ShopItemId) = fo.Name left outer join
 	UnitGroups as ug on si.UnitGroupId = ug.UnitGroupId left outer join
-	ColorGroups as cg on si.ColorGroupId = cg.ColorGroupId 
+	ColorGroups as cg on si.ColorGroupId = cg.ColorGroupId left outer join
+	Discounts as d on si.DiscountId = d.DiscountId
 
+	
 	where si.ShopItemStatusId <> 1 
+	and si.IsFeatured = 1
 	and 
 	(
 		@SearchText is null 
 		or @SearchText = '' 
-		or i.Name like '%@' + @SearchText + '%' 
-		or i.Code like '%@' + @SearchText + '%' 
+		or si.Name like '%@' + @SearchText + '%' 
+		or si.Code like '%@' + @SearchText + '%' 
 		or c.Name like '%@' + @SearchText + '%'
 		or s.Name like '%@' + @SearchText + '%'
 	)
@@ -106,6 +108,8 @@ BEGIN
 	and (@ToPrice is null or si.Price <= @ToPrice)
 
 
+
+
 	order by Category
 	OFFSET (@PageNumber-1) * @PageSize rows
 	fetch next @PageSize rows ONLY
@@ -118,6 +122,7 @@ BEGIN
 		si.Code,
 		si.Descreption,
 		si.Price,
+		si.OldPrice,
 		si.Category,
 		si.Quantity,
 		si.Rating,
@@ -141,15 +146,14 @@ BEGIN
 		si.CategoryId
 
 	from ShopItemData as si
-
 	group by 
-
 	si.ShopItemId,
 	si.Name,
 	si.NameAr,
 	si.Code,
 	si.Descreption,
 	si.Price,
+	si.OldPrice,
 	si.Category,
 	si.Quantity,
 	si.Rating,

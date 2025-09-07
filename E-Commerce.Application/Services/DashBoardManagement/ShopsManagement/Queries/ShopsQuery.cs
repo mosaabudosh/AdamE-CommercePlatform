@@ -1,5 +1,6 @@
 ﻿using Adam.Generic.Generic;
 using Adam.Logging.Interfaces;
+using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
 using E_Commerce.Domain.Domains.DashBoard;
@@ -7,6 +8,7 @@ using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
+using static E_Commerce.Domain.Enum.Enums;
 
 namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Queries
 {
@@ -19,27 +21,30 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
             public string? SearchText { get; set; }
             public int? CityId { get; set; }
             public int? ParentShopId { get; set; }
+            public bool IsForDashboard { get; set; }
 
-            public string ShopPathDMS = "Shops";
-
-
-            public Query(int pageNumber, int pageSize, string? searchText = null, int? cityId = null, int? parentShopId = null)
+            public Query(int pageNumber, int pageSize, string? searchText = null, int? cityId = null, int? parentShopId = null, bool isForDashboard = false)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
                 SearchText = searchText;
                 CityId = cityId;
                 ParentShopId = parentShopId;
+                IsForDashboard = isForDashboard;
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator) : IRequestHandler<Query, BaseResponse<List<ShopModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<ShopModel>>>
         {
             public async Task<BaseResponse<List<ShopModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    List<ShopModel> shops = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.CommercialName.Contains(request.SearchText) || p.Descreption.Contains(request.SearchText) || p.About.Contains(request.SearchText)) && (!request.CityId.HasValue || p.CityId == request.CityId.Value) && (!request.ParentShopId.HasValue || p.ParentShopId == request.ParentShopId.Value)).Select(s => new ShopModel()
+                    List<ShopModel> shops = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(p => 
+                    (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.CommercialName.Contains(request.SearchText) || p.Descreption.Contains(request.SearchText) || p.About.Contains(request.SearchText)) && 
+                    (!request.CityId.HasValue || p.CityId == request.CityId.Value) && 
+                    (!request.ParentShopId.HasValue || p.ParentShopId == request.ParentShopId.Value) && 
+                    (request.IsForDashboard ? p.IsViewInHome : true)).Select(s => new ShopModel()
                     {
                         ShopId = s.ShopId,
                         ParentShopId = s.ParentShopId,
@@ -62,7 +67,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
 
                     if (shops.Any(p => !string.IsNullOrEmpty(p.Logo)))
                     {
-                        List<string> filePaths = shops.Where(p => !string.IsNullOrEmpty(p.Logo)).Select(s => { return $"{request.ShopPathDMS}\\{s.ShopId}"; }).ToList();
+                        string DMSShopPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopPath];
+                        List<string> filePaths = shops.Where(p => !string.IsNullOrEmpty(p.Logo)).Select(s => { return $"{DMSShopPath}\\{s.ShopId}"; }).ToList();
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {

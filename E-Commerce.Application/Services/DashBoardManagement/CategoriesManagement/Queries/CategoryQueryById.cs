@@ -39,7 +39,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                         Image = s.Image,
                         IsBlock = s.IsBlock,
                         ParentCategoryId = s.ParentCategoryId,
-                        GenderId = s.GenderId
+                        GenderId = s.GenderId,
+                        IsViewInHome = s.IsViewInHome
                     }).FirstOrDefault();
 
                     if (!string.IsNullOrEmpty(category.Image))

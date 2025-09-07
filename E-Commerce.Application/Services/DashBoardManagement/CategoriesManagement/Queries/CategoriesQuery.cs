@@ -20,13 +20,17 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             public int PageSize { get; set; }
             public string? SearchText { get; set; }
             public bool IsCount { get; set; }
+            public bool IsForDashboard { get; set; }
+            public int? ParentCategoryId { get; set; }
 
-            public Query(int pageNumber, int pageSize, string? searchText = null, bool isCount = false)
+            public Query(int pageNumber, int pageSize, string? searchText = null, bool isCount = false, bool isForDashboard = false, int? parentCategoryId = null)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
                 SearchText = searchText;
                 IsCount = isCount;
+                IsForDashboard = isForDashboard;
+                ParentCategoryId = parentCategoryId;
             }
         }
 
@@ -36,7 +40,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             {
                 try
                 {
-                    List<CategoryModel> categories = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)) && (request.IsCount ? !p.ParentCategoryId.HasValue : true)).Select(p => new CategoryModel()
+                    List<CategoryModel> categories = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => 
+                    (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)) &&
+                    (request.IsCount ? !p.ParentCategoryId.HasValue : true) && 
+                    (request.IsForDashboard ? p.ParentCategoryId.HasValue : true) &&
+                    (!request.ParentCategoryId.HasValue || p.ParentCategoryId == request.ParentCategoryId)
+
+                    ).Select(p => new CategoryModel()
                     {
                         CategoryId = p.CategoryId,
                         Name = p.Name,
@@ -47,7 +57,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                         Descreption = p.Descreption,
                         IsBlock = p.IsBlock,
                         GenderId = p.GenderId,
-                        ChildCategories = p.ChildCategories.Select(s => new CategoryModel()
+                        ChildCategories = request.IsForDashboard ? new List<CategoryModel>() : p.ChildCategories.Select(s => new CategoryModel()
                         {
                             CategoryId = s.CategoryId,
                             Name = s.Name,

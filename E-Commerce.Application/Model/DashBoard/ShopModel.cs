@@ -26,6 +26,9 @@ namespace E_Commerce.Application.Model.DashBoard
         public int? CityId { get; set; }
         public int? ParentShopId { get; set; }
         public string? City { get; set; }
+        public string? Latitude { get; set; }
+        public string? Longitude { get; set; }
+        public bool IsViewInHome { get; set; }
         public FileCreationModel? FileCreationModel { get; set; }
 
     }

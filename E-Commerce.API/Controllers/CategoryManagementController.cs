@@ -5,6 +5,7 @@ using E_Commerce.Application.Services.DashBoardManagement.CategoriesManagement.C
 using E_Commerce.Application.Services.DashBoardManagement.CategoriesManagement.Queries;
 using Generic.Response;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,7 +43,7 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        public List<TreeNode<CategoryModel>> GetTreeNodes(CategoryModel categoryModel)
+        private List<TreeNode<CategoryModel>> GetTreeNodes(CategoryModel categoryModel)
         {
             List<TreeNode<CategoryModel>> treeNodes = new List<TreeNode<CategoryModel>>();
             if (categoryModel.ChildCategories != null)
@@ -153,5 +154,36 @@ namespace E_Commerce.API.Controllers
                 return new BaseResponse(false, ex.Message);
             }
         }
+
+        [Route("parent-categories-ddl")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetParentCategoriesDDl()
+        {
+            try
+            {
+                return await _mediator.Send(new CategoriesDDLQuery.Query(null, true, false, false, null, null));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetParentCategoriesDDl), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
+            }
+        }
+
+        [Route("child-categories-ddl")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetChildCategoriesDDl()
+        {
+            try
+            {
+                return await _mediator.Send(new CategoriesDDLQuery.Query(null, false, true, false, null, null));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetChildCategoriesDDl), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
+            }
+        }
+
     }
 }
