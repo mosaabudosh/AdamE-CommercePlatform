@@ -23,6 +23,7 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public decimal? Rating { get; set; }
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }
+        public bool IsViewInHome { get; set; }
 
         public virtual City City { get; set; }
         public virtual Shop ParentShop { get; set; }

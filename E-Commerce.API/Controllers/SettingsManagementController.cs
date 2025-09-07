@@ -47,5 +47,20 @@ namespace E_Commerce.API.Controllers
             }
         }
 
+        [Route("settings-by-group")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<List<SettingsModel>>>> GetSettingsByGroup(string groupName)
+        {
+            try
+            {
+                return await _mediator.Send(new SettingsByGroupQuery.Query(groupName));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetSettingsByGroup), UserAccessor.GetCurrentUserId(), groupName);
+                return new BaseResponse<List<SettingsModel>>(false, ex.Message);
+            }
+        }
+
     }
 }

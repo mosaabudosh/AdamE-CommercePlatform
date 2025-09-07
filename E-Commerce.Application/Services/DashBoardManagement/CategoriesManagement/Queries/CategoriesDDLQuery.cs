@@ -18,9 +18,20 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
         public class Query : IRequest<BaseResponse<List<DDLDataSource>>>
         {
             public string? SearchText { get; set; }
-            public Query(string? searchText = null)
+            public bool IsJustParent { get; set; }
+            public bool IsJustChild { get; set; }
+            public bool IsJustViewInHome { get; set; }
+            public int? ParentCategoryId { get; set; }
+            public int? GenderId { get; set; }
+
+            public Query(string? searchText = null, bool isJustParent = false, bool isJustChild = false, bool isJustViewInHome = false, int? parentCategoryId = null, int? genderId = null)
             {
                 SearchText = searchText;
+                IsJustParent = isJustParent;
+                IsJustChild = isJustChild;
+                IsJustViewInHome = isJustViewInHome;
+                ParentCategoryId = parentCategoryId;
+                GenderId = genderId;
             }
         }
 
@@ -30,7 +41,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             {
                 try
                 {
-                    List<DDLDataSource> categories = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => p.IsActive && (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText))).Select(p => new DDLDataSource()
+                    List<DDLDataSource> categories = _unitOfWork.GetRepository<Category>().GetByExpressionAsNoTracking(p => p.IsActive && 
+                    (request.IsJustParent ? !p.ParentCategoryId.HasValue : true) && 
+                    (request.IsJustChild ? p.ParentCategoryId.HasValue : true) &&
+                    (request.IsJustViewInHome ? p.IsViewInHome : true) &&
+                    (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)) && 
+                    (!request.ParentCategoryId.HasValue || p.ParentCategoryId == request.ParentCategoryId.Value) && 
+                    (!request.GenderId.HasValue || !p.GenderId.HasValue || p.GenderId == request.GenderId)
+                    ).Select(p => new DDLDataSource()
                     {
                         Value = p.CategoryId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,

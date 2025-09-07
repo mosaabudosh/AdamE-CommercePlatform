@@ -17,6 +17,7 @@ namespace E_Commerce.Application.Model.Store
         public string? Code { get; set; }
         public string? Descreption { get; set; }
         public decimal Price { get; set; }
+        public decimal? OldPrice { get; set; }
         public string? Category { get; set; }
         public decimal? Quantity { get; set; }
         public int? Rating { get; set; }

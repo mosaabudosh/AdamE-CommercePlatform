@@ -44,11 +44,17 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         UnitGroupId = request.ShopItemModel.UnitGroupId,
                         Cost = request.ShopItemModel.Cost,
                         ProfitRate = request.ShopItemModel.ProfitRate,
-                        Image = request.ShopItemModel.ShopItemId.ToString(),
+                        Image = null,
                         InStocks = request.ShopItemModel.InStocks,
                         OutOfStocks = request.ShopItemModel.OutOfStocks,
                         Price = request.ShopItemModel.Price,
                         IsFeatured = request.ShopItemModel.IsFeatured,
+                        Name = request.ShopItemModel.Name.Trim(),
+                        NameAr = request.ShopItemModel.NameAr.Trim(),
+                        Code = request.ShopItemModel.Code.Trim(),
+                        Descreption = request.ShopItemModel.Descreption.Trim(),
+                        CategoryId = request.ShopItemModel.CategoryId,
+                        IsBlock = false,
                         CreationDate = DateTime.UtcNow,
                         CreationUserId = _userAccessor.GetCurrentUserId(),
                         IsActive = true
@@ -105,7 +111,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             {
                 try
                 {
-                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => x.ShopId == shopItem.ShopId).FirstOrDefault();
+                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => x.Name == shopItem.Name && x.CategoryId == shopItem.CategoryId && x.ShopId == shopItem.ShopId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

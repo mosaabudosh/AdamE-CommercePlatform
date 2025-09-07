@@ -55,7 +55,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         IsFeatured = s.IsFeatured,
                         CategoryId = s.CategoryId,
                         IsBlock = s.IsBlock,
-                        ItemName = s.Name,
+                        Name = s.Name,
+                        NameAr = s.NameAr,
+                        Code = s.Code,
+                        Descreption = s.Descreption,
                         ShopMenuId = s.ShopMenuId,
                     }).FirstOrDefault();
 

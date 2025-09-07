@@ -51,7 +51,12 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                     exisitShopItem.DefaultUnitId = request.ShopItemModel.DefaultUnitId;
                     exisitShopItem.DiscountId = request.ShopItemModel.DiscountId;
                     exisitShopItem.IsFeatured = request.ShopItemModel.IsFeatured;
-
+                    exisitShopItem.Name = request.ShopItemModel.Name.Trim();
+                    exisitShopItem.NameAr = request.ShopItemModel.NameAr.Trim();
+                    exisitShopItem.Code = request.ShopItemModel.Code.Trim();
+                    exisitShopItem.CategoryId = request.ShopItemModel.CategoryId;
+                    exisitShopItem.Descreption = request.ShopItemModel.Descreption.Trim();
+                    exisitShopItem.IsBlock = request.ShopItemModel.IsBlock.HasValue ? request.ShopItemModel.IsBlock.Value : false;
                     exisitShopItem.LastUpdatedDate = DateTime.UtcNow;
                     exisitShopItem.LastUpdateUserId = _userAccessor.GetCurrentUserId();
 
@@ -98,7 +103,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             {
                 try
                 {
-                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => (x.ShopId == shopItem.ShopId) && x.ShopItemId != shopItem.ShopItemId).FirstOrDefault();
+                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => x.ShopId == shopItem.ShopId && x.Name == shopItem.Name && x.ShopItemId != shopItem.ShopItemId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

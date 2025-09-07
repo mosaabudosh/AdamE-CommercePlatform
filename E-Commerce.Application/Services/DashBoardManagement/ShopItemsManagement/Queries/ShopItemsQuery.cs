@@ -56,7 +56,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                         OutOfStocks = s.OutOfStocks,
                         Price = s.Price,
                         ProfitRate = s.ProfitRate,
-                        ItemName = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
+                        Name = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Name : s.NameAr,
                         Shop = s.Shop.Name,
                         ShopItemStatus = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.ShopItemStatus.Name : s.ShopItemStatus.NameAr,
                         Tax = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? s.Tax.Name : s.Tax.NameAr,

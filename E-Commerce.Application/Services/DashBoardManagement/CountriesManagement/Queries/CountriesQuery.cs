@@ -39,7 +39,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
             {
                 try
                 {
-                    List<CountryModel> Countries = _unitOfWork.GetRepository<Country>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(p => new CountryModel()
+                    List<CountryModel> countries = _unitOfWork.GetRepository<Country>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(p => new CountryModel()
                     {
                         CountryId = p.CountryId,
                         Name = p.Name,
@@ -47,11 +47,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                         Banner = p.Banner
                     }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
 
-                    if (Countries.Any(p => !string.IsNullOrEmpty(p.Banner)))
+                    if (countries.Any(p => !string.IsNullOrEmpty(p.Banner)))
                     {
                         string DMSCountryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath];
 
-                        List<string> filePaths = Countries.Where(p => !string.IsNullOrEmpty(p.Banner)).Select(s => { return $"{DMSCountryPath}\\{s.Name.Trim()}"; }).ToList();
+                        List<string> filePaths = countries.Where(p => !string.IsNullOrEmpty(p.Banner)).Select(s => { return $"{DMSCountryPath}\\{s.Name.Trim()}"; }).ToList();
                         BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
                         if (!responseGetFileCreationModels.IsSuccess)
                         {
@@ -59,14 +59,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
                         }
                         if (responseGetFileCreationModels.DataObject.Any())
                         {
-                            foreach (CountryModel country in Countries.Where(p => !string.IsNullOrEmpty(p.Banner)))
+                            foreach (CountryModel country in countries.Where(p => !string.IsNullOrEmpty(p.Banner)))
                             {
                                 country.Banner = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == country.Banner)?.FileContent;
                             }
                         }
                     }
 
-                    return new BaseResponse<List<CountryModel>>(true, string.Empty, string.Empty, Countries);
+                    return new BaseResponse<List<CountryModel>>(true, string.Empty, string.Empty, countries);
                 }
                 catch (Exception ex)
                 {

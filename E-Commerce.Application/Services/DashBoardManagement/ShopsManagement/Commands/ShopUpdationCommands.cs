@@ -47,6 +47,9 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
                     exisitShop.CityId = request.ShopModel.CityId;
                     exisitShop.CommercialName = request.ShopModel.CommercialName.Trim();
                     exisitShop.IsBlock = request.ShopModel.IsBlock.HasValue ? request.ShopModel.IsBlock.Value : false;
+                    exisitShop.IsViewInHome = request.ShopModel.IsViewInHome;
+                    exisitShop.Latitude = request.ShopModel.Latitude;
+                    exisitShop.Longitude = request.ShopModel.Longitude;
                     exisitShop.LastUpdateUserId = _userAccessor.GetCurrentUserId();
                     exisitShop.LastUpdatedDate = DateTime.UtcNow;
 
@@ -91,7 +94,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Co
             {
                 try
                 {
-                    Shop existingRecord = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(x => (x.Name == shop.Name || x.CommercialName == shop.CommercialName) && x.ShopId != shop.ShopId).FirstOrDefault();
+                    Shop existingRecord = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(x => x.Name == shop.Name && x.CommercialName == shop.CommercialName && x.ShopId != shop.ShopId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

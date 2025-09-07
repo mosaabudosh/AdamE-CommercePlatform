@@ -24,16 +24,19 @@ namespace E_Commerce.Application.Model.DashBoard
         public int? DefaultColorId { get; set; }
         public int ShopItemStatusId { get; set; }
         public string? Tax { get; set; }
-        public string? ItemName { get; set; }
+        public string? Name { get; set; }
+        public string NameAr { get; set; }
         public string? Shop { get; set; }
         public string? UnitGroup { get; set; }
         public string? ShopItemStatus { get; set; }
         public int? DiscountId { get; set; }
         public bool IsFeatured { get; set; }
         public bool? IsBlock { get; set; }
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public int? ShopMenuId { get; set; }
-
+        public string Code { get; set; }
+        public string Descreption { get; set; }
+        public string? Category { get; set; }
         public List<string>? Images { get; set; }
         public List<FileCreationModel>? FileCreationModels { get; set; }
     }
