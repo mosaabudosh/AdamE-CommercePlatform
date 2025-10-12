@@ -141,11 +141,11 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                 },
                 new Screen()
                 {
-                    ScreenId = (int)Enums.Screens.Items,
-                    Name = "Items" ,
-                    NameAr = "العناصر",
-                    Url = "items",
-                    Icon = "pi pi-list",
+                    ScreenId = (int)Enums.Screens.Brands,
+                    Name = "Brands" ,
+                    NameAr = "العلامات التجارية",
+                    Url = "brands",
+                    Icon = "pi pi-crown",
                     ModuleId = (int)Modules.Lookup,
                     IsInMenue = true,
                     CreationDate = new DateTime(2025,1,1),

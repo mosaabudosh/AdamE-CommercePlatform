@@ -51,8 +51,8 @@ namespace E_Commerce.Domain.Enum
 
 		public enum Genders
 		{
-			Male = 1,
-			Female = 2
+			Man = 1,
+			Woman = 2
 		}
 
 		public enum Languages
@@ -142,7 +142,8 @@ namespace E_Commerce.Domain.Enum
             AppStoreUrl = 32,
             FacebookUrl = 33,
             InstagramUrl = 34,
-            SnapchatUrl = 35
+            SnapchatUrl = 35,
+            DMSBrandPath = 36
         }
 
         public enum PlatformSettingsCode
@@ -181,7 +182,8 @@ namespace E_Commerce.Domain.Enum
             AppStoreUrl,
             FacebookUrl,
             InstagramUrl,
-            SnapchatUrl
+            SnapchatUrl,
+            DMSBrandPath
         }
 
         public enum Screens
@@ -195,7 +197,7 @@ namespace E_Commerce.Domain.Enum
             Settings = 7,
             Cities = 8,
             Countries = 9,
-            Items = 10,
+            Brands = 10,
             Shops = 11,
             Taxs = 12,
             Categories = 13,
@@ -231,7 +233,8 @@ namespace E_Commerce.Domain.Enum
         public enum NotificationTypes
         {
             CreateOrder = 1,
-            ChangeOrderStatus = 2
+            ChangeOrderStatus = 2,
+            ChangeShopItemStatuses = 3
         }
 
         public enum ShopItemStatuses

@@ -82,6 +82,7 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new ShopItemRatingEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ShopCategoryEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ShopMenuEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new BrandEntityConfiguration());
         }
         #endregion
 
@@ -135,6 +136,7 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<ShopItemRating> ShopItemRatings { get; set; }
         public DbSet<ShopCategory> ShopCategories { get; set; }
         public DbSet<ShopMenu> ShopMenus { get; set; }
+        public DbSet<Brand> Brands { get; set; }
         #endregion
     }
 }

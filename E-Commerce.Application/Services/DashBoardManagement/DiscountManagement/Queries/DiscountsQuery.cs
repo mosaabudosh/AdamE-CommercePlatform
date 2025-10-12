@@ -35,7 +35,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.DiscountManagement
             {
                 try
                 {
-                    List<DiscountModel> actions = _unitOfWork.GetRepository<Discount>().GetByExpressionAsNoTracking(p => string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)).Select(s => new DiscountModel()
+                    List<DiscountModel> actions = _unitOfWork.GetRepository<Discount>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText)) && !p.IsDeleted).Select(s => new DiscountModel()
                     {
                         DiscountId = s.DiscountId,
                         Name = s.Name,

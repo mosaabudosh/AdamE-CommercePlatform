@@ -41,7 +41,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     exisitCategory.IsBlock = request.CategoryModel.IsBlock.HasValue ? request.CategoryModel.IsBlock.Value : false;
                     exisitCategory.ParentCategoryId = request.CategoryModel.ParentCategoryId;
                     exisitCategory.GenderId = request.CategoryModel.GenderId;
-                    exisitCategory.IsViewInHome = request.CategoryModel.IsViewInHome ?? false;
+                    exisitCategory.IsViewInHome = request.CategoryModel.IsViewInHome;
+                    exisitCategory.IsViewInFooter = request.CategoryModel.IsViewInFooter;
+                    exisitCategory.IsBeauty = request.CategoryModel.IsBeauty;
+                    exisitCategory.IsKids = request.CategoryModel.IsKids;
                     exisitCategory.LastUpdateUserId = _userAccessor.GetCurrentUserId();
                     exisitCategory.LastUpdatedDate = DateTime.UtcNow;
 

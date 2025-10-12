@@ -48,7 +48,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                       LastNameAr = "أدمن",
                       Email = "Admin@gmail.com",
                       MobileNumber = "0788647816",
-                      GenderId = (int)Genders.Male,
+                      GenderId = (int)Genders.Man,
                       Adresse = "Amman",
                       CityId = 1,
                       DateOfBirth = new DateTime(2025,1,1),

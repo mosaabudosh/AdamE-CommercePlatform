@@ -12,6 +12,9 @@
         public int? ParentCategoryId { get; set; }
         public int? GenderId { get; set; }
         public bool IsViewInHome { get; set; }
+        public bool IsViewInFooter { get; set; }
+        public bool IsBeauty { get; set; }
+        public bool IsKids { get; set; }
 
         public virtual Category ParentCategory { get; set; }
         public virtual List<Category> ChildCategories { get; set; }

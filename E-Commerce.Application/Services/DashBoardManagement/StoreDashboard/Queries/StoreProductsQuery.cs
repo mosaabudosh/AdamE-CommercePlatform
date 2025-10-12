@@ -23,19 +23,22 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
             public string? SearchText { get; set; }
             public string? CategoryIds { get; set; }
             public string? ShopIds { get; set; }
+            public string? BrandIds { get; set; }
             public bool? IsLoadImage { get; set; }
             public decimal? FromPrice { get; set; }
             public decimal? ToPrice { get; set; }
+            public bool? IsNewArrivals { get; set; }
 
-
-            public Query(int pageNumber, int pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true, decimal? fromPrice = null, decimal? toPrice = null)
+            public Query(int pageNumber, int pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null,string? brandIds = null, bool? isLoadImage = true, bool? isNewArrivals = false, decimal? fromPrice = null, decimal? toPrice = null)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
                 SearchText = searchText;
                 CategoryIds = categoryIds;
                 ShopIds = shopIds;
+                BrandIds = brandIds;
                 IsLoadImage = isLoadImage;
+                IsNewArrivals = isNewArrivals;
                 FromPrice = fromPrice;
                 ToPrice = toPrice;
             }
@@ -65,9 +68,17 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
                         {
                             dapperParameters.AddParameter("ShopIds", request.ShopIds);
                         }
+                        if (!string.IsNullOrEmpty(request.BrandIds))
+                        {
+                            dapperParameters.AddParameter("BrandIds", request.BrandIds);
+                        }
                         if (request.IsLoadImage.HasValue && request.IsLoadImage.Value)
                         {
                             dapperParameters.AddParameter("IsLoadImage", request.IsLoadImage.Value);
+                        }
+                        if (request.IsLoadImage.HasValue && request.IsNewArrivals.Value)
+                        {
+                            dapperParameters.AddParameter("IsNewArrivals", request.IsNewArrivals.Value);
                         }
                         if (request.FromPrice.HasValue)
                         {

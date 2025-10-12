@@ -89,6 +89,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             ProfileImage = user.ProfileImage,
                             ShopId = user.ShopId,
                             RoleIds = roleIds,
+                            Email = user.Email,
                             UserMenus = userMenus,
                             UserSettingModels = user.UserSettings.Select(s => new UserSettingModel()
                             {
@@ -136,8 +137,8 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                             Label = s.FirstOrDefault().Screen.Module.Name,
                             LabelAr = s.FirstOrDefault().Screen.Module.NameAr,
                             Icon = s.FirstOrDefault().Screen.Module.Icon,
-                            Expanded = screenId.HasValue ? screenId.Value == s.Key : false,
-                            IsActive = screenId.HasValue ? screenId.Value == s.Key : false,
+                            Expanded = screenId.HasValue ? s.Any(x => x.Screen.ModuleId == s.Key && x.Screen.Module.Screens.Any(a => a.ScreenId == screenId.Value)) : false,
+                            IsActive = screenId.HasValue ? s.Any(x => x.Screen.ModuleId == s.Key && x.Screen.Module.Screens.Any(a => a.ScreenId == screenId.Value)) : false,
                             Order = s.FirstOrDefault().Screen.Module.Order,
                             UserMenuItems = s.Select(m => new UserMenuItem()
                             {

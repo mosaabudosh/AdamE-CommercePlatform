@@ -18,7 +18,10 @@ namespace E_Commerce.Application.Model.DashBoard
         public bool? IsBlock { get; set; }
         public int? ParentCategoryId { get; set; }
         public int? GenderId { get; set; }
-        public bool? IsViewInHome { get; set; }
+        public bool IsViewInHome { get; set; }
+        public bool IsViewInFooter { get; set; }
+        public bool IsBeauty { get; set; }
+        public bool IsKids { get; set; }
 
         public FileCreationModel? FileCreationModel { get; set; }
         public List<CategoryModel>? ChildCategories { get; set; }

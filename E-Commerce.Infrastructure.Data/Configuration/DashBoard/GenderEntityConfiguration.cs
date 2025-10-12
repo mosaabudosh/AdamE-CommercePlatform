@@ -15,8 +15,8 @@ namespace E_Commerce.Infrastructure.Data.Configuration.DashBoard
             #region Seeding Data
             builder.HasData(new Gender[]
             {
-                new Gender(){ GenderId = (int)Genders.Male, Name = "Male" , NameAr = "ذكر"},
-                new Gender(){ GenderId = (int)Genders.Female, Name = "Female" , NameAr = "أنثى"},
+                new Gender(){ GenderId = (int)Genders.Man, Name = "Man" , NameAr = "رجل"},
+                new Gender(){ GenderId = (int)Genders.Woman, Name = "Woman" , NameAr = "المرأة"},
             });
             #endregion
 
