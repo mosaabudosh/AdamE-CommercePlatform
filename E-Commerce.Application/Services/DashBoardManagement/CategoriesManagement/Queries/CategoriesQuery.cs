@@ -45,7 +45,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     (request.IsCount ? !p.ParentCategoryId.HasValue : true) && 
                     (request.IsForDashboard ? p.ParentCategoryId.HasValue : true) &&
                     (!request.ParentCategoryId.HasValue || p.ParentCategoryId == request.ParentCategoryId)
-
                     ).Select(p => new CategoryModel()
                     {
                         CategoryId = p.CategoryId,
@@ -57,6 +56,8 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                         Descreption = p.Descreption,
                         IsBlock = p.IsBlock,
                         GenderId = p.GenderId,
+                        IsViewInHome = p.IsViewInHome,
+                        IsViewInFooter = p.IsViewInFooter,
                         ChildCategories = request.IsForDashboard ? new List<CategoryModel>() : p.ChildCategories.Select(s => new CategoryModel()
                         {
                             CategoryId = s.CategoryId,

@@ -42,9 +42,19 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Notification
                      CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
                      IsActive = true
                  },
+                  new NotificationType()
+                 {
+                     NotificationTypeId = (int)Enums.NotificationTypes.ChangeShopItemStatuses,
+                     Name = "Change Shop Item Status",
+                     NameAr = "تغيير حالة السلعة",
+                     IsPlaySound = true,
+                     Code = Enums.NotificationTypes.ChangeShopItemStatuses.ToString(),
+                     CreationDate = new DateTime(2025,1,1),
+                     CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                     IsActive = true
+                 },
             });
             #endregion
-
 
             #region Ignore
             builder.Ignore(p => p.DeletedDate);

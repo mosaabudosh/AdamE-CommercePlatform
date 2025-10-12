@@ -21,6 +21,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.DashBoard
             builder.HasOne(e => e.Unit).WithMany(e => e.ShopItems).HasForeignKey(f => f.DefaultUnitId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(e => e.Category).WithMany(e => e.ShopItems).HasForeignKey(f => f.CategoryId);
             builder.HasOne(e => e.ShopMenu).WithMany(e => e.ShopItems).HasForeignKey(f => f.ShopMenuId);
+            builder.HasOne(e => e.Brand).WithMany(e => e.ShopItems).HasForeignKey(f => f.BrandId);
             #endregion
         }
     }

@@ -99,12 +99,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Que
                         {
                             List<string> colorNames = dashboardProductModel.Colors.Split(";").Select(i => { return i; }).ToList();
                             List<int> colorIds = dashboardProductModel.ColorIds.Split(";").Select(i => { return Convert.ToInt32(i); }).ToList();
+                            List<string> colorCodes = dashboardProductModel.ColorCodes.Split(";").Select(i => { return i; }).ToList();
                             for (int i = 0; i < colorIds.Count; i++)
                             {
                                 dashboardProductModel.ColorModels.Add(new DDLDataSource()
                                 {
                                     Label = colorNames[i],
                                     Value = colorIds[i],
+                                    Attributes = new { ColorCode = colorCodes[i] }
                                 });
                             }
                         }

@@ -440,6 +440,17 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DMSBrandPath,
+                    Name = "DMS Brand Path" ,
+                    NameAr = "مسار العلامات التجارية DMS",
+                    Code = "DMSBrandPath",
+                    Group = "DMS",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
                 }
             });
             #endregion

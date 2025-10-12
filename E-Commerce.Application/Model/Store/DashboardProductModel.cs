@@ -36,6 +36,7 @@ namespace E_Commerce.Application.Model.Store
         public string? ColorIds { get; set; }
         [JsonIgnore]
         public string? Colors { get; set; }
+        public string? ColorCodes { get; set; }
         public int? SelectedColorId { get; set; }
         public string? Image { get; set; }
         public string? ImagesPaths { get; set; }

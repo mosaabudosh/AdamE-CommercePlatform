@@ -1,18 +1,30 @@
 ﻿using Adam.Generic.Generic;
 using E_Commerce.Application.Model.DashBoard;
+using E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagement.Queries;
+using E_Commerce.Application.Services.NotificationManagement;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace E_Commerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ShopItemManagementController(IMediator _mediator) : BaseController
+    public class ShopItemManagementController : BaseController
     {
+        private readonly IHubContext<NotificationHub> _notificationHub;
+        private readonly IMediator _mediator;
+
+        public ShopItemManagementController(IHubContext<NotificationHub> notificationHub, IMediator mediator)
+        {
+            _notificationHub = notificationHub;
+            _mediator = mediator;
+        }
+
         [Route("shop-items")]
         [HttpGet]
         public async Task<ActionResult<BaseResponse<List<ShopItemModel>>>> GetShopItems(int pageNumber, int pageSize, string? searchText = null, int? shopId = null, int? categoryId = null)
@@ -122,5 +134,39 @@ namespace E_Commerce.API.Controllers
                 return new BaseResponse(false, ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("modification-shop-item-status")]
+        public async Task<ActionResult<BaseResponse>> ModificationShopItemStatus([FromBody] UpdateShopItemStatusModel updateShopItemStatusModel)
+        {
+            try
+            {
+                BaseResponse<List<NotificationModel>> responseUpdateOrderStatus = await _mediator.Send(new UpdateShopItemStatusCommands.Command(updateShopItemStatusModel));
+                if (!responseUpdateOrderStatus.IsSuccess)
+                {
+                    return new BaseResponse(false, responseUpdateOrderStatus.Message, responseUpdateOrderStatus.ErrorCode);
+                }
+                foreach (NotificationModel notification in responseUpdateOrderStatus.DataObject)
+                {
+                    if (notification.UserId.HasValue)
+                    {
+                        await _notificationHub.Clients.Group($"{notification.UserId.Value.ToString()}").SendAsync($"{notification.UserId.Value.ToString()}", notification.Subject);
+
+                    }
+                    else if (notification.CustomerId.HasValue)
+                    {
+                        await _notificationHub.Clients.Group($"{notification.CustomerId.Value.ToString()}").SendAsync($"{notification.CustomerId.Value.ToString()}", notification.Subject);
+                    }
+                }
+
+                return new BaseResponse(true);
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(ModificationShopItemStatus), UserAccessor.GetCurrentUserId(), updateShopItemStatusModel);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
     }
 }

@@ -5,6 +5,7 @@ using E_Commerce.Application.Model.Store;
 using E_Commerce.Application.Services.DashBoardManagement.CategoriesManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CountriesManagement.Queries;
+using E_Commerce.Application.Services.DashBoardManagement.Dashboard.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.StoreDashboard.Queries;
@@ -51,6 +52,23 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetCitiesDDl), UserAccessor.GetCurrentUserId());
                 return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [Route("dashboard-filters")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<DashboardFiltersModel>>> GetDashboardFilters(string? searchText = null, string? language = null, int? genderId = null)
+        {
+            try
+            {
+                return await _mediator.Send(new DashboardFiltersQuery.Query(searchText, language, genderId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetDashboardFilters), UserAccessor.GetCurrentUserId(), searchText, language, genderId);
+                return new BaseResponse<DashboardFiltersModel>(false, ex.Message);
             }
         }
 
@@ -105,11 +123,11 @@ namespace E_Commerce.API.Controllers
         [AllowAnonymous]
         [Route("store-dashboard-products")]
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<List<DashboardProductModel>>>> GetStoreDashboardProducts(int? pageNumber, int? pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true,decimal? fromPrice = null,decimal? toPrice = null)
+        public async Task<ActionResult<BaseResponse<List<DashboardProductModel>>>> GetStoreDashboardProducts(int? pageNumber, int? pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, string? brandIds = null, bool? isLoadImage = true,bool? isNewArrivals = false, decimal? fromPrice = null,decimal? toPrice = null)
         {
             try
             {
-                return await _mediator.Send(new StoreProductsQuery.Query(pageNumber.HasValue ? pageNumber.Value : 0, pageSize.HasValue ? pageSize.Value : int.MaxValue, searchText, categoryIds, shopIds, isLoadImage, fromPrice, toPrice));
+                return await _mediator.Send(new StoreProductsQuery.Query(pageNumber.HasValue ? pageNumber.Value : 0, pageSize.HasValue ? pageSize.Value : int.MaxValue, searchText, categoryIds, shopIds, brandIds, isLoadImage, isNewArrivals, fromPrice, toPrice));
             }
             catch (Exception ex)
             {
@@ -194,6 +212,22 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetSettingsByGroup), UserAccessor.GetCurrentUserId(), groupName);
                 return new BaseResponse<List<SettingsModel>>(false, ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [Route("dashboard-footer")]
+        [HttpGet]
+        public async Task<ActionResult<BaseResponse<DashboardFooterModel>>> GetDashboardFooters(string? language = null)
+        {
+            try
+            {
+                return await _mediator.Send(new DashboardFootersQuery.Query(language));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetDashboardFooters), UserAccessor.GetCurrentUserId(), language);
+                return new BaseResponse<DashboardFooterModel>(false, ex.Message);
             }
         }
     }

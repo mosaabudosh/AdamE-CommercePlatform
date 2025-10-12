@@ -87,6 +87,9 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                             GenderId = customer.GenderId,
                             ProfileImage = customer.ProfileImage,
                             CityId = customer.CityId,
+                            Email = customer.Email,
+                            Adresse = customer.Adresse,
+                            MobileNumber = customer.MobileNumber
                         };
                         if (!string.IsNullOrEmpty(customerModel.ProfileImage))
                         {
