@@ -32,7 +32,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                 try
                 {
                     User user = _unitOfWork.GetRepository<User>().GetByExpression(p => p.UserId == request.UserId).SingleOrDefault();
-                    user.IsActive = false;
+                    user.IsActive = !user.IsActive;
 
                     user.DeletedDate = DateTime.UtcNow;
                     user.DeletedUserId = _userAccessor.GetCurrentUserId();

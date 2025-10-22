@@ -29,7 +29,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                     {
                         User user = _unitOfWork.GetRepository<User>().GetByExpressionAsNoTracking(p => p.UserId == request.userId).FirstOrDefault();
                         user.IsBlock = request.isLock;
-
+                        _unitOfWork.GetRepository<User>().Update(user);
                         await _unitOfWork.CommitChanges();
 
                         return new BaseResponse(true, string.Empty);

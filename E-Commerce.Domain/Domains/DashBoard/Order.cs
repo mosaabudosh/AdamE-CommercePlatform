@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domain.Domains.Authorisation;
+﻿using E_Commerce.Domain.Domains.Authentication;
+using E_Commerce.Domain.Domains.Authorisation;
 
 namespace E_Commerce.Domain.Domains.DashBoard
 {
@@ -9,6 +10,8 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public int OrderStatusId { get; set; }
         public int? PaymentMethodId { get; set; }
         public string? DiscountCode { get; set; }
+        public string? ReferenceNumber { get; set; }
+        public int? CustomerCardInfoId { get; set; }
 
         public virtual OrderStatus OrderStatus { get; set; }
         public virtual Customer Customer { get; set; }
@@ -17,5 +20,7 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public virtual User CreationUser { get; set; }
         public virtual User LastUpdateUser { get; set; }
         public virtual User DeletedUser { get; set; }
+        public virtual CustomerCardInfo CustomerCardInfo { get; set; }
+
     }
 }
