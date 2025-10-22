@@ -31,7 +31,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                 try
                 {
                     Customer customer = _unitOfWork.GetRepository<Customer>().GetByExpression(p => p.CustomerId == request.CustomerId).SingleOrDefault();
-                    customer.IsActive = false;
+                    customer.IsActive = !customer.IsActive;
 
                     customer.DeletedDate = DateTime.UtcNow;
                     customer.DeletedUserId = _userAccessor.GetCurrentUserId();

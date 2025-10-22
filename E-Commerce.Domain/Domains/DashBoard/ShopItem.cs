@@ -7,8 +7,12 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public Guid ShopItemId { get; set; }
         public string Name { get; set; }
         public string NameAr { get; set; }
+        public string SubName { get; set; }
+        public string SubNameAr { get; set; }
         public string Code { get; set; }
         public string? Descreption { get; set; }
+        public string? Details { get; set; }
+        public string? Highlights { get; set; }
         public decimal? Cost { get; set; }
         public decimal? ProfitRate { get; set; }
         public decimal Price { get; set; }
@@ -28,6 +32,9 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public int CategoryId { get; set; }
         public int? ShopMenuId { get; set; }
         public int? BrandId { get; set; }
+        public bool IsFreeReturns { get; set; }
+        public bool IsCanExchanged { get; set; }
+        public int EstimatedDaysDelivery { get; set; }
 
         public virtual Tax Tax { get; set; }
         public virtual List<CartDetail> CartDetails { get; set; }

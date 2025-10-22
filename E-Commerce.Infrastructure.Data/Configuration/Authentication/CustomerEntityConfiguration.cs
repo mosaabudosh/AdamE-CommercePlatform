@@ -17,6 +17,10 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
             builder.HasOne(e => e.Gender).WithMany(e => e.Customers).HasForeignKey(f => f.GenderId);
             builder.HasOne(e => e.City).WithMany(e => e.Customers).HasForeignKey(f => f.CityId);
             #endregion
+
+            #region Unique
+            builder.HasIndex(p => p.UserName).IsUnique();
+            #endregion
         }
     }
 }

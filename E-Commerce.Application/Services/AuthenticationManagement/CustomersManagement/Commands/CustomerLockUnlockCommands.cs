@@ -34,6 +34,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                         Customer customer = _unitOfWork.GetRepository<Customer>().GetByExpressionAsNoTracking(p => p.CustomerId == request.CustomerId).FirstOrDefault();
                         customer.IsBlock = request.isLock;
 
+                        _unitOfWork.GetRepository<Customer>().Update(customer);
                         await _unitOfWork.CommitChanges();
 
                         return new BaseResponse(true, string.Empty);

@@ -24,6 +24,10 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }
         public bool IsViewInHome { get; set; }
+        public int EstimatedDaysDelivery { get; set; }
+        public decimal? DeliveryAmount { get; set; }
+        public bool IsFreeReturns { get; set; }
+        public bool IsCanExchanged { get; set; }
 
         public virtual City City { get; set; }
         public virtual Shop ParentShop { get; set; }
@@ -33,5 +37,6 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public virtual List<ShopRating> ShopRatings { get; set; }
         public virtual List<ShopCategory> ShopCategories { get; set; }
         public virtual List<ShopMenu> ShopMenus { get; set; }
+        public virtual List<Coupon> Coupons { get; set; }
     }
 }

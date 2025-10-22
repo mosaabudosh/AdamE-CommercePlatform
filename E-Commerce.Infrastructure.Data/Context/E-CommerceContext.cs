@@ -49,8 +49,7 @@ namespace E_Commerce.Infrastructure.Data.Context
 			modelBuilder.ApplyConfiguration(new CitiesEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new CountriesEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new GenderEntityConfiguration());
-			//modelBuilder.ApplyConfiguration(new ItemEntityConfiguration());
-			modelBuilder.ApplyConfiguration(new LanguageEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new LanguageEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new OrderEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new OrderDetailEntityConfiguration());
 			modelBuilder.ApplyConfiguration(new OrderStatusEntityConfiguration());
@@ -83,6 +82,9 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new ShopCategoryEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ShopMenuEntityConfiguration());
             modelBuilder.ApplyConfiguration(new BrandEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CouponEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerDeliveryAddressEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerCardInfoEntityConfiguration());
         }
         #endregion
 
@@ -137,6 +139,10 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<ShopCategory> ShopCategories { get; set; }
         public DbSet<ShopMenu> ShopMenus { get; set; }
         public DbSet<Brand> Brands { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<CustomerDeliveryAddress> CustomerDeliveryAddresses { get; set; }
+        public DbSet<CustomerCardInfo> CustomerCardInfos { get; set; }
+
         #endregion
     }
 }
