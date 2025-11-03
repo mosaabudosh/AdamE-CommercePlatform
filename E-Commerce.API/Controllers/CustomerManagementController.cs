@@ -1,11 +1,16 @@
 ﻿using Adam.Generic.Generic;
 using E_Commerce.API.Model;
 using E_Commerce.Application.Model.Authorisation;
+using E_Commerce.Application.Services.AuthenticationManagement.CustomerCardInfoManagement.Commands;
+using E_Commerce.Application.Services.AuthenticationManagement.CustomerCardInfoManagement.Queries;
+using E_Commerce.Application.Services.AuthenticationManagement.CustomerDeliveryAddressManagement.Commands;
+using E_Commerce.Application.Services.AuthenticationManagement.CustomerDeliveryAddressManagement.Queries;
 using E_Commerce.Application.Services.AuthenticationManagement.CustomersManagement.Commands;
 using E_Commerce.Application.Services.AuthenticationManagement.CustomersManagement.Queries;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Commands;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CountriesManagement.Queries;
+using E_Commerce.Domain.Domains.Authentication;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -67,8 +72,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("login")]
         [HttpPost]
+        [Route("login")]
         public async Task<ActionResult<BaseResponse<CustomerModel>>> Login(LoginModel loginModel)
         {
             try
@@ -83,8 +88,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("logout")]
         [HttpPost]
+        [Route("logout")]
         public async Task<ActionResult<BaseResponse>> LogOut([FromBody] RefreshTokenModel refreshTokenModel)
         {
             try
@@ -99,8 +104,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("check-refresh-token")]
         [HttpPost]
+        [Route("check-refresh-token")]
         public async Task<BaseResponse<CustomerModel>> CheckRefreshAccessToken([FromBody] RefreshTokenModel refreshTokenModel)
         {
             try
@@ -114,8 +119,11 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("change-password")]
+
+
+        #region customer
         [HttpPost]
+        [Route("change-password")]
         public async Task<ActionResult<BaseResponse>> ChangePassword([FromBody] ChangePasswordModel changePasswordModel)
         {
             try
@@ -129,8 +137,8 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("customers")]
         [HttpGet]
+        [Route("customers")]
         public async Task<ActionResult<BaseResponse<List<CustomerModel>>>> GetCustomers(int pageNumber, int pageSize, string? searchText, int? cityId,int? languageId)
         {
             try
@@ -144,8 +152,8 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("customers-count")]
         [HttpGet]
+        [Route("customers-count")]
         public async Task<ActionResult<BaseResponse<int>>> GetCustomersCount(string? searchText, int? cityId)
         {
             try
@@ -164,8 +172,8 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("customer-by-id/{customerId}")]
         [HttpGet]
+        [Route("customer-by-id/{customerId}")]
         public async Task<ActionResult<BaseResponse<CustomerModel>>> GetCustomerById(Guid customerId)
         {
             try
@@ -179,7 +187,7 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("customer-modification")]
         public async Task<ActionResult<BaseResponse>> UpdateCustomer([FromBody] CustomerModel customerModel)
         {
@@ -238,6 +246,120 @@ namespace E_Commerce.API.Controllers
                 return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
             }
         }
+        #endregion
+
+
+
+        #region customer-card-info
+        [HttpPost]
+        [Route("create-customer-card-info")]
+        public async Task<ActionResult<BaseResponse>> CreateCustomerCardInfo([FromBody] CustomerCardInfoModel customerCardInfoModel)
+        {
+            try
+            {
+                return await _mediator.Send(new CustomerCardInfoCreateCommands.Command(customerCardInfoModel));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(CreateCustomerCardInfo), UserAccessor.GetCurrentUserId(), customerCardInfoModel);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("customer-card-infos-by-customerId/{customerId}")]
+        public async Task<ActionResult<BaseResponse<List<CustomerCardInfoModel>>>> GetCustomerCardInfosByCustomerId(Guid customerId)
+        {
+            try
+            {
+                return await _mediator.Send(new CustomerCardInfoByCustomerIdQuery.Query(customerId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetCustomerCardInfosByCustomerId), UserAccessor.GetCurrentUserId(), customerId);
+                return new BaseResponse<List<CustomerCardInfoModel>>(false, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("customer-card-info-deletion/{customerCardInfoId}")]
+        public async Task<ActionResult<BaseResponse>> DeleteCustomerCardInfo(int customerCardInfoId)
+        {
+            try
+            {
+                return await _mediator.Send(new CustomerCardInfoDeletionCommands.Command(customerCardInfoId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(DeleteCustomerCardInfo), UserAccessor.GetCurrentUserId(), customerCardInfoId);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+        #endregion
+
+
+        #region customer-delivery-address
+        [HttpPost]
+        [Route("create-customer-delivery-address")]
+        public async Task<ActionResult<BaseResponse>> CreateCustomerDeliveryAddress([FromBody] CustomerDeliveryAddressModel customerDeliveryAddressModel)
+        {
+            try
+            {
+                return await _mediator.Send(new CustomerDeliveryAddressCreateCommands.Command(customerDeliveryAddressModel));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(CreateCustomerDeliveryAddress), UserAccessor.GetCurrentUserId(), customerDeliveryAddressModel);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("customer-delivery-address-modification")]
+        public async Task<ActionResult<BaseResponse>> UpdateCustomerDeliveryAddress([FromBody] CustomerDeliveryAddressModel customerDeliveryAddressModel)
+        {
+            try
+            {
+                return await _mediator.Send(new CustomerDeliveryAddressUpdationCommands.Command(customerDeliveryAddressModel));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(UpdateCustomerDeliveryAddress), UserAccessor.GetCurrentUserId(), customerDeliveryAddressModel);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("customer-delivery-addresses-by-customerId/{customerId}")]
+        public async Task<ActionResult<BaseResponse<List<CustomerDeliveryAddressModel>>>> GetCustomerDeliveryAddressesByCustomerId(Guid customerId)
+        {
+            try
+            {
+                return await _mediator.Send(new CustomerDeliveryAddressByCustomerIdQuery.Query(customerId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetCustomerDeliveryAddressesByCustomerId), UserAccessor.GetCurrentUserId(), customerId);
+                return new BaseResponse<List<CustomerDeliveryAddressModel>>(false, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("customer-delivery-address-deletion/{customerDeliveryAddressId}")]
+        public async Task<ActionResult<BaseResponse>> DeleteCustomerDeliveryAddress(int customerDeliveryAddressId)
+        {
+            try
+            {
+                return await _mediator.Send(new CustomerDeliveryAddressDeletionCommands.Command(customerDeliveryAddressId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(DeleteCustomerDeliveryAddress), UserAccessor.GetCurrentUserId(), customerDeliveryAddressId);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+        #endregion
 
     }
 }

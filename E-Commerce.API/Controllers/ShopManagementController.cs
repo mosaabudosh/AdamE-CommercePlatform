@@ -2,6 +2,10 @@
 using E_Commerce.API.Model.ReportModel;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Model.Settings;
+using E_Commerce.Application.Services.DashBoardManagement.ShopCategoriesManagement.Commands;
+using E_Commerce.Application.Services.DashBoardManagement.ShopCategoriesManagement.Queries;
+using E_Commerce.Application.Services.DashBoardManagement.ShopMenusManagement.Commands;
+using E_Commerce.Application.Services.DashBoardManagement.ShopMenusManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Commands;
 using E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Queries;
 using Generic.Response;
@@ -165,5 +169,98 @@ namespace E_Commerce.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPost]
+        [Route("shop-menus-creation")]
+        public async Task<ActionResult<BaseResponse>> CreateShopMenus([FromBody] List<ShopMenuModel> shopMenuModels)
+        {
+            try
+            {
+                return await _mediator.Send(new ShopMenuCreationCommands.Command(shopMenuModels));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(CreateShopMenus), UserAccessor.GetCurrentUserId(), shopMenuModels);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("shop-menu-deletion/{shopMenuId}")]
+        public async Task<ActionResult<BaseResponse>> DeleteShopMenu(int shopMenuId)
+        {
+            try
+            {
+                return await _mediator.Send(new ShopMenuDeletionCommands.Command(shopMenuId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(DeleteShopMenu), UserAccessor.GetCurrentUserId(), shopMenuId);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("shop-menus-by-shopId/{shopId}")]
+        public async Task<ActionResult<BaseResponse<List<ShopMenuModel>>>> GetShopMenus(int shopId)
+        {
+            try
+            {
+                return await _mediator.Send(new ShopMenusByShopIdQuery.Query(shopId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetShopMenus), UserAccessor.GetCurrentUserId(), shopId);
+                return new BaseResponse<List<ShopMenuModel>>(false, ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("shop-categories-creation")]
+        public async Task<ActionResult<BaseResponse>> CreateShopCategories([FromBody] List<ShopCategoryModel> shopCategoryModels)
+        {
+            try
+            {
+                return await _mediator.Send(new ShopCategoryCreationCommands.Command(shopCategoryModels));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(CreateShopMenus), UserAccessor.GetCurrentUserId(), shopCategoryModels);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("shop-category-deletion/{shopCategoryId}")]
+        public async Task<ActionResult<BaseResponse>> DeleteShopCategory(int shopCategoryId)
+        {
+            try
+            {
+                return await _mediator.Send(new ShopCategoryDeletionCommands.Command(shopCategoryId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(DeleteShopCategory), UserAccessor.GetCurrentUserId(), shopCategoryId);
+                return new BaseResponse(false, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("shop-categories-by-shopId/{shopId}")]
+        public async Task<ActionResult<BaseResponse<List<ShopCategoryModel>>>> GetShopCategories(int shopId)
+        {
+            try
+            {
+                return await _mediator.Send(new ShopCategoriesByShopIdQuery.Query(shopId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetShopCategories), UserAccessor.GetCurrentUserId(), shopId);
+                return new BaseResponse<List<ShopCategoryModel>>(false, ex.Message);
+            }
+        }
+
     }
 }

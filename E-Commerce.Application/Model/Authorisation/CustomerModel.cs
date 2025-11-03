@@ -32,5 +32,7 @@ namespace E_Commerce.Application.Model.Authorisation
         public int CityId { get; set; }
         public bool? IsActive { get; set; }
         public FileCreationModel? FileCreationModel { get; set; }
+        public List<CustomerDeliveryAddressModel> CustomerDeliveryAddressModels { get; set; }
+        public List<CustomerCardInfoModel> CustomerCardInfoModels { get; set; }
     }
 }

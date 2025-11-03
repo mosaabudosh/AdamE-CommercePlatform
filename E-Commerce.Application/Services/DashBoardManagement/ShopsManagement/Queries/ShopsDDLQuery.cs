@@ -20,10 +20,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
             {
                 try
                 {
-                    List<DDLDataSource> shops = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(p => p.IsActive).Select(p => new DDLDataSource()
+                    List<DDLDataSource> shops = _unitOfWork.GetRepository<Shop>().GetByExpressionAsNoTracking(p => p.IsActive && !p.IsBlock).Select(p => new DDLDataSource()
                     {
                         Value = p.ShopId,
                         Label = p.Name,
+                        Attributes = new { ParentShopId = p.ParentShopId }
                     }).ToList();
                     return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, shops);
                 }

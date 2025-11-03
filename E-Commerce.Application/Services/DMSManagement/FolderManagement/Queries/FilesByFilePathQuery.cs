@@ -45,7 +45,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries
                         request.FilePaths = request.FilePaths.Select(s => { return $"{pathFromFolderConfiguration}{s}"; }).ToList();
                     }
                    
-                    IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpression(x => request.FilePaths.Contains(x.Path),
+                    IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpression(x => request.FilePaths.Any(p => p == x.Path),
                     includedEntities: new List<System.Linq.Expressions.Expression<Func<File, object>>>()
                     {
                         z => z.Folder,

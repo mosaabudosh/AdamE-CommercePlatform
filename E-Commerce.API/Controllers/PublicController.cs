@@ -1,4 +1,5 @@
 ﻿using Adam.Generic.Generic;
+using Azure.Core;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Model.Settings;
 using E_Commerce.Application.Model.Store;
@@ -16,6 +17,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace E_Commerce.API.Controllers
 {
@@ -55,10 +57,9 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-
         [AllowAnonymous]
-        [Route("dashboard-filters")]
         [HttpGet]
+        [Route("dashboard-filters")]
         public async Task<ActionResult<BaseResponse<DashboardFiltersModel>>> GetDashboardFilters(string? searchText = null, string? language = null, int? genderId = null)
         {
             try
@@ -73,8 +74,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("dashboard-categories")]
         [HttpGet]
+        [Route("dashboard-categories")]
         public async Task<ActionResult<BaseResponse<List<CategoryModel>>>> GetDashboardCategories(int? pageNumber, int? pageSize, string? searchText = null, int? parentCategoryId = null)
         {
             try
@@ -89,8 +90,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("dashboard-shops")]
         [HttpGet]
+        [Route("dashboard-shops")]
         public async Task<ActionResult<BaseResponse<List<ShopModel>>>> GetShops(int? pageNumber, int? pageSize, string? searchText = null)
         {
             try
@@ -105,8 +106,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("dashboard-featured-products")]
         [HttpGet]
+        [Route("dashboard-featured-products")]
         public async Task<ActionResult<BaseResponse<List<DashboardProductModel>>>> GetDashboardFeaturedProducts(int? pageNumber, int? pageSize,string? searchText = null, string? categoryIds = null, string? shopIds = null, bool? isLoadImage = true, decimal? fromPrice = null, decimal? toPrice = null)
         {
             try
@@ -121,8 +122,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("store-dashboard-products")]
         [HttpGet]
+        [Route("store-dashboard-products")]
         public async Task<ActionResult<BaseResponse<List<DashboardProductModel>>>> GetStoreDashboardProducts(int? pageNumber, int? pageSize, string? searchText = null, string? categoryIds = null, string? shopIds = null, string? brandIds = null, bool? isLoadImage = true,bool? isNewArrivals = false, decimal? fromPrice = null,decimal? toPrice = null)
         {
             try
@@ -136,8 +137,8 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("dashboard-payment-methods")]
         [HttpGet]
+        [Route("dashboard-payment-methods")]
         public async Task<ActionResult<BaseResponse<List<PaymentMethodModel>>>> GetPaymentMethods()
         {
             try
@@ -152,13 +153,33 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("parent-categories-ddl")]
         [HttpGet]
+        [Route("parent-categories-ddl")]
         public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetParentCategoriesDDl(bool IsJustViewInHome = false, int? genderId = null)
         {
             try
             {
-                return await _mediator.Send(new CategoriesDDLQuery.Query(null, true, false, IsJustViewInHome, null, genderId));
+                BaseResponse<List<CategoryModel>> categoryModelsResponse = await _mediator.Send(new CategoriesQuery.Query(0, int.MaxValue, null,false,false,null,false));
+                if (!categoryModelsResponse.IsSuccess)
+                {
+                    return new BaseResponse<List<DDLDataSource>>(false, categoryModelsResponse.Message, categoryModelsResponse.ErrorCode);
+                }
+
+                List<DDLDataSource> parentCategoriesDDls = new List<DDLDataSource>();
+                foreach (CategoryModel categoryModel in categoryModelsResponse.DataObject.Where(p => !p.ParentCategoryId.HasValue && (IsJustViewInHome ? p.IsViewInHome : true) && (!genderId.HasValue || !p.GenderId.HasValue || p.GenderId == genderId)))
+                {
+                    parentCategoriesDDls.Add(new DDLDataSource()
+                    {
+                        Label = categoryModel.Name,
+                        Value = categoryModel.CategoryId,
+                        Attributes = new
+                        {
+                            ParentCategoryId = categoryModel.ParentCategoryId,
+                            Childs = GetTreeNodes(categoryModel, categoryModelsResponse.DataObject, IsJustViewInHome, genderId)
+                        }
+                    });
+                }
+                return new BaseResponse<List<DDLDataSource>>(true,string.Empty, parentCategoriesDDls);
             }
             catch (Exception ex)
             {
@@ -167,9 +188,26 @@ namespace E_Commerce.API.Controllers
             }
         }
 
+        private List<TreeNode<CategoryModel>> GetTreeNodes(CategoryModel categoryModel, List<CategoryModel> categoryModels, bool IsJustViewInHome = false, int? genderId = null)
+        {
+            List<TreeNode<CategoryModel>> treeNodes = new List<TreeNode<CategoryModel>>();
+            categoryModel.ChildCategories = categoryModels.Where(p => p.ParentCategoryId == categoryModel.CategoryId && (IsJustViewInHome ? p.IsViewInHome : true) && (!genderId.HasValue || !p.GenderId.HasValue || p.GenderId == genderId)).OrderBy(p => p.CategoryId).ToList();
+            foreach (CategoryModel child in categoryModel.ChildCategories)
+            {
+                TreeNode<CategoryModel> treeNode = new TreeNode<CategoryModel>();
+                child.ChildCategories = categoryModels.Where(p => p.ParentCategoryId == child.CategoryId).OrderBy(p => p.CategoryId).ToList();
+                treeNode.Data = child;
+                treeNode.Parent = categoryModel;
+                treeNode.Children = child.ChildCategories != null && child.ChildCategories.Count > 0 ? GetTreeNodes(child, categoryModels) : null;
+                treeNodes.Add(treeNode);
+            }
+            return treeNodes;
+        }
+
+
         [AllowAnonymous]
-        [Route("child-categories-ddl")]
         [HttpGet]
+        [Route("child-categories-ddl")]
         public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetChildCategoriesDDl(bool IsJustViewInHome = false, int? parentCategoryId = null, int? genderId = null)
         {
             try
@@ -184,8 +222,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("countries-ddl")]
         [HttpGet]
+        [Route("countries-ddl")]
         public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetCountries()
         {
             try
@@ -200,8 +238,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("settings-by-group")]
         [HttpGet]
+        [Route("settings-by-group")]
         public async Task<ActionResult<BaseResponse<List<SettingsModel>>>> GetSettingsByGroup(string groupName)
         {
             try
@@ -216,8 +254,8 @@ namespace E_Commerce.API.Controllers
         }
 
         [AllowAnonymous]
-        [Route("dashboard-footer")]
         [HttpGet]
+        [Route("dashboard-footer")]
         public async Task<ActionResult<BaseResponse<DashboardFooterModel>>> GetDashboardFooters(string? language = null)
         {
             try

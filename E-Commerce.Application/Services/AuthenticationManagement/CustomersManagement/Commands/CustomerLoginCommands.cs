@@ -41,6 +41,8 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                         IQueryable<Customer> customers = _unitOfWork.GetRepository<Customer>().GetByExpression(x => x.UserName == request.UserName && x.IsActive == true, includedEntities: new List<System.Linq.Expressions.Expression<Func<Customer, object>>>
                         {
                             z => z.CustomerLogins.Where(p => !string.IsNullOrEmpty(p.AccessToken)),
+                            z => z.CustomerDeliveryAddresses,
+                            z => z.CustomerCardInfos,
                         });
                         Customer customer = await _unitOfWork.GetRepository<Customer>().FirstOrDefaultAsync(customers);
                         if (customer is null)
@@ -89,7 +91,28 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                             CityId = customer.CityId,
                             Email = customer.Email,
                             Adresse = customer.Adresse,
-                            MobileNumber = customer.MobileNumber
+                            MobileNumber = customer.MobileNumber,
+                            CustomerCardInfoModels = customer.CustomerCardInfos is null ? new List<CustomerCardInfoModel>() : customer.CustomerCardInfos.Select(s => new CustomerCardInfoModel()
+                            {
+                                CardNumber = s.CardNumber,
+                                CustomerCardInfoId = s.CustomerCardInfoId,
+                                CustomerId = s.CustomerId,
+                                Expiry = s.Expiry,
+                                IsRememberCard = s.IsRememberCard,
+                            }).ToList(),
+                            CustomerDeliveryAddressModels = customer.CustomerDeliveryAddresses is null ? new List<CustomerDeliveryAddressModel>() : customer.CustomerDeliveryAddresses.Select(s => new CustomerDeliveryAddressModel()
+                            {
+                                Address = s.Address,
+                                AddressLabel = s.AddressLabel,
+                                CustomerDeliveryAddressId = s.CustomerDeliveryAddressId,
+                                CustomerId = s.CustomerId,
+                                CustomerName = $"{customer.FirstName} {customer.LastName}",
+                                CustomerMobileNumber = customer.MobileNumber,
+                                IsDefaultAddress = s.IsDefaultAddress,
+                                Latitude = s.Latitude,
+                                Longitude = s.Longitude,
+                                Name = s.Name
+                            }).ToList()
                         };
                         if (!string.IsNullOrEmpty(customerModel.ProfileImage))
                         {

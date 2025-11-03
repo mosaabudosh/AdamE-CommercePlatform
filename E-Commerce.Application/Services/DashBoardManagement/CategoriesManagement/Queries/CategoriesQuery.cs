@@ -22,8 +22,9 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             public bool IsCount { get; set; }
             public bool IsForDashboard { get; set; }
             public int? ParentCategoryId { get; set; }
+            public bool WithImage { get; set; }
 
-            public Query(int pageNumber, int pageSize, string? searchText = null, bool isCount = false, bool isForDashboard = false, int? parentCategoryId = null)
+            public Query(int pageNumber, int pageSize, string? searchText = null, bool isCount = false, bool isForDashboard = false, int? parentCategoryId = null, bool withImage = true)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
@@ -31,6 +32,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                 IsCount = isCount;
                 IsForDashboard = isForDashboard;
                 ParentCategoryId = parentCategoryId;
+                WithImage = withImage;
             }
         }
 
@@ -58,20 +60,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                         GenderId = p.GenderId,
                         IsViewInHome = p.IsViewInHome,
                         IsViewInFooter = p.IsViewInFooter,
-                        ChildCategories = request.IsForDashboard ? new List<CategoryModel>() : p.ChildCategories.Select(s => new CategoryModel()
-                        {
-                            CategoryId = s.CategoryId,
-                            Name = s.Name,
-                            NameAr = s.NameAr,
-                            Code = s.Code,
-                            Image = s.Image,
-                            ParentCategoryId = s.ParentCategoryId,
-                            Descreption = s.Descreption,
-                            IsBlock = s.IsBlock,
-                        }).ToList()
+                        ChildCategories = new List<CategoryModel>()
                     }).ToList();
 
-                    if (categories.Any(p => !string.IsNullOrEmpty(p.Image)))
+                    if (request.WithImage && categories.Any(p => !string.IsNullOrEmpty(p.Image)))
                     {
                         string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
 
@@ -115,6 +107,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     return new BaseResponse<List<CategoryModel>>(false, ex.Message);
                 }
             }
+
         }
     }
 }
