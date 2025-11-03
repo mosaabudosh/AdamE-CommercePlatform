@@ -21,34 +21,34 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopCategoriesMana
     {
         public class Command : IRequest<BaseResponse>
         {
-            public ShopCategoryModel ShopCategoryModel { get; set; }
-            public Command(ShopCategoryModel shopCategoryModel)
+            public List<ShopCategoryModel> ShopCategoryModels { get; set; }
+            public Command(List<ShopCategoryModel> shopCategoryModels)
             {
-                ShopCategoryModel = shopCategoryModel;
+                ShopCategoryModels = shopCategoryModels;
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    ShopCategory shopCategory = new ShopCategory()
+                    List<ShopCategory> newShopCategories = new List<ShopCategory>();
+                    if(request.ShopCategoryModels.Any(p => p.ShopCategoryId == 0))
                     {
-                        CategoryId = request.ShopCategoryModel.CategoryId,
-                        ShopId = request.ShopCategoryModel.ShopId,
-                        CreationUserId = _userAccessor.GetCurrentUserId(),
-                        CreationDate = DateTime.UtcNow,
-                        IsActive = true
-                    };
-                    BaseResponse validationBaseResponse = ValidateCreation(shopCategory);
-                    if (!validationBaseResponse.IsSuccess)
-                    {
-                        return validationBaseResponse;
+                        newShopCategories = request.ShopCategoryModels.Where(p => p.ShopCategoryId == 0).Select(s => new ShopCategory()
+                        {
+                            CategoryId = s.CategoryId,
+                            ShopId = s.ShopId,
+                            CreationUserId = _userAccessor.GetCurrentUserId(),
+                            CreationDate = DateTime.UtcNow,
+                            IsActive = true
+                        }).ToList();
+
+                        _unitOfWork.GetRepository<ShopCategory>().AddRange(newShopCategories);
+                        await _unitOfWork.CommitChanges();
                     }
-                    _unitOfWork.GetRepository<ShopCategory>().Insert(shopCategory);
-                    await _unitOfWork.CommitChanges();
 
                     return new BaseResponse(true);
                 }
@@ -62,29 +62,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopCategoriesMana
                     return new BaseResponse(false, ex.Message);
                 }
             }
-
-            private BaseResponse ValidateCreation(ShopCategory shopCategory)
-            {
-                try
-                {
-                    ShopCategory existingRecord = _unitOfWork.GetRepository<ShopCategory>().GetByExpressionAsNoTracking(x => x.ShopId == shopCategory.ShopId && x.CategoryId == shopCategory.CategoryId).FirstOrDefault();
-
-                    if (existingRecord is not null)
-                    {
-                        return new BaseResponse(false, string.Empty, ErrorCode.AlreadyExsist);
-                    }
-                    return new BaseResponse(true);
-                }
-                catch (Exception ex)
-                {
-                    while (ex.InnerException is not null)
-                    {
-                        ex = ex.InnerException;
-                    }
-                    _exceptionService.LogErrorAsync(ex, nameof(ValidateCreation), _userAccessor.GetCurrentUserId(), shopCategory);
-                    return new BaseResponse(false, ex.Message);
-                }
-            }
+           
         }
     }
 }

@@ -52,6 +52,9 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
                     {
                         Value = p.CategoryId,
                         Label = _userAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? p.Name : p.NameAr,
+                        Attributes = new { 
+                            ParentCategoryId = p.ParentCategoryId,
+                        }
                     }).ToList();
                     return new BaseResponse<List<DDLDataSource>>(true, string.Empty, string.Empty, categories);
                 }

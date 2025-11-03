@@ -72,7 +72,7 @@ namespace E_Commerce.Application.Services.DMSManagement.FolderManagement.Command
                   
                     }
 
-                    IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpression(x => x.Path.Contains(folderPath),
+                    IQueryable<File> filesQuery = _unitOfWork.GetRepository<File>().GetByExpression(x => x.Path == folderPath,
                     includedEntities: new List<System.Linq.Expressions.Expression<Func<File, object>>>() { z => z.Folder });
                     List<File> oldfiles = await _unitOfWork.GetRepository<File>().ToListAsync(filesQuery);
                     if (oldfiles.Any())

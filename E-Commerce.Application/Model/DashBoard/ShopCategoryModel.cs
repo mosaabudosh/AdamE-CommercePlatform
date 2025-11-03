@@ -11,5 +11,7 @@ namespace E_Commerce.Application.Model.DashBoard
         public int? ShopCategoryId { get; set; }
         public int ShopId { get; set; }
         public int CategoryId { get; set; }
+        public string? Shop { get; set; }
+        public string? Category { get; set; }
     }
 }

@@ -15,8 +15,8 @@ namespace E_Commerce.API.Controllers
     [ApiController]
     public class CategoryManagementController(IMediator _mediator) : BaseController
     {
-        [Route("categories")]
         [HttpGet]
+        [Route("categories")]
         public async Task<ActionResult<BaseResponse<List<TreeNode<CategoryModel>>>>> GetCategories(int pageNumber, int pageSize, string? searchText = null)
         {
             try
@@ -31,7 +31,8 @@ namespace E_Commerce.API.Controllers
                 {
                     TreeNode<CategoryModel> treeNode = new TreeNode<CategoryModel>();
                     treeNode.Data = categoryModel;
-                    treeNode.Children = GetTreeNodes(categoryModel);
+                    treeNode.Parent = categoryModel;
+                    treeNode.Children = GetTreeNodes(categoryModel, categoryModelsResponse.DataObject);
                     treeCategoryNodes.Add(treeNode);
                 }
                 return new BaseResponse<List<TreeNode<CategoryModel>>>(true,string.Empty, treeCategoryNodes.Skip(pageNumber * pageSize).Take(pageSize).ToList());
@@ -43,25 +44,24 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        private List<TreeNode<CategoryModel>> GetTreeNodes(CategoryModel categoryModel)
+        private List<TreeNode<CategoryModel>> GetTreeNodes(CategoryModel categoryModel, List<CategoryModel> categoryModels)
         {
             List<TreeNode<CategoryModel>> treeNodes = new List<TreeNode<CategoryModel>>();
-            if (categoryModel.ChildCategories != null)
+            categoryModel.ChildCategories = categoryModels.Where(p => p.ParentCategoryId == categoryModel.CategoryId).OrderBy(p => p.CategoryId).ToList();
+            foreach (CategoryModel child in categoryModel.ChildCategories)
             {
-                categoryModel.ChildCategories = categoryModel.ChildCategories.OrderBy(p => p.CategoryId).ToList();
-                foreach (CategoryModel child in categoryModel.ChildCategories)
-                {
-                    TreeNode<CategoryModel> treeNode = new TreeNode<CategoryModel>();
-                    treeNode.Data = child;
-                    treeNode.Children = child.ChildCategories != null && child.ChildCategories.Count > 0 ? GetTreeNodes(child) : null;
-                    treeNodes.Add(treeNode);
-                }
+                TreeNode<CategoryModel> treeNode = new TreeNode<CategoryModel>();
+                child.ChildCategories = categoryModels.Where(p => p.ParentCategoryId == child.CategoryId).OrderBy(p => p.CategoryId).ToList();
+                treeNode.Data = child;
+                treeNode.Parent = categoryModel;
+                treeNode.Children = child.ChildCategories != null && child.ChildCategories.Count > 0 ? GetTreeNodes(child, categoryModels) : null;
+                treeNodes.Add(treeNode);
             }
             return treeNodes;
         }
 
-        [Route("categories-count")]
         [HttpGet]
+        [Route("categories-count")]
         public async Task<ActionResult<BaseResponse<int>>> GetCategoriesCount(string? searchText = null)
         {
             try
@@ -95,8 +95,8 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("categories-ddl")]
         [HttpGet]
+        [Route("categories-ddl")]
         public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetCategoriesDDl()
         {
             try
@@ -155,8 +155,8 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("parent-categories-ddl")]
         [HttpGet]
+        [Route("parent-categories-ddl")]
         public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetParentCategoriesDDl()
         {
             try
@@ -170,8 +170,8 @@ namespace E_Commerce.API.Controllers
             }
         }
 
-        [Route("child-categories-ddl")]
         [HttpGet]
+        [Route("child-categories-ddl")]
         public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetChildCategoriesDDl()
         {
             try
