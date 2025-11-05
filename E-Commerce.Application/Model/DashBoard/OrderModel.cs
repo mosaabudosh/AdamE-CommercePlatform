@@ -18,6 +18,10 @@ namespace E_Commerce.Application.Model.DashBoard
         public string? Customer { get; set; }
         public string? UpdateByUser { get; set; }
         public DateTime? OrderDate { get; set; }
+        public string? DiscountCode { get; set; }
+        public string? ReferenceNumber { get; set; }
+        public int? CustomerCardInfoId { get; set; }
+        public int? CustomerDeliveryAddressId { get; set; }
 
         public List<OrderDetailModel>? OrderDetails { get; set; }
         [JsonIgnore]
@@ -36,5 +40,6 @@ namespace E_Commerce.Application.Model.DashBoard
         public Guid ShopItemId { get; set; }
         public string? ItemName { get; set; }
         public string? Shope { get; set; }
+        public int? ColorId { get; set; }
     }
 }

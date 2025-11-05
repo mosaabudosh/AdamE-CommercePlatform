@@ -27,14 +27,14 @@ namespace E_Commerce.API.Controllers
 
         [HttpPost]
         [Route("order-creation")]
-        public async Task<ActionResult<BaseResponse>> CreateOrder([FromBody] OrderModel orderModel)
+        public async Task<ActionResult<BaseResponse<string>>> CreateOrder([FromBody] OrderModel orderModel)
         {
             try
             {
                 BaseResponse<OrderModel> responseOrderModel = await _mediator.Send(new OrderCreationCommands.Command(orderModel));
                 if (!responseOrderModel.IsSuccess) 
                 {
-                    return responseOrderModel;
+                    return new BaseResponse<string>(false, responseOrderModel.Message, responseOrderModel.ErrorCode, string.Empty);
                 }
                 foreach (NotificationModel notification in responseOrderModel.DataObject.Notifications)
                 {
@@ -49,12 +49,12 @@ namespace E_Commerce.API.Controllers
                     }
                 }
 
-                return responseOrderModel;
+                return new BaseResponse<string>(true, string.Empty, responseOrderModel.DataObject.ReferenceNumber);
             }
             catch (Exception ex)
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(CreateOrder), UserAccessor.GetCurrentUserId(), orderModel);
-                return new BaseResponse(false, ex.Message);
+                return new BaseResponse<string>(false, ex.Message);
             }
         }
 

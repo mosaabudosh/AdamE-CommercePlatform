@@ -15,7 +15,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomerDeliv
 {
     public class CustomerDeliveryAddressCreateCommands
     {
-        public class Command : IRequest<BaseResponse>
+        public class Command : IRequest<BaseResponse<int>>
         {
             public CustomerDeliveryAddressModel CustomerDeliveryAddressModel { get; set; }
             public Command(CustomerDeliveryAddressModel customerDeliveryAddressModel)
@@ -23,9 +23,9 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomerDeliv
                 CustomerDeliveryAddressModel = customerDeliveryAddressModel;
             }
 
-            public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Command, BaseResponse>
+            public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService) : IRequestHandler<Command, BaseResponse<int>>
             {
-                public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
+                public async Task<BaseResponse<int>> Handle(Command request, CancellationToken cancellationToken)
                 {
                     try
                     {
@@ -45,7 +45,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomerDeliv
                         _unitOfWork.GetRepository<CustomerDeliveryAddress>().Insert(customerDeliveryAddress);
                         await _unitOfWork.CommitChanges();
 
-                        return new BaseResponse(true, string.Empty);
+                        return new BaseResponse<int>(true, string.Empty,customerDeliveryAddress.CustomerDeliveryAddressId);
                     }
                     catch (Exception ex)
                     {
@@ -54,7 +54,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomerDeliv
                             ex = ex.InnerException;
                         }
                         await _exceptionService.LogErrorAsync(ex, "CustomerDeliveryAddressCreateCommands", _userAccessor.GetCurrentUserId(), request);
-                        return new BaseResponse<CustomerRegisterModel>(false, ex.Message);
+                        return new BaseResponse<int>(false, ex.Message);
                     }
                 }
 

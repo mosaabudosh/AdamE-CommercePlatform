@@ -301,7 +301,7 @@ namespace E_Commerce.API.Controllers
         #region customer-delivery-address
         [HttpPost]
         [Route("create-customer-delivery-address")]
-        public async Task<ActionResult<BaseResponse>> CreateCustomerDeliveryAddress([FromBody] CustomerDeliveryAddressModel customerDeliveryAddressModel)
+        public async Task<ActionResult<BaseResponse<int>>> CreateCustomerDeliveryAddress([FromBody] CustomerDeliveryAddressModel customerDeliveryAddressModel)
         {
             try
             {
@@ -310,7 +310,7 @@ namespace E_Commerce.API.Controllers
             catch (Exception ex)
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(CreateCustomerDeliveryAddress), UserAccessor.GetCurrentUserId(), customerDeliveryAddressModel);
-                return new BaseResponse(false, ex.Message);
+                return new BaseResponse<int>(false, ex.Message);
             }
         }
 
