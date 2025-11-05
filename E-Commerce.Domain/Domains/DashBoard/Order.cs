@@ -12,6 +12,8 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public string? DiscountCode { get; set; }
         public string? ReferenceNumber { get; set; }
         public int? CustomerCardInfoId { get; set; }
+        public int? CustomerDeliveryAddressId { get; set; }
+
 
         public virtual OrderStatus OrderStatus { get; set; }
         public virtual Customer Customer { get; set; }
@@ -21,6 +23,6 @@ namespace E_Commerce.Domain.Domains.DashBoard
         public virtual User LastUpdateUser { get; set; }
         public virtual User DeletedUser { get; set; }
         public virtual CustomerCardInfo CustomerCardInfo { get; set; }
-
+        public virtual CustomerDeliveryAddress CustomerDeliveryAddress { get; set; }
     }
 }

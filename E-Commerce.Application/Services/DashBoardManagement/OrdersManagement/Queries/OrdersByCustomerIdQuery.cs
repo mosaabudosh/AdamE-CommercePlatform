@@ -41,6 +41,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.Q
                         PaymentMethodId = s.PaymentMethodId,
                         OrderStatus = s.OrderStatus.Name,
                         PaymentMethod = s.PaymentMethod.Name,
+                        ReferenceNumber = s.ReferenceNumber,
+                        CustomerCardInfoId = s.CustomerCardInfoId,
+                        CustomerDeliveryAddressId = s.CustomerDeliveryAddressId,
+                        DiscountCode = s.DiscountCode,
+                        OrderDate = s.CreationDate,
                         OrderDetails = s.OrderDetails.Select(o => new OrderDetailModel()
                         {
                             OrderDetailId = o.OrderDetailId,
@@ -49,6 +54,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.Q
                             Price = o.Price,
                             Quantity = o.Quantity,
                             ShopItemId = o.ShopItemId,
+                            ColorId = o.ColorId,
                             Tax = o.Tax,
                             ItemName = o.ShopItem.Name,
                             Shope = o.ShopItem.Shop.Name

@@ -44,6 +44,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                         CustomerId = request.OrderModel.CustomerId,
                         OrderStatusId = request.OrderModel.OrderStatusId,
                         PaymentMethodId = request.OrderModel.PaymentMethodId,
+                        CustomerCardInfoId = request.OrderModel.CustomerCardInfoId,
+                        CustomerDeliveryAddressId = request.OrderModel.CustomerDeliveryAddressId,
+                        DiscountCode = request.OrderModel.DiscountCode,
+                        ReferenceNumber = request.OrderModel.ReferenceNumber,
                         CreationDate = DateTime.UtcNow,
                         IsActive = true,
                         OrderDetails = request.OrderModel.OrderDetails.Select(s => new OrderDetail()
@@ -53,11 +57,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                             Price = s.Price,
                             Quantity = s.Quantity,
                             Tax = s.Tax,
+                            ColorId = s.ColorId,
                             CreationDate = DateTime.UtcNow,
                             IsActive = true
                         }).ToList(),
                     };
-                  
+
+                    order = GenerateReferenceNumber(order);
                     _unitOfWork.GetRepository<Order>().Insert(order);
                     await _unitOfWork.CommitChanges();
 
@@ -104,7 +110,6 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                         CustomerId = request.OrderModel.CustomerId
                     });
 
-
                     BaseResponse responseNotificationCreation = await _mediator.Send(new NotificationCreationCommands.Command(notificationModels));
                     if (!responseNotificationCreation.IsSuccess)
                     {
@@ -117,6 +122,11 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                         OrderStatusId = order.OrderStatusId,
                         PaymentMethodId = order.PaymentMethodId,
                         OrderId = order.OrderId,
+                        CustomerCardInfoId = order.CustomerCardInfoId,
+                        CustomerDeliveryAddressId = order.CustomerDeliveryAddressId,
+                        DiscountCode = order.DiscountCode,
+                        OrderDate = order.CreationDate,
+                        ReferenceNumber = order.ReferenceNumber,
                         Notifications = notificationModels,
                         OrderDetails = order.OrderDetails.Select(s => new OrderDetailModel()
                         {
@@ -142,7 +152,22 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                 }
             }
 
-            
+            public Order GenerateReferenceNumber(Order order)
+            {
+                int[] numbers = Enumerable.Range(0, 15).ToArray();
+                var random = new Random();
+
+                for (int i = 0; i < numbers.Length; ++i)
+                {
+                    int randomIndex = random.Next(numbers.Length);
+                    int temp = numbers[randomIndex];
+                    numbers[randomIndex] = numbers[i];
+                    numbers[i] = temp;
+                }
+                order.ReferenceNumber = string.Join(string.Empty, numbers.Select(s => { return s; }).ToList());
+                return order;
+            }
+
         }
     }
 }

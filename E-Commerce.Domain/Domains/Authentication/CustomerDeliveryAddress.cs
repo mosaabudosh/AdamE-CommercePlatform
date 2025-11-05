@@ -20,6 +20,6 @@ namespace E_Commerce.Domain.Domains.Authentication
         public Guid CustomerId { get; set; }
 
         public virtual Customer Customer { get; set; }
-
+        public virtual List<Order> Orders { get; set; }
     }
 }
