@@ -1,8 +1,10 @@
 ﻿using Adam.Generic.Generic;
 using Azure.Core;
+using E_Commerce.Application.Model.CMS;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Model.Settings;
 using E_Commerce.Application.Model.Store;
+using E_Commerce.Application.Services.CMSManagement.StaticPageManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CategoriesManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CountriesManagement.Queries;
@@ -266,6 +268,22 @@ namespace E_Commerce.API.Controllers
             {
                 await ExceptionService.LogErrorAsync(ex, nameof(GetDashboardFooters), UserAccessor.GetCurrentUserId(), language);
                 return new BaseResponse<DashboardFooterModel>(false, ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("static-page-by-id/{staticPageId}")]
+        public async Task<ActionResult<BaseResponse<StaticPageModel>>> StaticPageById(int staticPageId)
+        {
+            try
+            {
+                return await _mediator.Send(new StaticPageQueryById.Query(staticPageId));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(StaticPageById), UserAccessor.GetCurrentUserId(), staticPageId);
+                return new BaseResponse<StaticPageModel>(false, ex.Message);
             }
         }
     }

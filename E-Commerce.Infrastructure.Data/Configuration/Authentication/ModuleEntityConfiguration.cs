@@ -46,7 +46,7 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     ModuleId = (int)Modules.Report, 
                     Name = "Reports" , 
                     NameAr = "التقارير",
-                    Order = 5, 
+                    Order = 8, 
                     IsInMenue = true,
                     Icon = "pi pi-file"                    
                 },
@@ -58,6 +58,33 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     Order = 4,
                     IsInMenue = true,
                     Icon = "pi pi-briefcase"
+                },
+                new Domain.Domains.Authorisation.Module()
+                {
+                    ModuleId = (int)Modules.CRM,
+                    Name = "CRM" ,
+                    NameAr = "إدارة علاقات العملاء",
+                    Order = 5,
+                    IsInMenue = true,
+                    Icon = "pi pi-sitemap"
+                },
+                new Domain.Domains.Authorisation.Module()
+                {
+                    ModuleId = (int)Modules.CMS,
+                    Name = "CMS" ,
+                    NameAr = "نظام إدارة المحتوى",
+                    Order = 6,
+                    IsInMenue = true,
+                    Icon = "pi pi-cog"
+                },
+                new Domain.Domains.Authorisation.Module()
+                {
+                    ModuleId = (int)Modules.Advertisements,
+                    Name = "Advertisements" ,
+                    NameAr = "الإعلانات",
+                    Order = 7,
+                    IsInMenue = true,
+                    Icon = "pi pi-flag-fill"
                 },
             });
             #endregion

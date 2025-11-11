@@ -32,7 +32,10 @@ namespace E_Commerce.Domain.Enum
 			Lookup = 2,
 			Notification = 3,
 			Report = 4,
-            CustomerManagement = 5
+            CustomerManagement = 5,
+            CRM = 6,
+            CMS = 7,
+            Advertisements = 8
         }
 
 		public enum UserTypes
@@ -215,7 +218,10 @@ namespace E_Commerce.Domain.Enum
             SizeGroup = 25,
             ShopItemStatus = 26,
             ColorsGroup = 27,
-            Customers = 28
+            Customers = 28,
+            StaticPages = 29,
+            Complaint = 30,
+            Suggestion = 31
         }
 
         public enum MenuType
@@ -242,6 +248,13 @@ namespace E_Commerce.Domain.Enum
             Entered = 1,
             Approved = 2,
             Rejected = 3
+        }
+
+        public enum StaticPages
+        {
+            AboutUs = 1,
+            PrivacyPolicy = 2,
+            ConsumerRights = 3
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using E_Commerce.Domain.Domains.Authentication;
 using E_Commerce.Domain.Domains.Authorisation;
+using E_Commerce.Domain.Domains.CMS;
+using E_Commerce.Domain.Domains.CRM;
 using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.Domains.DMS;
 using E_Commerce.Domain.Domains.Notification;
@@ -7,6 +9,8 @@ using E_Commerce.Domain.Domains.Settings;
 using E_Commerce.Infrastructure.Data.Configuration;
 using E_Commerce.Infrastructure.Data.Configuration.Authentication;
 using E_Commerce.Infrastructure.Data.Configuration.Authorisation;
+using E_Commerce.Infrastructure.Data.Configuration.CMS;
+using E_Commerce.Infrastructure.Data.Configuration.CRM;
 using E_Commerce.Infrastructure.Data.Configuration.DashBoard;
 using E_Commerce.Infrastructure.Data.Configuration.DMS;
 using E_Commerce.Infrastructure.Data.Configuration.Notification;
@@ -85,6 +89,9 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new CouponEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerDeliveryAddressEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerCardInfoEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new StaticPageEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ComplaintEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new SuggestionEntityConfiguration());
         }
         #endregion
 
@@ -142,7 +149,9 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<CustomerDeliveryAddress> CustomerDeliveryAddresses { get; set; }
         public DbSet<CustomerCardInfo> CustomerCardInfos { get; set; }
-
+        public DbSet<StaticPage> StaticPages { get; set; }
+        public DbSet<Complaint> Complaints { get; set; }
+        public DbSet<Suggestion> Suggestions { get; set; }
         #endregion
     }
 }

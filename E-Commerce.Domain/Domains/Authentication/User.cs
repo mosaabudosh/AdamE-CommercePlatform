@@ -1,5 +1,6 @@
 ﻿
 
+using E_Commerce.Domain.Domains.CRM;
 using E_Commerce.Domain.Domains.DashBoard;
 
 namespace E_Commerce.Domain.Domains.Authorisation
@@ -28,5 +29,7 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public virtual List<Order> CreationUserOrders { get; set; }
         public virtual List<Order> LastUpdateUsersOrders { get; set; }
         public virtual List<Order> DeletedUsersOrders { get; set; }
+        public virtual List<Complaint> Complaints { get; set; }
+        public virtual List<Suggestion> Suggestions { get; set; }
     }
 }
