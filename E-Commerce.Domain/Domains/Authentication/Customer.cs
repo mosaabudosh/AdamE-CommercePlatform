@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Domain.Domains.Authentication;
+using E_Commerce.Domain.Domains.CRM;
 using E_Commerce.Domain.Domains.DashBoard;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,11 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public Guid CustomerId { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? ProfileImage { get; set; }
-        public string Adresse { get; set; }
+        public string? Adresse { get; set; }
         public bool IsBlock { get; set; }
         public int UserTypeId { get; set; }
-        public int GenderId { get; set; }
-        public int CityId { get; set; }
+        public int? GenderId { get; set; }
+        public int? CityId { get; set; }
         public string? OTPCode { get; set; }
 
         public virtual List<Cart> Carts { get; set; }
@@ -29,5 +30,7 @@ namespace E_Commerce.Domain.Domains.Authorisation
         public virtual List<ShopItemRating> ShopItemRatings { get; set; }
         public virtual List<CustomerDeliveryAddress> CustomerDeliveryAddresses { get; set; }
         public virtual List<CustomerCardInfo> CustomerCardInfos { get; set; }
+        public virtual List<Complaint> Complaints { get; set; }
+        public virtual List<Suggestion> Suggestions { get; set; }
     }
 }

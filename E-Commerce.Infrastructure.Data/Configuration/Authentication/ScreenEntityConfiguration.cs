@@ -386,6 +386,45 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
                     IsActive = true
                 },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.StaticPages,
+                    Name = "Static Pages",
+                    NameAr = "الصفحات الثابتة",
+                    Url = "static-pages",
+                    Icon = "pi pi-list",
+                    ModuleId = (int)Modules.CMS,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Complaint,
+                    Name = "Complaints",
+                    NameAr = "الشكاوى",
+                    Url = "complaints",
+                    Icon = "pi pi-list",
+                    ModuleId = (int)Modules.CRM,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Suggestion,
+                    Name = "Suggestions",
+                    NameAr = "اقتراحات",
+                    Url = "suggestions",
+                    Icon = "pi pi-list",
+                    ModuleId = (int)Modules.CRM,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
             });
             #endregion
 
