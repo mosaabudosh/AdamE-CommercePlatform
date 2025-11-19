@@ -1,4 +1,7 @@
-﻿namespace E_Commerce.API
+﻿using E_Commerce.Infrastructure.Data.Context;
+using Microsoft.EntityFrameworkCore;
+
+namespace E_Commerce.API
 {
     public static class Startup
     {
@@ -59,5 +62,28 @@
             }
         }
 
+        public static void UpdateDatabase(IServiceScope serviceScope)
+        {
+            try
+            {
+                using (E_CommerceContext context = serviceScope.ServiceProvider.GetService<E_CommerceContext>())
+                {
+                    context.Database.Migrate();
+                    context.Database.EnsureCreated();
+                }
+            }
+            catch (Exception ex)
+            {
+                using (System.IO.StreamWriter outputFile = new System.IO.StreamWriter(System.AppDomain.CurrentDomain.BaseDirectory + "\\_MigrationLog.txt", true))
+                {
+                    outputFile.WriteLine(ex.Message);
+                    while (ex.InnerException != null)
+                    {
+                        ex = ex.InnerException;
+                        outputFile.WriteLine(ex.Message);
+                    }
+                }
+            }
+        }
     }
 }

@@ -57,6 +57,7 @@ try
     ServiceProvider serviceProvider = builder.Services.BuildServiceProvider();
     IUserAccessor userAccessor = serviceProvider.GetRequiredService<IUserAccessor>();
     builder.Services.ConfigureAdamService(serviceProvider);
+    IServiceScope serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
     builder.Services.Configure<TokenOptions>(options => builder.Configuration.GetSection("TokenOptions").Bind(options));
 
@@ -163,6 +164,8 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthentication();
+
+    Startup.UpdateDatabase(serviceScope);
 
     app.UseMiddleware<Interceptor>(builder.Configuration, userAccessor, appSettings);
 
