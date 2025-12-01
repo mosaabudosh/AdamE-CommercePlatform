@@ -37,7 +37,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<CustomerModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<CustomerModel>>>
         {
             public async Task<BaseResponse<List<CustomerModel>>> Handle(Query request, CancellationToken cancellationToken)
             {

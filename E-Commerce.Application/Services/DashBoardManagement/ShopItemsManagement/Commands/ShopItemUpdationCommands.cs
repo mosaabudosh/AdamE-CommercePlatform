@@ -29,7 +29,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -84,6 +84,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                     {
                         exisitShopItem.Image = exisitShopItem.ShopItemId.ToString();
                     }
+                    _cachingDataFromDMS.RefreshCachingData();
                     _unitOfWork.GetRepository<ShopItem>().Update(exisitShopItem);
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
@@ -103,7 +104,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             {
                 try
                 {
-                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => x.ShopId == shopItem.ShopId && x.Name == shopItem.Name && x.ShopItemId != shopItem.ShopItemId).FirstOrDefault();
+                    ShopItem existingRecord = _unitOfWork.GetRepository<ShopItem>().GetByExpressionAsNoTracking(x => x.ShopId == shopItem.ShopId && x.Name == shopItem.Name && x.Code == shopItem.Code && x.ShopItemId != shopItem.ShopItemId).FirstOrDefault();
 
                     if (existingRecord is not null)
                     {

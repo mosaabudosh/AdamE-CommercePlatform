@@ -22,6 +22,7 @@ namespace E_Commerce.Application.Caching
         private Dictionary<PlatformSettingsCode, object> settings { get; set; }
         private PlatformInfoModel platformInfoModel { get; set; }
         private IUnitOfWork _unitOfWork { get; set; }
+        public bool isLodingData = false;
         public CachingPlatformSettings(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -89,9 +90,11 @@ namespace E_Commerce.Application.Caching
                     TaxNumber = settings[PlatformSettingsCode.TaxNumber]?.ToString(),
                     Website = settings[PlatformSettingsCode.Website]?.ToString()
                 };
+                isLodingData = true;
             }
             catch (Exception ex)
             {
+                isLodingData = false;
                 using (System.IO.StreamWriter outputFile = new System.IO.StreamWriter(System.AppDomain.CurrentDomain.BaseDirectory + "\\__CachingPlatformSettings.txt", true))
                 {
                     outputFile.WriteLine($"{nameof(PlatformInfoFilling)}: {ex.Message}");
@@ -130,6 +133,7 @@ namespace E_Commerce.Application.Caching
 
         public void RefreshCachingData()
         {
+            isLodingData = false;
             this.GetPlatformSettingsAsync();
         }
 

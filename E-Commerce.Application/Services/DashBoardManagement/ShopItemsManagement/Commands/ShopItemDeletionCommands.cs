@@ -27,7 +27,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -48,6 +48,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
                     {
                         return responseGetFileCreationModels;
                     }
+                    _cachingDataFromDMS.RefreshCachingData();
                     await _unitOfWork.CommitChanges();
                     return new BaseResponse(true);
                 }

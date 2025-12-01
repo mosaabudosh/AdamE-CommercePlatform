@@ -24,7 +24,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Command, BaseResponse>
         {
             public async Task<BaseResponse> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -70,6 +70,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.UsersManageme
                     {
                         return createFolderAndOneFileResponse;
                     }
+                    _cachingDataFromDMS.RefreshCachingData();
                     return new BaseResponse(true, string.Empty);
                 }
                 catch (Exception ex)

@@ -451,7 +451,18 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Settings
                     IsReadOnly = false,
                     IsVisible = true,
                     DataTypeId = (int)PlatformSettingsDataTypes.String
-                }
+                },
+                new PlatformSetting()
+                {
+                    PlatformSettingId = (int)PlatformSettings.DMSAdPath,
+                    Name = "DMS Ad Path" ,
+                    NameAr = "مسار إعلان DMS",
+                    Code = "DMSAdPath",
+                    Group = "DMS",
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    DataTypeId = (int)PlatformSettingsDataTypes.String
+                },
             });
             #endregion
 
