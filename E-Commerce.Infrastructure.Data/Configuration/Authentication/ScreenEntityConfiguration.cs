@@ -425,6 +425,32 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
                     CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
                     IsActive = true
                 },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.AdvertisementPackage,
+                    Name = "Ads Packages",
+                    NameAr = "باقات الإعلانات",
+                    Url = "advertisement-package",
+                    Icon = "pi pi-gift",
+                    ModuleId = (int)Modules.Advertisements,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
+                new Screen()
+                {
+                    ScreenId = (int)Enums.Screens.Advertisements,
+                    Name = "Advertisements",
+                    NameAr = "الإعلانات",
+                    Url = "advertisements",
+                    Icon = "pi pi-flag-fill",
+                    ModuleId = (int)Modules.Advertisements,
+                    IsInMenue = true,
+                    CreationDate = new DateTime(2025,1,1),
+                    CreationUserId = new Guid("26435193-38F2-43B2-8841-3AB288E19F9E"),
+                    IsActive = true
+                },
             });
             #endregion
 

@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domain.Domains.Authorisation;
+﻿using E_Commerce.Domain.Domains.Advertisements;
+using E_Commerce.Domain.Domains.Authorisation;
 
 namespace E_Commerce.Domain.Domains.DashBoard
 {
@@ -31,12 +32,13 @@ namespace E_Commerce.Domain.Domains.DashBoard
 
         public virtual City City { get; set; }
         public virtual Shop ParentShop { get; set; }
-        public virtual List<Shop> ChildShops { get; set; }
-        public virtual List<User> Users { get; set; }
-        public virtual List<ShopItem> ShopItems { get; set; }
-        public virtual List<ShopRating> ShopRatings { get; set; }
-        public virtual List<ShopCategory> ShopCategories { get; set; }
-        public virtual List<ShopMenu> ShopMenus { get; set; }
-        public virtual List<Coupon> Coupons { get; set; }
+        public virtual ICollection<Shop> ChildShops { get; set; }
+        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<ShopItem> ShopItems { get; set; }
+        public virtual ICollection<ShopRating> ShopRatings { get; set; }
+        public virtual ICollection<ShopCategory> ShopCategories { get; set; }
+        public virtual ICollection<ShopMenu> ShopMenus { get; set; }
+        public virtual ICollection<Coupon> Coupons { get; set; }
+        public virtual ICollection<ShopAdPackage> ShopAdPackages { get; set; }
     }
 }

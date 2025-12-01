@@ -1,15 +1,15 @@
 ﻿
 namespace E_Commerce.Domain.Enum
 {
-	public class Enums
-	{
-		public enum Actions
-		{
-			Add = 1,
-			Edit = 2,
-			Delete = 3 ,
-			View = 4 ,
-			Print = 5,
+    public class Enums
+    {
+        public enum Actions
+        {
+            Add = 1,
+            Edit = 2,
+            Delete = 3,
+            View = 4,
+            Print = 5,
             Active = 6,
             InActive = 7,
             Restor = 8,
@@ -17,62 +17,62 @@ namespace E_Commerce.Domain.Enum
             Upload = 10
         }
 
-		public enum Roles
-		{
-			SuperAdmin = 1,
-			Admin = 2,
-			VendorAdmin = 3,
-			Vendor = 4,
-			User = 5
-		}
+        public enum Roles
+        {
+            SuperAdmin = 1,
+            Admin = 2,
+            VendorAdmin = 3,
+            Vendor = 4,
+            User = 5
+        }
 
-		public enum Modules
-		{
-			AccssControl = 1,
-			Lookup = 2,
-			Notification = 3,
-			Report = 4,
+        public enum Modules
+        {
+            AccssControl = 1,
+            Lookup = 2,
+            Notification = 3,
+            Report = 4,
             CustomerManagement = 5,
             CRM = 6,
             CMS = 7,
             Advertisements = 8
         }
 
-		public enum UserTypes
-		{
-			OuerTeam = 1,
-			Vendor = 2 ,
-			Customer = 3
-		}
+        public enum UserTypes
+        {
+            OuerTeam = 1,
+            Vendor = 2,
+            Customer = 3
+        }
 
-		public enum CartStatuses
-		{
-			Enterd = 1,
-			Ordered = 2,
-			InProgrees = 3
-		}
+        public enum CartStatuses
+        {
+            Enterd = 1,
+            Ordered = 2,
+            InProgrees = 3
+        }
 
-		public enum Genders
-		{
-			Man = 1,
-			Woman = 2
-		}
+        public enum Genders
+        {
+            Man = 1,
+            Woman = 2
+        }
 
-		public enum Languages
-		{
-			English = 1,
-			Arabic = 2
-		}
+        public enum Languages
+        {
+            English = 1,
+            Arabic = 2
+        }
 
-		public enum OrderStatuses
-		{
-			Entered = 1,
-			Approved = 2,
-			InProgrees = 3,
-			InDelivery = 4,
-			Delivered = 5,
-			Canceled = 6,
-			Rejected = 7,
+        public enum OrderStatuses
+        {
+            Entered = 1,
+            Approved = 2,
+            InProgrees = 3,
+            InDelivery = 4,
+            Delivered = 5,
+            Canceled = 6,
+            Rejected = 7,
             Refund = 8
         }
 
@@ -100,8 +100,8 @@ namespace E_Commerce.Domain.Enum
             GIF = 20
         }
 
-		public enum PlatformSettingsDataTypes
-		{
+        public enum PlatformSettingsDataTypes
+        {
             Integer = 1,
             Decimal = 2,
             String = 3,
@@ -115,10 +115,10 @@ namespace E_Commerce.Domain.Enum
             DefaultLanguage = 2,
             Logo = 3,
             LogoAr = 4,
-			WaterMark = 5,
+            WaterMark = 5,
             Name = 6,
             NameAr = 7,
-			DateFormat = 8,
+            DateFormat = 8,
             In24Format = 9,
             DMSUserPath = 10,
             DMSRootFolderPath = 11,
@@ -146,7 +146,8 @@ namespace E_Commerce.Domain.Enum
             FacebookUrl = 33,
             InstagramUrl = 34,
             SnapchatUrl = 35,
-            DMSBrandPath = 36
+            DMSBrandPath = 36,
+            DMSAdPath = 37
         }
 
         public enum PlatformSettingsCode
@@ -186,7 +187,8 @@ namespace E_Commerce.Domain.Enum
             FacebookUrl,
             InstagramUrl,
             SnapchatUrl,
-            DMSBrandPath
+            DMSBrandPath,
+            DMSAdPath
         }
 
         public enum Screens
@@ -221,7 +223,9 @@ namespace E_Commerce.Domain.Enum
             Customers = 28,
             StaticPages = 29,
             Complaint = 30,
-            Suggestion = 31
+            Suggestion = 31,
+            AdvertisementPackage = 32,
+            Advertisements = 33,
         }
 
         public enum MenuType
@@ -236,6 +240,7 @@ namespace E_Commerce.Domain.Enum
             Read = 1,
             UnRead = 2
         }
+
         public enum NotificationTypes
         {
             CreateOrder = 1,
@@ -255,6 +260,28 @@ namespace E_Commerce.Domain.Enum
             AboutUs = 1,
             PrivacyPolicy = 2,
             ConsumerRights = 3
+        }
+
+        public enum AdTypes
+        {
+            Banner = 1,
+            Video = 2,
+            InDoorAd = 3,
+            OutDoorAd = 4
+        }
+
+        public enum AdvertisementStatuses
+        {
+            Active = 1,
+            Paused = 2,
+            Expired = 3
+        }
+
+        public enum ShopAdPackageStatuses
+        {
+            Active = 1,
+            Expired = 2,
+            Pending = 3
         }
     }
 }

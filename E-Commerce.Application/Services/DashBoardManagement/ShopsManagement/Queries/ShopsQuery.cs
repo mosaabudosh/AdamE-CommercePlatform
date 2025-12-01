@@ -22,8 +22,9 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
             public int? CityId { get; set; }
             public int? ParentShopId { get; set; }
             public bool IsForDashboard { get; set; }
+            public List<int>? CategoryIds { get; set; }
 
-            public Query(int pageNumber, int pageSize, string? searchText = null, int? cityId = null, int? parentShopId = null, bool isForDashboard = false)
+            public Query(int pageNumber, int pageSize, string? searchText = null, int? cityId = null, int? parentShopId = null, bool isForDashboard = false, List<int>? categoryIds = null)
             {
                 PageNumber = pageNumber;
                 PageSize = pageSize;
@@ -31,6 +32,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
                 CityId = cityId;
                 ParentShopId = parentShopId;
                 IsForDashboard = isForDashboard;
+                CategoryIds = categoryIds;
             }
         }
 
@@ -44,7 +46,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
                     (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.CommercialName.Contains(request.SearchText) || p.Descreption.Contains(request.SearchText) || p.About.Contains(request.SearchText)) && 
                     (!request.CityId.HasValue || p.CityId == request.CityId.Value) && 
                     (!request.ParentShopId.HasValue || p.ParentShopId == request.ParentShopId.Value) && 
-                    (request.IsForDashboard ? p.IsViewInHome : true)).Select(s => new ShopModel()
+                    (request.IsForDashboard ? p.IsViewInHome : true) && (request.CategoryIds == null || !request.CategoryIds.Any() || request.CategoryIds.Any(c =>  p.ShopCategories.Any(s => s.CategoryId == c)))).Select(s => new ShopModel()
                     {
                         ShopId = s.ShopId,
                         ParentShopId = s.ParentShopId,

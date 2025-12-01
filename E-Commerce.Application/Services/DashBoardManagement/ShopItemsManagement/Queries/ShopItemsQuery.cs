@@ -37,7 +37,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<ShopItemModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<ShopItemModel>>>
         {
             public async Task<BaseResponse<List<ShopItemModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -66,22 +66,17 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopItemsManagemen
 
                     if (shopItemModels.Any(p => !string.IsNullOrEmpty(p.Image)))
                     {
-                        string DMSShopItemPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath];
-
                         List<string> filePaths = shopItemModels.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => 
                         { 
-                            return $"{DMSShopItemPath}\\{s.ShopItemId}"; 
+                            return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSShopItemPath]}\\{s.ShopItemId}"; 
                         }).ToList();
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<List<ShopItemModel>>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
+
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSShopItemPath, filePaths];
+                        if (responseGetFileCreationModels.Any())
                         {
                             foreach (ShopItemModel shopItemModel in shopItemModels.Where(p => !string.IsNullOrEmpty(p.Image)))
                             {
-                                shopItemModel.Images.AddRange(responseGetFileCreationModels.DataObject.Where(p => p.FolderName == shopItemModel.ShopItemId.ToString()).Select(s => s.FileContent));
+                                shopItemModel.Images.AddRange(responseGetFileCreationModels.Where(p => p.FolderName == shopItemModel.ShopItemId.ToString()).Select(s => s.FileContent));
                             }
                         }
                     }

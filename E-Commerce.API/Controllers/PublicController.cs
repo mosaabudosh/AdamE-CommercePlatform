@@ -1,9 +1,12 @@
 ﻿using Adam.Generic.Generic;
 using Azure.Core;
+using E_Commerce.API.Model;
+using E_Commerce.Application.Model.Advertisement;
 using E_Commerce.Application.Model.CMS;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Model.Settings;
 using E_Commerce.Application.Model.Store;
+using E_Commerce.Application.Services.AdvertisementsManagement.AdvertisementManagement.Queries;
 using E_Commerce.Application.Services.CMSManagement.StaticPageManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CategoriesManagement.Queries;
 using E_Commerce.Application.Services.DashBoardManagement.CitiesManagement.Queries;
@@ -94,11 +97,11 @@ namespace E_Commerce.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("dashboard-shops")]
-        public async Task<ActionResult<BaseResponse<List<ShopModel>>>> GetShops(int? pageNumber, int? pageSize, string? searchText = null)
+        public async Task<ActionResult<BaseResponse<List<ShopModel>>>> GetShops(int? pageNumber, int? pageSize, string? searchText = null, List<int>? categoryIds = null)
         {
             try
             {
-                return await _mediator.Send(new ShopsQuery.Query(pageNumber.HasValue ? pageNumber.Value : 0, pageSize.HasValue ? pageSize.Value : int.MaxValue, searchText, null, null, true));
+                return await _mediator.Send(new ShopsQuery.Query(pageNumber.HasValue ? pageNumber.Value : 0, pageSize.HasValue ? pageSize.Value : int.MaxValue, searchText, null, null, true, categoryIds));
             }
             catch (Exception ex)
             {
@@ -172,7 +175,7 @@ namespace E_Commerce.API.Controllers
                 {
                     parentCategoriesDDls.Add(new DDLDataSource()
                     {
-                        Label = categoryModel.Name,
+                        Label = UserAccessor.GetCurrentUserLanguage() == Adam.Generic.Enum.LanguageCode.enUS ? categoryModel.Name : categoryModel.NameAr,
                         Value = categoryModel.CategoryId,
                         Attributes = new
                         {
@@ -286,5 +289,40 @@ namespace E_Commerce.API.Controllers
                 return new BaseResponse<StaticPageModel>(false, ex.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("suggestions-main-search")]
+        public async Task<ActionResult<BaseResponse<List<DDLDataSource>>>> GetSuggestionsMainSearch([FromBody] SuggestionsMainSearchModel suggestionsMainSearchModel)
+        {
+            try
+            {
+                List<Guid> notIncludeGuidIds = suggestionsMainSearchModel.NotIncludeIds != null && suggestionsMainSearchModel.NotIncludeIds.Any() ? suggestionsMainSearchModel.NotIncludeIds.Select(s => { return new Guid(s); }).ToList() : new List<Guid>();
+                return await _mediator.Send(new SuggestionsMainSearchQuery.Query(suggestionsMainSearchModel.SearchText, notIncludeGuidIds));
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetSuggestionsMainSearch), UserAccessor.GetCurrentUserId(), suggestionsMainSearchModel);
+                return new BaseResponse<List<DDLDataSource>>(false, ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("active-store-advertisements")]
+        public async Task<ActionResult<BaseResponse<List<ActiveStoreAdvertisementModel>>>> GetActiveStoreAdvertisement()
+        {
+            try
+            {           
+                return await _mediator.Send(new ActiveStoreAdvertisementsQuery.Query());
+            }
+            catch (Exception ex)
+            {
+                await ExceptionService.LogErrorAsync(ex, nameof(GetActiveStoreAdvertisement), UserAccessor.GetCurrentUserId());
+                return new BaseResponse<List<ActiveStoreAdvertisementModel>>(false, ex.Message);
+            }
+        }
+
+
     }
 }

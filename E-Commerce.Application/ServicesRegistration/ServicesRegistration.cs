@@ -29,6 +29,8 @@ namespace E_Commerce.Application.ServicesRegistration
             IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
             CachingPlatformSettings cachingPlatformSettings = new CachingPlatformSettings(unitOfWork);
             services.AddSingleton(cachingPlatformSettings);
+            CachingDataFromDMS cachingDataFromDMS = new CachingDataFromDMS(unitOfWork);
+            services.AddSingleton(cachingDataFromDMS);
 
             return services;
         }

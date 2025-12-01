@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domain.Domains.Authentication;
+﻿using E_Commerce.Domain.Domains.Advertisements;
+using E_Commerce.Domain.Domains.Authentication;
 using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.Domains.CMS;
 using E_Commerce.Domain.Domains.CRM;
@@ -7,6 +8,7 @@ using E_Commerce.Domain.Domains.DMS;
 using E_Commerce.Domain.Domains.Notification;
 using E_Commerce.Domain.Domains.Settings;
 using E_Commerce.Infrastructure.Data.Configuration;
+using E_Commerce.Infrastructure.Data.Configuration.Advertisements;
 using E_Commerce.Infrastructure.Data.Configuration.Authentication;
 using E_Commerce.Infrastructure.Data.Configuration.Authorisation;
 using E_Commerce.Infrastructure.Data.Configuration.CMS;
@@ -92,6 +94,14 @@ namespace E_Commerce.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration(new StaticPageEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ComplaintEntityConfiguration());
             modelBuilder.ApplyConfiguration(new SuggestionEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AdTypeEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AdvertisementStatusEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ShopAdPackageStatusEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ShopAdPackageEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AdvertisementEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AdPackageEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AdImpressionEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AdClickEntityConfiguration());
         }
         #endregion
 
@@ -152,6 +162,14 @@ namespace E_Commerce.Infrastructure.Data.Context
         public DbSet<StaticPage> StaticPages { get; set; }
         public DbSet<Complaint> Complaints { get; set; }
         public DbSet<Suggestion> Suggestions { get; set; }
+        public DbSet<AdType> AdTypes { get; set; }
+        public DbSet<AdvertisementStatus> AdvertisementStatuses { get; set; }
+        public DbSet<ShopAdPackageStatus> ShopAdPackageStatuses { get; set; }
+        public DbSet<ShopAdPackage> ShopAdPackages { get; set; }
+        public DbSet<Advertisement> Advertisements { get; set; }
+        public DbSet<AdPackage> AdPackages { get; set; }
+        public DbSet<AdImpression> AdImpressions { get; set; }
+        public DbSet<AdClick> AdClicks { get; set; }
         #endregion
     }
 }
