@@ -28,7 +28,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsMana
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<PaymentMethodModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<PaymentMethodModel>>
         {
             public async Task<BaseResponse<PaymentMethodModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -45,17 +45,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsMana
 
                     if (!string.IsNullOrEmpty(paymentMethod.Icon))
                     {
-                        string DMSPaymentMethodPath = _cachingPlatformSettings[PlatformSettingsCode.DMSPaymentMethodPath];
-                        string folderPath = $"{DMSPaymentMethodPath}\\_{paymentMethod.PaymentMethodId}";
-
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                        if (!responseGetFileCreationModels.IsSuccess)
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSPaymentMethodPath, $"{_cachingPlatformSettings[PlatformSettingsCode.DMSPaymentMethodPath]}\\_{paymentMethod.PaymentMethodId}"];
+                        if (responseGetFileCreationModels.Any())
                         {
-                            return new BaseResponse<PaymentMethodModel>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
-                        {
-                            paymentMethod.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                            paymentMethod.FileCreationModel = responseGetFileCreationModels.FirstOrDefault();
                         }
                     }
 

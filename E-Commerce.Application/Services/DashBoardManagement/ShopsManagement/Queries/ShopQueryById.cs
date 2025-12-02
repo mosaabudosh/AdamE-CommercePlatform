@@ -23,7 +23,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<ShopModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<ShopModel>>
         {
             public async Task<BaseResponse<ShopModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -55,16 +55,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ShopsManagement.Qu
 
                     if (!string.IsNullOrEmpty(shop.Logo))
                     {
-                        string DMSShopPath = _cachingPlatformSettings[PlatformSettingsCode.DMSShopPath];
-                        string folderPath = $"{DMSShopPath}\\{shop.ShopId}";
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                        if (!responseGetFileCreationModels.IsSuccess)
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSShopPath, $"{_cachingPlatformSettings[PlatformSettingsCode.DMSShopPath]}\\{shop.ShopId}"];
+                        if (responseGetFileCreationModels.Any())
                         {
-                            return new BaseResponse<ShopModel>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
-                        {
-                            shop.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                            shop.FileCreationModel = responseGetFileCreationModels.FirstOrDefault();
                         }
                     }
 

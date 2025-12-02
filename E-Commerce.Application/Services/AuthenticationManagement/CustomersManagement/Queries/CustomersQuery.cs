@@ -37,7 +37,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<CustomerModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<CustomerModel>>>
         {
             public async Task<BaseResponse<List<CustomerModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -63,18 +63,14 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
 
                     if (customers.Any(p => !string.IsNullOrEmpty(p.ProfileImage)) && (!request.ReadProfileImage.HasValue || request.ReadProfileImage.Value))
                     {
-                        string DMSCustomerPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCustomerPath];
-                        List<string> filePaths = customers.Where(p => !string.IsNullOrEmpty(p.ProfileImage)).Select(s => { return $"{DMSCustomerPath}\\{s.CustomerId.ToLower()}"; }).ToList();
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<List<CustomerModel>>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
+                        List<string> filePaths = customers.Where(p => !string.IsNullOrEmpty(p.ProfileImage)).Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSCustomerPath]}\\{s.CustomerId.ToLower()}"; }).ToList();
+
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSCustomerPath, filePaths];
+                        if (responseGetFileCreationModels.Any())
                         {
                             foreach (CustomerModel customer in customers.Where(p => !string.IsNullOrEmpty(p.ProfileImage)))
                             {
-                                customer.ProfileImage = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == customer.ProfileImage).FileContent;
+                                customer.ProfileImage = responseGetFileCreationModels.FirstOrDefault(p => p.FileName == customer.ProfileImage).FileContent;
                             }
                         }
                     }

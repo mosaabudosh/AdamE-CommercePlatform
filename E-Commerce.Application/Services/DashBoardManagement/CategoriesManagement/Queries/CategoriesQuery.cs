@@ -36,7 +36,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<CategoryModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<CategoryModel>>>
         {
             public async Task<BaseResponse<List<CategoryModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -65,30 +65,25 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
 
                     if (request.WithImage && categories.Any(p => !string.IsNullOrEmpty(p.Image)))
                     {
-                        string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
+                        List<string> filePaths = categories.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath]}\\{s.CategoryId.ToString()}"; }).ToList();
 
-                        List<string> filePaths = categories.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{DMSCategoryPath}\\{s.CategoryId.ToString()}"; }).ToList();
-
-                        List<string> childFilePaths = categories.Where(p => p.ChildCategories.Any(x => !string.IsNullOrEmpty(x.Image))).SelectMany(s => s.ChildCategories.Select(s => { return $"{DMSCategoryPath}\\{s.CategoryId.ToString()}"; })).ToList();
+                        List<string> childFilePaths = categories.Where(p => p.ChildCategories.Any(x => !string.IsNullOrEmpty(x.Image))).SelectMany(s => s.ChildCategories.Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath]}\\{s.CategoryId.ToString()}"; })).ToList();
                         if (childFilePaths.Any())
                         {
                             filePaths.AddRange(childFilePaths);
                         }
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<List<CategoryModel>>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
+
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSCategoryPath, filePaths];
+                        if (responseGetFileCreationModels.Any())
                         {
                             foreach (CategoryModel category in categories.Where(p => !string.IsNullOrEmpty(p.Image)))
                             {
-                                category.Image = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == category.Image).FileContent;
+                                category.Image = responseGetFileCreationModels.FirstOrDefault(p => p.FileName == category.Image).FileContent;
                                 if(category.ChildCategories.Any(p => !string.IsNullOrEmpty(p.Image)))
                                 {
                                     foreach (CategoryModel childCategory in category.ChildCategories.Where(p => !string.IsNullOrEmpty(p.Image)))
                                     {
-                                        childCategory.Image = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == childCategory.Image).FileContent;
+                                        childCategory.Image = responseGetFileCreationModels.FirstOrDefault(p => p.FileName == childCategory.Image).FileContent;
                                     }
                                 }
                             }

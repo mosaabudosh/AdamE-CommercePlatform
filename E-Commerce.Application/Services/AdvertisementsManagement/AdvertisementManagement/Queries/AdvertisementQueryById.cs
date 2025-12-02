@@ -5,6 +5,7 @@ using E_Commerce.Application.Model.Advertisement;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
 using E_Commerce.Domain.Domains.Advertisements;
+using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
@@ -29,7 +30,7 @@ namespace E_Commerce.Application.Services.AdvertisementsManagement.Advertisement
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<AdvertisementModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<AdvertisementModel>>
         {
             public async Task<BaseResponse<AdvertisementModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -48,19 +49,12 @@ namespace E_Commerce.Application.Services.AdvertisementsManagement.Advertisement
                         TargetUrl = s.TargetUrl,
                     }).FirstOrDefault();
 
-
                     if (!string.IsNullOrEmpty(advertisement.ImageUrl))
                     {
-                        string DMSAdPath = _cachingPlatformSettings[PlatformSettingsCode.DMSAdPath];
-                        string folderPath = $"{DMSAdPath}\\{advertisement.AdvertisementId}";
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                        if (!responseGetFileCreationModels.IsSuccess)
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSAdPath, $"{_cachingPlatformSettings[PlatformSettingsCode.DMSAdPath]}\\{advertisement.AdvertisementId}"];
+                        if (responseGetFileCreationModels.Any())
                         {
-                            return new BaseResponse<AdvertisementModel>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
-                        {
-                            advertisement.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                            advertisement.FileCreationModel = responseGetFileCreationModels.FirstOrDefault();
                         }
                     }
 

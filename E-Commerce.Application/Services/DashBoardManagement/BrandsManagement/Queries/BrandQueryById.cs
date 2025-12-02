@@ -3,6 +3,7 @@ using Adam.Logging.Interfaces;
 using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.DashBoard;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.Domains.DashBoard;
 using E_Commerce.Domain.IHttpServices;
 using E_Commerce.Domain.RepositoryInterfaces;
@@ -23,7 +24,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<BrandModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<BrandModel>>
         {
             public async Task<BaseResponse<BrandModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -42,16 +43,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
                         IsBlock = s.IsBlock,
                     }).FirstOrDefault();
 
-                    string DMSBrandPath = _cachingPlatformSettings[PlatformSettingsCode.DMSBrandPath];
-                    string folderPath = $"{DMSBrandPath}\\{brand.BrandId}";
-                    BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                    if (!responseGetFileCreationModels.IsSuccess)
+                    List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSBrandPath, $"{_cachingPlatformSettings[PlatformSettingsCode.DMSBrandPath]}\\{brand.BrandId}"];
+                    if (responseGetFileCreationModels.Any())
                     {
-                        return new BaseResponse<BrandModel>(false, responseGetFileCreationModels.Message);
-                    }
-                    if (responseGetFileCreationModels.DataObject.Any())
-                    {
-                        brand.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                        brand.FileCreationModel = responseGetFileCreationModels.FirstOrDefault();
                     }
 
                     return new BaseResponse<BrandModel>(true, string.Empty, string.Empty, brand);

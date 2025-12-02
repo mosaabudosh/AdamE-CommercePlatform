@@ -28,7 +28,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<CountryModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<CountryModel>>
         {
             public async Task<BaseResponse<CountryModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -44,16 +44,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
 
                     if (!string.IsNullOrEmpty(countryModel.Banner))
                     {
-                        string DMSCountryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath];
-                        string folderPath = $"{DMSCountryPath}\\{countryModel.Name.Trim()}";
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                        if (!responseGetFileCreationModels.IsSuccess)
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSCountryPath, $"{_cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath]}\\{countryModel.Name.Trim()}"];
+                        if (responseGetFileCreationModels.Any())
                         {
-                            return new BaseResponse<CountryModel>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
-                        {
-                            countryModel.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                            countryModel.FileCreationModel = responseGetFileCreationModels.FirstOrDefault();
                         }
                     }
                     return new BaseResponse<CountryModel>(true, string.Empty, string.Empty, countryModel);

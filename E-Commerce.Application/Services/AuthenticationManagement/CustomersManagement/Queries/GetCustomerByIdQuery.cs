@@ -28,7 +28,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<CustomerModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<CustomerModel>>
         {
             public async Task<BaseResponse<CustomerModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -57,16 +57,10 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
 
                     if (!string.IsNullOrEmpty(customer.ProfileImage))
                     {
-                        string DMSCustomerPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCustomerPath];
-                        string folderPath = $"{DMSCustomerPath}\\{request.CustomerId.ToString().ToLower()}";
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                        if (!responseGetFileCreationModels.IsSuccess)
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSCustomerPath, $"{_cachingPlatformSettings[PlatformSettingsCode.DMSCustomerPath]}\\{customer.CustomerId.ToString().ToLower()}"];
+                        if (responseGetFileCreationModels.Any())
                         {
-                            return new BaseResponse<CustomerModel>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
-                        {
-                            customer.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                            customer.FileCreationModel = responseGetFileCreationModels.FirstOrDefault();
                         }
                     }
 

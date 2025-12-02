@@ -1,9 +1,11 @@
-﻿using Adam.Logging.Interfaces;
+﻿using Adam.Generic.Generic;
+using Adam.Logging.Interfaces;
 using E_Commerce.Application.Authentication.Interfaces;
 using E_Commerce.Application.Caching;
 using E_Commerce.Application.Model.Authorisation;
 using E_Commerce.Application.Services.AuthenticationManagement.UsersManagement.Commands;
 using E_Commerce.Application.Services.DMSManagement.FolderManagement.Queries;
+using E_Commerce.Domain.Domains.Advertisements;
 using E_Commerce.Domain.Domains.Authentication;
 using E_Commerce.Domain.Domains.Authorisation;
 using E_Commerce.Domain.Enum;
@@ -32,7 +34,7 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                 UserName = userName;
                 Password = password;
             }
-            public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IAuthenticationService _authenticationService, ITokenHandler _tokenHandler, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Command, BaseResponse<CustomerModel>>
+            public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IAuthenticationService _authenticationService, ITokenHandler _tokenHandler, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Command, BaseResponse<CustomerModel>>
             {
                 public async Task<BaseResponse<CustomerModel>> Handle(Command request, CancellationToken cancellationToken)
                 {
@@ -116,16 +118,10 @@ namespace E_Commerce.Application.Services.AuthenticationManagement.CustomersMana
                         };
                         if (!string.IsNullOrEmpty(customerModel.ProfileImage))
                         {
-                            string DMSCustomerPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCustomerPath];
-                            string folderPath = $"{DMSCustomerPath}\\{customerModel.CustomerId}";
-                            BaseResponse<List<Adam.Generic.Generic.FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                            if (!responseGetFileCreationModels.IsSuccess)
+                            List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSCustomerPath, $"{_cachingPlatformSettings[PlatformSettingsCode.DMSCustomerPath]}\\{customerModel.CustomerId}"];
+                            if (responseGetFileCreationModels.Any())
                             {
-                                return new BaseResponse<CustomerModel>(false, responseGetFileCreationModels.Message);
-                            }
-                            if (responseGetFileCreationModels.DataObject.Any())
-                            {
-                                customerModel.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                                customerModel.FileCreationModel = responseGetFileCreationModels.FirstOrDefault();
                             }
                         }
                         return new BaseResponse<CustomerModel>(true, string.Empty, string.Empty, customerModel);
