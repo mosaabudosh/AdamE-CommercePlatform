@@ -23,7 +23,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<CategoryModel>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<CategoryModel>>
         {
             public async Task<BaseResponse<CategoryModel>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -48,16 +48,10 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CategoriesManageme
 
                     if (!string.IsNullOrEmpty(category.Image))
                     {
-                        string DMSCategoryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath];
-                        string folderPath = $"{DMSCategoryPath}\\{category.CategoryId.ToString()}";
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFolderPathQuery.Query(folderPath));
-                        if (!responseGetFileCreationModels.IsSuccess)
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSCategoryPath, $"{_cachingPlatformSettings[PlatformSettingsCode.DMSCategoryPath]}\\{category.CategoryId}"];
+                        if (responseGetFileCreationModels.Any())
                         {
-                            return new BaseResponse<CategoryModel>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
-                        {
-                            category.FileCreationModel = responseGetFileCreationModels.DataObject.FirstOrDefault();
+                            category.FileCreationModel = responseGetFileCreationModels.FirstOrDefault();
                         }
                     }
 

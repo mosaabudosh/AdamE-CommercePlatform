@@ -25,7 +25,7 @@ namespace E_Commerce.Application.Services.AdvertisementsManagement.Advertisement
             public Query() { }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<ActiveStoreAdvertisementModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<ActiveStoreAdvertisementModel>>>
         {
             public async Task<BaseResponse<List<ActiveStoreAdvertisementModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -42,12 +42,9 @@ namespace E_Commerce.Application.Services.AdvertisementsManagement.Advertisement
 
                     if (advertisementModels.Any(p => !string.IsNullOrEmpty(p.ImageUrl)))
                     {
-                        string DMSAdPath = _cachingPlatformSettings[PlatformSettingsCode.DMSAdPath];
-
-                        List<string> filePaths = advertisementModels.Where(p => !string.IsNullOrEmpty(p.ImageUrl)).Select(s => { return $"{DMSAdPath}\\{s.AdvertisementId}"; }).ToList();
+                        List<string> filePaths = advertisementModels.Where(p => !string.IsNullOrEmpty(p.ImageUrl)).Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSAdPath]}\\{s.AdvertisementId}"; }).ToList();
                       
-                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSShopItemPath, filePaths];
-
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSAdPath, filePaths];
                         if (responseGetFileCreationModels.Any())
                         {
                             foreach (ActiveStoreAdvertisementModel advertisementModel in advertisementModels.Where(p => !string.IsNullOrEmpty(p.ImageUrl)))

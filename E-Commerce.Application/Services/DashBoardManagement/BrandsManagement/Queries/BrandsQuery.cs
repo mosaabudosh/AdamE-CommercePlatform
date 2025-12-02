@@ -28,7 +28,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<BrandModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<BrandModel>>>
         {
             public async Task<BaseResponse<List<BrandModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -49,19 +49,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.ItemsManagement.Qu
 
                     if (brands.Any(p => !string.IsNullOrEmpty(p.Image)))
                     {
-                        string DMSBrandPath = _cachingPlatformSettings[PlatformSettingsCode.DMSBrandPath];
+                        List<string> filePaths = brands.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSBrandPath]}\\{s.BrandId}"; }).ToList();
 
-                        List<string> filePaths = brands.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{DMSBrandPath}\\{s.BrandId}"; }).ToList();
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<List<BrandModel>>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSBrandPath, filePaths];
+                        if (responseGetFileCreationModels.Any())
                         {
                             foreach (BrandModel brand in brands.Where(p => !string.IsNullOrEmpty(p.Image)))
                             {
-                                brand.Image = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FolderName == brand.Image).FileContent;
+                                brand.Image = responseGetFileCreationModels.FirstOrDefault(p => p.FolderName == brand.Image).FileContent;
                             }
                         }
                     }

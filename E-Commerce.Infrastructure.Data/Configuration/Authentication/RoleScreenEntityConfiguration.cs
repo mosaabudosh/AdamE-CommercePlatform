@@ -17,10 +17,14 @@ namespace E_Commerce.Infrastructure.Data.Configuration.Authorisation
 			#region Foreignkeys
 			builder.HasOne(e => e.Role).WithMany(e => e.RoleScreens).HasForeignKey(f => f.RoleId);
 			builder.HasOne(e => e.Screen).WithMany(e => e.RoleScreens).HasForeignKey(f => f.ScreenId);
-			#endregion
+            #endregion
 
-			#region Seeding Data
-			builder.HasData(new RoleScreen[]
+            #region Unique
+            builder.HasIndex(p => new { p.RoleId ,p.ScreenId}).IsUnique();
+            #endregion
+
+            #region Seeding Data
+            builder.HasData(new RoleScreen[]
 			{
 				new RoleScreen()
 				{

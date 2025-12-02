@@ -33,7 +33,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsMana
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<PaymentMethodModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<PaymentMethodModel>>>
         {
             public async Task<BaseResponse<List<PaymentMethodModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -50,19 +50,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.PaymentMethodsMana
 
                     if (paymentMethods.Any(p => !string.IsNullOrEmpty(p.Icon)))
                     {
-                        string DMSPaymentMethodPath = _cachingPlatformSettings[PlatformSettingsCode.DMSPaymentMethodPath];
-
-                        List<string> filePaths = paymentMethods.Where(p => !string.IsNullOrEmpty(p.Icon)).Select(s => { return $"{DMSPaymentMethodPath}\\_{s.PaymentMethodId}"; }).ToList();
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<List<PaymentMethodModel>>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
+                        List<string> filePaths = paymentMethods.Where(p => !string.IsNullOrEmpty(p.Icon)).Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSPaymentMethodPath]}\\_{s.PaymentMethodId}"; }).ToList();
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSPaymentMethodPath, filePaths];
+                        if (responseGetFileCreationModels.Any())
                         {
                             foreach (PaymentMethodModel paymentMethod in paymentMethods.Where(p => !string.IsNullOrEmpty(p.Icon)))
                             {
-                                paymentMethod.Icon = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == paymentMethod.Icon).FileContent;
+                                paymentMethod.Icon = responseGetFileCreationModels.FirstOrDefault(p => p.FileName == paymentMethod.Icon).FileContent;
                             }
                         }
                     }

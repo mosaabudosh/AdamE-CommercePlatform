@@ -33,7 +33,7 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<CountryModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<CountryModel>>>
         {
             public async Task<BaseResponse<List<CountryModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -49,19 +49,13 @@ namespace E_Commerce.Application.Services.DashBoardManagement.CountriesManagemen
 
                     if (countries.Any(p => !string.IsNullOrEmpty(p.Banner)))
                     {
-                        string DMSCountryPath = _cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath];
-
-                        List<string> filePaths = countries.Where(p => !string.IsNullOrEmpty(p.Banner)).Select(s => { return $"{DMSCountryPath}\\{s.Name.Trim()}"; }).ToList();
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<List<CountryModel>>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
+                        List<string> filePaths = countries.Where(p => !string.IsNullOrEmpty(p.Banner)).Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSCountryPath]}\\{s.Name.Trim()}"; }).ToList();
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSCountryPath, filePaths];
+                        if (responseGetFileCreationModels.Any())
                         {
                             foreach (CountryModel country in countries.Where(p => !string.IsNullOrEmpty(p.Banner)))
                             {
-                                country.Banner = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FileName == country.Banner)?.FileContent;
+                                country.Banner = responseGetFileCreationModels.FirstOrDefault(p => p.FileName == country.Banner)?.FileContent;
                             }
                         }
                     }

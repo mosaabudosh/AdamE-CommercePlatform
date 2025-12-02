@@ -33,7 +33,7 @@ namespace E_Commerce.Application.Services.AdvertisementsManagement.Advertisement
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator, CachingPlatformSettings _cachingPlatformSettings) : IRequestHandler<Query, BaseResponse<List<AdvertisementModel>>>
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<AdvertisementModel>>>
         {
             public async Task<BaseResponse<List<AdvertisementModel>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -59,19 +59,14 @@ namespace E_Commerce.Application.Services.AdvertisementsManagement.Advertisement
 
                     if (advertisementModels.Any(p => !string.IsNullOrEmpty(p.ImageUrl)))
                     {
-                        string DMSAdPath = _cachingPlatformSettings[PlatformSettingsCode.DMSAdPath];
+                        List<string> filePaths = advertisementModels.Where(p => !string.IsNullOrEmpty(p.ImageUrl)).Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSAdPath]}\\{s.AdvertisementId}"; }).ToList();
 
-                        List<string> filePaths = advertisementModels.Where(p => !string.IsNullOrEmpty(p.ImageUrl)).Select(s => { return $"{DMSAdPath}\\{s.AdvertisementId}"; }).ToList();
-                        BaseResponse<List<FileCreationModel>> responseGetFileCreationModels = await _mediator.Send(new FilesByFilePathQuery.Query(filePaths));
-                        if (!responseGetFileCreationModels.IsSuccess)
-                        {
-                            return new BaseResponse<List<AdvertisementModel>>(false, responseGetFileCreationModels.Message);
-                        }
-                        if (responseGetFileCreationModels.DataObject.Any())
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSAdPath, filePaths];
+                        if (responseGetFileCreationModels.Any())
                         {
                             foreach (AdvertisementModel advertisementModel in advertisementModels.Where(p => !string.IsNullOrEmpty(p.ImageUrl)))
                             {
-                                advertisementModel.ImageUrl = responseGetFileCreationModels.DataObject.FirstOrDefault(p => p.FolderName == advertisementModel.ImageUrl).FileContent;
+                                advertisementModel.ImageUrl = responseGetFileCreationModels.FirstOrDefault(p => p.FolderName == advertisementModel.ImageUrl).FileContent;
                             }
                         }
                     }
