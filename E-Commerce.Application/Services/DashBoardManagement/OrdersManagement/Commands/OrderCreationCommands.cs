@@ -12,11 +12,6 @@ using E_Commerce.Domain.RepositoryInterfaces;
 using Generic.Response;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Adam.Generic.Constants.Constants;
 using static E_Commerce.Domain.Enum.Enums;
 
@@ -27,18 +22,81 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
         public class Command : IRequest<BaseResponse<OrderModel>>
         {
             public OrderModel OrderModel { get; set; }
+
             public Command(OrderModel orderModel)
             {
                 OrderModel = orderModel;
             }
         }
 
-        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, IMediator _mediator) : IRequestHandler<Command, BaseResponse<OrderModel>>
+        public class Handler(
+            IUnitOfWork _unitOfWork,
+            IUserAccessor _userAccessor,
+            IExceptionService _exceptionService,
+            IMediator _mediator
+        ) : IRequestHandler<Command, BaseResponse<OrderModel>>
         {
-            public async Task<BaseResponse<OrderModel>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<BaseResponse<OrderModel>> Handle(
+                Command request,
+                CancellationToken cancellationToken)
             {
                 try
                 {
+                    // ─── Step 1: Validate stock for every order line ──────────────────────
+                    List<Guid> shopItemIds = request.OrderModel.OrderDetails
+                        .Select(d => d.ShopItemId)
+                        .Distinct()
+                        .ToList();
+
+                    IQueryable<ShopItem> shopItemsQuery = _unitOfWork
+                        .GetRepository<ShopItem>()
+                        .GetByExpression(si => shopItemIds.Contains(si.ShopItemId) && si.IsActive);
+
+                    List<ShopItem> shopItems = shopItemsQuery.ToList();
+
+                    // Map for quick lookup
+                    Dictionary<Guid, ShopItem> shopItemMap = shopItems
+                        .ToDictionary(si => si.ShopItemId);
+
+                    foreach (var detail in request.OrderModel.OrderDetails)
+                    {
+                        if (!shopItemMap.TryGetValue(detail.ShopItemId, out ShopItem? item))
+                        {
+                            return new BaseResponse<OrderModel>(
+                                false,
+                                $"Product with ID '{detail.ShopItemId}' was not found or is no longer available.",
+                                ErrorCode.NotFound);
+                        }
+
+                        if (item.IsBlock)
+                        {
+                            return new BaseResponse<OrderModel>(
+                                false,
+                                $"Product '{item.Name}' is currently blocked and cannot be ordered.",
+                                ErrorCode.ValidationError);
+                        }
+
+                        double availableStock = (item.InStocks ?? 0) - (item.OutOfStocks ?? 0);
+
+                        if (availableStock <= 0)
+                        {
+                            return new BaseResponse<OrderModel>(
+                                false,
+                                $"Product '{item.Name}' is out of stock.",
+                                ErrorCode.ValidationError);
+                        }
+
+                        if (detail.Quantity > availableStock)
+                        {
+                            return new BaseResponse<OrderModel>(
+                                false,
+                                $"Requested quantity ({detail.Quantity}) for '{item.Name}' " +
+                                $"exceeds available stock ({availableStock}).",
+                                ErrorCode.ValidationError);
+                        }
+                    }
+
+                    // ─── Step 2: Build the Order entity ──────────────────────────────────
                     Order order = new Order()
                     {
                         CustomerId = request.OrderModel.CustomerId,
@@ -65,43 +123,58 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
 
                     order = GenerateReferenceNumber(order);
                     _unitOfWork.GetRepository<Order>().Insert(order);
+
+                    // ─── Step 3: Deduct stock (increment OutOfStocks) ─────────────────────
+                    // We update OutOfStocks so that InStocks remains the total received,
+                    // and the formula "available = InStocks - OutOfStocks" stays consistent.
+                    foreach (var detail in request.OrderModel.OrderDetails)
+                    {
+                        ShopItem item = shopItemMap[detail.ShopItemId];
+                        item.OutOfStocks = (item.OutOfStocks ?? 0) + detail.Quantity;
+                        item.LastUpdatedDate = DateTime.UtcNow;
+                        item.LastUpdateUserId = _userAccessor.GetCurrentUserId();
+                        _unitOfWork.GetRepository<ShopItem>().Update(item);
+                    }
+
                     await _unitOfWork.CommitChanges();
 
+                    // ─── Step 4: Notifications ────────────────────────────────────────────
                     List<NotificationModel> notificationModels = new List<NotificationModel>();
 
-                    BaseResponse<CustomerModel> responseCustomer = await _mediator.Send(new GetCustomerByIdQuery.Query(request.OrderModel.CustomerId));
+                    BaseResponse<CustomerModel> responseCustomer =
+                        await _mediator.Send(new GetCustomerByIdQuery.Query(request.OrderModel.CustomerId));
+
                     if (!responseCustomer.IsSuccess)
-                    {
                         return new BaseResponse<OrderModel>(false, responseCustomer.Message, responseCustomer.ErrorCode, null);
-                    }
 
-                    BaseResponse<List<Guid>> responseUsersByShopItemId = await _mediator.Send(new GetUsersByShopItemIdQuery.Query(request.OrderModel.OrderDetails.FirstOrDefault().ShopItemId));
+                    BaseResponse<List<Guid>> responseUsersByShopItemId =
+                        await _mediator.Send(new GetUsersByShopItemIdQuery.Query(
+                            request.OrderModel.OrderDetails.FirstOrDefault().ShopItemId));
+
                     if (!responseUsersByShopItemId.IsSuccess)
-                    {
                         return new BaseResponse<OrderModel>(false, responseUsersByShopItemId.Message, responseUsersByShopItemId.ErrorCode, null);
-                    }
 
-                    notificationModels.AddRange(responseUsersByShopItemId.DataObject.Select(s => 
-                    new NotificationModel()
-                    {
-                        Subject = "Received Order",
-                        SubjectAr = "استلام الطلب",
-                        Description = $"Received order from customer",
-                        DescriptionAr = $"تم استلام الطلب من العميل",
-                        NotificationCode = NotificationTypes.CreateOrder.ToString(),
-                        NotificationStatusId = (int)Enums.NotificationStatuses.UnRead,
-                        NotificationTypeId = (int)Enums.NotificationTypes.CreateOrder,
-                        Tooltip = "Received Order",
-                        TooltipAr = "استلام الطلب",
-                        UserId = s,
-                    }).ToList());
+                    notificationModels.AddRange(responseUsersByShopItemId.DataObject.Select(s =>
+                        new NotificationModel()
+                        {
+                            Subject = "Received Order",
+                            SubjectAr = "استلام الطلب",
+                            Description = $"Received order from customer",
+                            DescriptionAr = $"تم استلام الطلب من العميل",
+                            NotificationCode = NotificationTypes.CreateOrder.ToString(),
+                            NotificationStatusId = (int)Enums.NotificationStatuses.UnRead,
+                            NotificationTypeId = (int)Enums.NotificationTypes.CreateOrder,
+                            Tooltip = "Received Order",
+                            TooltipAr = "استلام الطلب",
+                            UserId = s,
+                        }));
 
                     notificationModels.Add(new NotificationModel()
                     {
                         Subject = "Send Order",
                         SubjectAr = "إرسال الطلب",
                         Description = "Purchase order has been sent",
-                        DescriptionAr = "تم ارسال طلب الشراء ",
+                        DescriptionAr = "تم ارسال طلب الشراء",
                         NotificationCode = NotificationTypes.CreateOrder.ToString(),
                         NotificationStatusId = (int)Enums.NotificationStatuses.UnRead,
                         NotificationTypeId = (int)Enums.NotificationTypes.CreateOrder,
@@ -110,13 +183,14 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                         CustomerId = request.OrderModel.CustomerId
                     });
 
-                    BaseResponse responseNotificationCreation = await _mediator.Send(new NotificationCreationCommands.Command(notificationModels));
-                    if (!responseNotificationCreation.IsSuccess)
-                    {
-                        return new BaseResponse<OrderModel>(false, responseNotificationCreation.Message, responseNotificationCreation.ErrorCode, null);
-                    }
+                    BaseResponse responseNotification =
+                        await _mediator.Send(new NotificationCreationCommands.Command(notificationModels));
 
-                    OrderModel creationOrderModel = new OrderModel()
+                    if (!responseNotification.IsSuccess)
+                        return new BaseResponse<OrderModel>(false, responseNotification.Message, responseNotification.ErrorCode, null);
+
+                    // ─── Step 5: Build response model ─────────────────────────────────────
+                    OrderModel createdOrderModel = new OrderModel()
                     {
                         CustomerId = order.CustomerId,
                         OrderStatusId = order.OrderStatusId,
@@ -139,35 +213,34 @@ namespace E_Commerce.Application.Services.DashBoardManagement.OrdersManagement.C
                         }).ToList(),
                     };
 
-                    return new BaseResponse<OrderModel>(true, string.Empty, creationOrderModel);
+                    return new BaseResponse<OrderModel>(true, string.Empty, createdOrderModel);
                 }
                 catch (Exception ex)
                 {
-                    while (ex.InnerException is not null)
-                    {
-                        ex = ex.InnerException;
-                    }
+                    while (ex.InnerException is not null) ex = ex.InnerException;
                     await _exceptionService.LogErrorAsync(ex, "OrderCreationCommands", _userAccessor.GetCurrentUserId());
                     return new BaseResponse<OrderModel>(false, ex.Message);
                 }
             }
 
-            public Order GenerateReferenceNumber(Order order)
+            /// <summary>
+            /// Generates a unique 15-digit reference number for the order
+            /// using a Fischer-Yates shuffle on digits 0-14.
+            /// </summary>
+            private static Order GenerateReferenceNumber(Order order)
             {
                 int[] numbers = Enumerable.Range(0, 15).ToArray();
-                var random = new Random();
+                Random random = new Random();
 
-                for (int i = 0; i < numbers.Length; ++i)
+                for (int i = numbers.Length - 1; i > 0; i--)
                 {
-                    int randomIndex = random.Next(numbers.Length);
-                    int temp = numbers[randomIndex];
-                    numbers[randomIndex] = numbers[i];
-                    numbers[i] = temp;
+                    int j = random.Next(i + 1);
+                    (numbers[i], numbers[j]) = (numbers[j], numbers[i]);
                 }
-                order.ReferenceNumber = string.Join(string.Empty, numbers.Select(s => { return s; }).ToList());
+
+                order.ReferenceNumber = string.Join(string.Empty, numbers);
                 return order;
             }
-
         }
     }
 }
