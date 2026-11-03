@@ -1,0 +1,36 @@
+﻿using ArabazonPlatform.Domain.Domains.Authentication;
+using ArabazonPlatform.Domain.Domains.CRM;
+using ArabazonPlatform.Domain.Domains.DashBoard;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ArabazonPlatform.Domain.Domains.Authorisation
+{
+    public class Customer : BaseUser
+    {
+        public Guid CustomerId { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public string? ProfileImage { get; set; }
+        public string? Adresse { get; set; }
+        public bool IsBlock { get; set; }
+        public int UserTypeId { get; set; }
+        public int? GenderId { get; set; }
+        public int? CityId { get; set; }
+        public string? OTPCode { get; set; }
+
+        public virtual List<Cart> Carts { get; set; }
+        public virtual List<Order> Orders { get; set; }
+        public virtual List<CustomerLogin> CustomerLogins { get; set; }
+        public virtual List<CustomerFavorite> CustomerFavorites { get; set; }
+        public virtual List<Domains.Notification.Notification> Notifications { set; get; }
+        public virtual List<ShopRating> ShopRatings { get; set; }
+        public virtual List<ShopItemRating> ShopItemRatings { get; set; }
+        public virtual List<CustomerDeliveryAddress> CustomerDeliveryAddresses { get; set; }
+        public virtual List<CustomerCardInfo> CustomerCardInfos { get; set; }
+        public virtual List<Complaint> Complaints { get; set; }
+        public virtual List<Suggestion> Suggestions { get; set; }
+    }
+}
