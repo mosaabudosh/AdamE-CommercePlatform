@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>ArabazonPlatform.Core.Application</AssemblyName>
+    <RootNamespace>ArabazonPlatform.Core.Application</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArabazonPlatform.Core.Domain\ArabazonPlatform.Core.Domain.csproj" />
+   <ProjectReference Include="..\ArabazonPlatform.Generic\ArabazonPlatform.Generic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Adam.Logging">
+      <HintPath>..\DDLs\Adam.Logging.dll</HintPath>
+    </Reference>
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\AuthenticationManagement\ScreenActionsManagement\Queries\" />
+    <Folder Include="Services\AuthenticationManagement\ScreensManagement\Commands\" />
+    <Folder Include="Services\AuthenticationManagement\UserRolesManagement\Queries\" />
+    <Folder Include="Services\AuthenticationManagement\UserTypesManagement\Commands\" />
+    <Folder Include="Services\NotificationManagement\NotificationTypeRoleManagement\Commands\" />
+    <Folder Include="Services\NotificationManagement\NotificationTypeRoleManagement\Queries\" />
+    <Folder Include="StoredProcedure\Scripts\" />
+  </ItemGroup>
+
+</Project>

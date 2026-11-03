@@ -1,0 +1,78 @@
+﻿using ArabazonPlatform.Generic.Generic;
+using Adam.Logging.Interfaces;
+using ArabazonPlatform.Application.Caching;
+using ArabazonPlatform.Application.Model.DashBoard;
+using ArabazonPlatform.Application.Services.DMSManagement.FolderManagement.Queries;
+using ArabazonPlatform.Domain.Domains.DashBoard;
+using ArabazonPlatform.Domain.IHttpServices;
+using ArabazonPlatform.Domain.RepositoryInterfaces;
+using ArabazonPlatform.Generic.Response;
+using MediatR;
+using static ArabazonPlatform.Domain.Enum.Enums;
+
+namespace ArabazonPlatform.Application.Services.DashBoardManagement.ItemsManagement.Queries
+{
+    public class BrandsQuery
+    {
+        public class Query : IRequest<BaseResponse<List<BrandModel>>>
+        {
+            public int PageNumber { get; set; }
+            public int PageSize { get; set; }
+            public string? SearchText { get; set; }
+
+            public Query(int pageNumber, int pageSize, string? searchText = null)
+            {
+                PageNumber = pageNumber;
+                PageSize = pageSize;
+                SearchText = searchText;
+            }
+        }
+
+        public class Handler(IUnitOfWork _unitOfWork, IUserAccessor _userAccessor, IExceptionService _exceptionService, CachingPlatformSettings _cachingPlatformSettings, CachingDataFromDMS _cachingDataFromDMS) : IRequestHandler<Query, BaseResponse<List<BrandModel>>>
+        {
+            public async Task<BaseResponse<List<BrandModel>>> Handle(Query request, CancellationToken cancellationToken)
+            {
+                try
+                {
+                    List<BrandModel> brands = _unitOfWork.GetRepository<Brand>().GetByExpressionAsNoTracking(p => (string.IsNullOrEmpty(request.SearchText) || p.Name.Contains(request.SearchText) || p.NameAr.Contains(request.SearchText))).Select(s => new BrandModel()
+                    {
+                        BrandId = s.BrandId,
+                        IsViewInHome = s.IsViewInHome,
+                        IsViewInFooter = s.IsViewInFooter,
+                        Name = s.Name,
+                        NameAr = s.NameAr,
+                        Code = s.Code,
+                        Descreption = s.Descreption,
+                        Image = s.Image,
+                        IsBlock = s.IsBlock,
+                    }).Skip(request.PageNumber * request.PageSize).Take(request.PageSize).ToList();
+
+                    if (brands.Any(p => !string.IsNullOrEmpty(p.Image)))
+                    {
+                        List<string> filePaths = brands.Where(p => !string.IsNullOrEmpty(p.Image)).Select(s => { return $"{_cachingPlatformSettings[PlatformSettingsCode.DMSBrandPath]}\\{s.BrandId}"; }).ToList();
+
+                        List<FileCreationModel> responseGetFileCreationModels = _cachingDataFromDMS[PlatformSettingsCode.DMSBrandPath, filePaths];
+                        if (responseGetFileCreationModels.Any())
+                        {
+                            foreach (BrandModel brand in brands.Where(p => !string.IsNullOrEmpty(p.Image)))
+                            {
+                                brand.Image = responseGetFileCreationModels.FirstOrDefault(p => p.FolderName == brand.Image).FileContent;
+                            }
+                        }
+                    }
+
+                    return new BaseResponse<List<BrandModel>>(true, string.Empty, string.Empty, brands);
+                }
+                catch (Exception ex)
+                {
+                    while (ex.InnerException is not null)
+                    {
+                        ex = ex.InnerException;
+                    }
+                    await _exceptionService.LogErrorAsync(ex, "BrandsQuery", _userAccessor.GetCurrentUserId(), request);
+                    return new BaseResponse<List<BrandModel>>(false, ex.Message);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ArabazonPlatform.Domain.Domains.DashBoard
+{
+    public class Brand : SharedBase
+    {
+        public int BrandId { get; set; }
+        public string Name { get; set; }
+        public string NameAr { get; set; }
+        public string Code { get; set; }
+        public string? Image { get; set; }
+        public string? Descreption { get; set; }
+        public bool IsBlock { get; set; }
+        public bool IsViewInHome { get; set; }
+        public bool IsViewInFooter { get; set; }
+
+        public virtual List<ShopItem> ShopItems { get; set; }
+    }
+}

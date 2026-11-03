@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>ArabazonPlatform.Core.Domain</AssemblyName>
+    <RootNamespace>ArabazonPlatform.Core.Domain</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+   <ProjectReference Include="..\ArabazonPlatform.Generic\ArabazonPlatform.Generic.csproj" />
+  </ItemGroup>
+
+</Project>
