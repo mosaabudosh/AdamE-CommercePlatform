@@ -1,14 +1,14 @@
 # ArabazonPlatform.Core
 
-A modular e-commerce platform backend built with **ASP.NET Core 8**, **Entity Framework Core**, and **SQL Server**.
+### Multi-Vendor E-Commerce Platform
 
-## Overview
+**ArabazonPlatform.Core** is the core backend solution of a Multi-Vendor E-Commerce Platform, built using **ASP.NET Core 8**, **C#**, and **Microsoft SQL Server**.
 
-**ArabazonPlatform.Core** is a modular backend solution designed to support e-commerce business operations through a structured and maintainable architecture.
+The solution is organized into modular projects to separate API responsibilities, application workflows, domain logic, infrastructure services, database access, and reporting components.
 
-The solution separates API endpoints, application workflows, domain logic, infrastructure services, and data access into dedicated projects.
+It includes authentication and authorization capabilities, data access components, real-time communication, and reporting utilities.
 
-It also includes shared components and reporting capabilities to support the platform's business requirements.
+---
 
 ## Technology Stack
 
@@ -16,53 +16,87 @@ It also includes shared components and reporting capabilities to support the pla
 |---|---|
 | Framework | .NET 8 |
 | Backend | ASP.NET Core Web API |
-| Language | C# |
+| Programming Language | C# |
 | Database | Microsoft SQL Server |
 | ORM | Entity Framework Core 8 |
 | Data Access | Dapper |
-| Application Mediation | MediatR |
+| Request Handling | MediatR |
 | Authentication | JWT |
-| Real-time Communication | SignalR |
+| Authorization | Role-Based Access Control and Permissions |
+| Real-Time Communication | SignalR |
 | API Documentation | Swagger / OpenAPI |
-| Reporting | ReportViewerCore, RDLC |
+| Reporting | ReportViewerCore and RDLC |
 | PDF Processing | PDFsharp |
 | QR Code Generation | QRCoder |
 | JSON Processing | Newtonsoft.Json |
 
-## Solution Architecture
+---
 
-The solution is organized into separate projects to improve maintainability and separation of concerns.
+## Solution Structure
 
-| Project | Responsibility |
+The solution is divided into the following projects:
+
+| Project | Description |
 |---|---|
-| `ArabazonPlatform.Core.API` | Web API endpoints and application entry point |
-| `ArabazonPlatform.Core.Application` | Application workflows, services, and request handling |
-| `ArabazonPlatform.Core.Domain` | Core domain models and business logic |
-| `ArabazonPlatform.Core.Infrastructure` | Infrastructure services and external integrations |
+| `ArabazonPlatform.Core.API` | ASP.NET Core Web API and application entry point |
+| `ArabazonPlatform.Core.Application` | Application services and request handling |
+| `ArabazonPlatform.Core.Domain` | Domain models and business logic |
+| `ArabazonPlatform.Core.Infrastructure` | Infrastructure services and integrations |
 | `ArabazonPlatform.Core.Infrastructure.Data` | Database access and persistence components |
 | `ArabazonPlatform.Generic` | Shared components and reusable utilities |
-| `ArabazonPlatform.Core.ReportsDesigner` | Typed DataSets and report definitions |
+| `ArabazonPlatform.Core.ReportsDesigner` | Typed DataSets and RDLC report definitions |
 | `DDLs` | Database definition scripts and supporting SQL files |
 
-## Key Technical Components
+---
 
-- **RESTful APIs:** Backend endpoints for platform operations.
-- **Authentication:** JWT-based authentication support.
-- **Data Access:** Entity Framework Core and Dapper for SQL Server data operations.
-- **Application Workflows:** MediatR for request handling and application-level separation.
-- **Real-time Communication:** SignalR integration.
-- **API Documentation:** Swagger / OpenAPI.
-- **Reporting:** RDLC report definitions and ReportViewerCore.
-- **PDF and QR Utilities:** PDF generation and QR code functionality.
+## Main Technical Capabilities
+
+### Authentication and Authorization
+
+- JWT-based authentication.
+- Role-based authorization.
+- Permission management.
+
+### Data Access and Persistence
+
+- Entity Framework Core for ORM and database operations.
+- Dapper for lightweight SQL data access.
+- SQL Server database integration.
+
+### Application Architecture
+
+- Modular project organization.
+- Separation of concerns.
+- MediatR-based request handling.
+- Shared and reusable components.
+
+### Real-Time Communication
+
+- SignalR integration.
+
+### Reporting and Document Utilities
+
+- RDLC report definitions.
+- ReportViewerCore integration.
+- PDF processing using PDFsharp.
+- QR code generation using QRCoder.
+
+### API Documentation
+
+- Swagger / OpenAPI integration.
+
+---
 
 ## Prerequisites
 
-Before running the solution, make sure you have:
+Before running the solution, install:
 
-- .NET 8 SDK
-- Visual Studio 2022 or a compatible .NET development environment
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [Visual Studio 2022](https://visualstudio.microsoft.com/)
 - Microsoft SQL Server
-- A configured database connection
+- Git
+
+---
 
 ## Getting Started
 
@@ -86,17 +120,17 @@ dotnet restore ArabazonPlatform.Core.sln
 
 ### 4. Configure the Database
 
-Configure the SQL Server connection string using the configuration mechanism already defined by the API project.
+Configure the SQL Server connection string using the configuration settings expected by the API project.
 
-Use your local development configuration or .NET User Secrets for sensitive values.
+Use local development settings or .NET User Secrets to store sensitive configuration values.
 
-Do not commit database passwords, JWT secrets, or other credentials to source control.
+Do not commit production credentials, database passwords, or JWT signing secrets.
 
 ### 5. Prepare the Database
 
-Prepare the database using the project's existing Entity Framework migrations and/or the required SQL scripts provided in the repository.
+Prepare the database using the existing Entity Framework migrations and/or the SQL scripts provided in the solution.
 
-Make sure the database schema is compatible with the application before starting the API.
+Ensure that the configured database is compatible with the application before running the API.
 
 ### 6. Build the Solution
 
@@ -110,24 +144,39 @@ dotnet build ArabazonPlatform.Core.sln --configuration Release
 dotnet run --project ArabazonPlatform.Core.API/ArabazonPlatform.Core.API.csproj
 ```
 
-Once the API is running, use the Swagger endpoint configured by the application to explore the available API endpoints.
+Once the API is running, access the Swagger endpoint configured by the application.
 
-## Configuration and Security
+---
 
-- Keep connection strings and credentials outside source control.
-- Use separate configuration values for development and production environments.
-- Store JWT signing secrets securely.
+## Security Considerations
+
+- Keep sensitive configuration values outside source control.
+- Use secure JWT signing keys.
+- Apply appropriate authorization rules to protected endpoints.
 - Review CORS settings before deployment.
-- Avoid committing local IDE files, build outputs, temporary files, or sensitive data.
+- Avoid committing real customer data or production credentials.
 
-## Development Notes
+---
 
-- The solution targets .NET 8.
-- Database operations rely on SQL Server.
-- Reporting components use RDLC definitions and typed DataSets.
-- Keep report DataSet names synchronized with the names supplied by the application.
-- Verify database configuration before running the application in a new environment.
+## Testing
 
-## License
+Automated Unit Test and Integration Test projects are not currently included in this solution.
 
-No license has been specified yet. Add a `LICENSE` file before distributing the project under an open-source license.
+The solution has been built successfully in Release configuration in the development environment.
+
+---
+
+## Future Improvements
+
+Potential areas for further improvement include:
+
+- Adding automated unit and integration tests.
+- Adding automated CI build and validation workflows.
+- Improving developer setup and deployment documentation.
+- Reviewing package dependencies and security updates.
+
+---
+
+## Repository
+
+GitHub: [ArabazonPlatform.Core](https://github.com/mosaabudosh/ArabazonPlatform.Core)
